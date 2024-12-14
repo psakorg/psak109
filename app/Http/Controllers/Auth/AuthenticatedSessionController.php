@@ -47,12 +47,15 @@ class AuthenticatedSessionController extends Controller
 
     // Redirect berdasarkan peran user
     if ($loggedInUser->role == 'superadmin') {
-        return redirect()->route('superadmin.dashboard', ['id_pt' => $id_pt]);
+        // return redirect()->route('superadmin.dashboard', ['id_pt' => $id_pt]);
+        return redirect()->route('report-initial-recognition.index', ['id_pt' => $id_pt]);
     } elseif ($loggedInUser->role == 'admin') {
-        return redirect()->route('admin.dashboard', ['id_pt' => $id_pt]);
+        // return redirect()->route('admin.dashboard', ['id_pt' => $id_pt]);
+        return redirect()->route('report-initial-recognition.index', ['id_pt' => $id_pt]);
     }
 
-    return redirect()->route('dashboard', ['id_pt' => $id_pt]);
+    // return redirect()->route('dashboard', ['id_pt' => $id_pt]);
+    return redirect()->route('report-initial-recognition.index', ['id_pt' => $id_pt]);
 }
 
     /**

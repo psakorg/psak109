@@ -30,12 +30,14 @@ class SuperAdmin
         
         // Admin
         elseif ($userRole == 'admin'){
-        return redirect()->route('admin.dashboard');
+        // return redirect()->route('admin.dashboard');
+        return redirect()->route('report-initial-recognition.index');
     }
     
         // Nomral User
         elseif ($userRole == 'user'){
-            return redirect()->route('dashboard');
+            // return redirect()->route('dashboard');
+            return redirect()->route('report-initial-recognition.index');
 
         }
     }

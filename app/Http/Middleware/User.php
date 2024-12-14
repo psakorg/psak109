@@ -25,13 +25,14 @@ class User
 
         // Super Admin
         if ($userRole == 'superadmin'){
-            return redirect()->route('superadmin.dashboard');
-            
+            // return redirect()->route('superadmin.dashboard');
+            return redirect()->route('report-initial-recognition.index');
         }
         
         // Admin
         elseif ($userRole == 'admin'){
-        return redirect()->route('admin.dashboard');
+        // return redirect()->route('admin.dashboard');
+        return redirect()->route('report-initial-recognition.index');
     }
     
         // Nomral User

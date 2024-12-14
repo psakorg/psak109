@@ -26,8 +26,8 @@ class Admin
 
         // Super Admin
         if ($userRole == 'superadmin'){
-            return redirect()->route('superadmin.dashboard');
-            
+            // return redirect()->route('superadmin.dashboard');
+            return redirect()->route('report-initial-recognition.index');
         }
         
         // Admin
@@ -37,7 +37,8 @@ class Admin
         
         // Normal User
         elseif ($userRole == 'user'){
-            return redirect()->route('dashboard');
+            // return redirect()->route('dashboard');
+            return redirect()->route('report-initial-recognition.index');
         }
     
     }

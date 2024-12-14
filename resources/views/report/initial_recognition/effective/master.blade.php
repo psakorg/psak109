@@ -1,10 +1,9 @@
-
 @include('layouts.header')
 
 @include('layouts.navbar')
 
 @include('layouts.sidebar')
 
-@include('report.accrual_interest.effective.report_view')
+@include('report.initial_recognition.effective.report')
 
 @include('layouts.footer')

@@ -48,6 +48,7 @@ use App\Http\Controllers\report\securities\amortisedinitialdiscController;
 use App\Http\Controllers\report\securities\amortisedinitialpremController;
 use App\Http\Controllers\report\securities\expectedcashflowController;
 
+use App\Http\Controllers\report\Report_Initial_Recognition\effectiveController as initialRecognitionEffectiveController;
 
 use App\Models\Mapping;
 
@@ -349,5 +350,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/tblmaster/clear', [tblmaster_EFF::class, 'clear'])
             ->name('effective.tblmaster.clear');
     });
+});
+
+Route::prefix('report-initial-recognition')->group(function () {
+    Route::get('/', [initialRecognitionEffectiveController::class, 'index'])->name('report-initial-recognition.index');
+    // Route::get('/effective', [InitialRecognitionController::class, 'effective'])->name('report-initial-recognition.effective');
+    // Route::get('/simple-interest', [InitialRecognitionController::class, 'simpleInterest'])->name('report-initial-recognition.simple-interest');
 });
 
