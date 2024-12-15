@@ -65,7 +65,7 @@
                                     <li><a class="dropdown-item" href="#" onclick="showModal('expected_cashflow_simple')">Simple Interest</a></li>
                                 </ul>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
                                     Initial Recognition <i class="fas fa-chevron-right float-end"></i>
                                 </a>
@@ -73,7 +73,7 @@
                                     <li><a class="dropdown-item" href="#" onclick="showModal('initial_recognition_effective')">Effective</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="showModal('initial_recognition_simple')">Simple Interest</a></li>
                                 </ul>
-                            </li>
+                            </li> -->
                             <li>
                                 <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
                                     Outstanding <i class="fas fa-chevron-right float-end"></i>
@@ -410,9 +410,9 @@
             </div>
             <div class="modal-body">
                 <form id="reportForm">
-                    <div class="mb-3">
-                        <label for="reportType" class="form-label">Report Type</label>
-                        <select class="form-select" id="reportType" required>
+                    <div class="mb-3  ">
+                        <label for="reportType" class="form-label me-2">Report Type</label>
+                        <select class="form-select" id="reportType" required style="width: 100%;">
                             <!-- Options will be populated by JavaScript -->
                         </select>
                     </div>

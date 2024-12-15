@@ -46,7 +46,7 @@
                 </div>
             </section>
 
-            <!-- Pagination Links -->
+            <!-- Pagination Linkss -->
             <div class="d-flex justify-content-between align-items-center mt-3">
                 <div class="showing-entries">
                     Showing

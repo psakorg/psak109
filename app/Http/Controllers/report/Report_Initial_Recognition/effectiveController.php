@@ -13,6 +13,11 @@ class effectiveController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+
+        if (!$user) {
+            return redirect('https://psak.pramatech.id');
+        }
+
         $isSuperAdmin = $user->role === 'superadmin';
         
         $branch = $request->input('branch', "999");
