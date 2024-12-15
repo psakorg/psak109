@@ -77,8 +77,8 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'nama_pt' => $pt->nama_pt,
-            'alamat_pt' => $request->alamat_pt,
-            'company_type' => $request->company_type,
+            'alamat_pt' => $pt->alamat_pt,
+            'company_type' => $pt->company_type,
             'nomor_wa' => $request->nomor_wa,
             'email' => $request->email,
             //'role' => 'admin', // Set peran (role) sebagai admin secara default
@@ -86,7 +86,7 @@ class RegisteredUserController extends Controller
             'is_activated' => 'false', // Status aktivasi langsung 'aktif'
             'password' => Hash::make($request->password),
             //'id_pt' => $pt->id_pt, // Menyimpan id_pt yang diambil dari model_pt
-            'id_pt' => 'pt001',
+            'id_pt' => null,
         ]);
 
         // Fire Registered event

@@ -52,6 +52,10 @@ use App\Http\Controllers\report\Report_Initial_Recognition\effectiveController a
 
 use App\Models\Mapping;
 
+use App\Http\Controllers\report\ReportController;
+
+
+
 // Rute untuk halaman utama
 Route::get('/kontak', function(){
     return view('landing.kontak');
@@ -358,3 +362,7 @@ Route::prefix('report-initial-recognition')->group(function () {
     // Route::get('/simple-interest', [InitialRecognitionController::class, 'simpleInterest'])->name('report-initial-recognition.simple-interest');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/check-entity/{entity_number}', [ReportController::class, 'checkEntity'])->name('check.entity');
+    Route::get('/check-account/{account_number}', [ReportController::class, 'checkAccount'])->name('check.account');
+});

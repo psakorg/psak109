@@ -13,19 +13,20 @@
                     <h4>REPORT INITIAL RECOGNITION NEW LOAN BY ENTITY - CONTRACTUAL EFFECTIVE</h4>
                 </div>
                 
-                <div class="d-flex justify-content-start mb-0">
-                    <div class="dropdown">
+                <div class="d-flex justify-content-start mb-0 align-items-center">
+                    <div class="dropdown me-3">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-file-import"></i> Report
                         </button>
+                        
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
                                     Accrual Interest <i class="fas fa-chevron-right float-end"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('simple_interest')">Simple Interest</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('accrual_interest_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('accrual_interest_simple')">Simple Interest</a></li>
                                 </ul>
                             </li>
                             <li>
@@ -33,8 +34,8 @@
                                     Amortised Cost <i class="fas fa-chevron-right float-end"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('simple_interest')">Simple Interest</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_cost_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_cost_simple')">Simple Interest</a></li>
                                 </ul>
                             </li>
                             <li>
@@ -42,8 +43,8 @@
                                     Amortised Initial Cost <i class="fas fa-chevron-right float-end"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('simple_interest')">Simple Interest</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_cost_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_cost_simple')">Simple Interest</a></li>
                                 </ul>
                             </li>
                             <li>
@@ -51,8 +52,8 @@
                                     Amortised Initial Fee <i class="fas fa-chevron-right float-end"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('simple_interest')">Simple Interest</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_fee_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_fee_simple')">Simple Interest</a></li>
                                 </ul>
                             </li>
                             <li>
@@ -60,8 +61,8 @@
                                     Expected Cash Flow <i class="fas fa-chevron-right float-end"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('simple_interest')">Simple Interest</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('expected_cashflow_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('expected_cashflow_simple')">Simple Interest</a></li>
                                 </ul>
                             </li>
                             <li>
@@ -69,8 +70,8 @@
                                     Initial Recognition <i class="fas fa-chevron-right float-end"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('simple_interest')">Simple Interest</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('initial_recognition_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('initial_recognition_simple')">Simple Interest</a></li>
                                 </ul>
                             </li>
                             <li>
@@ -78,8 +79,8 @@
                                     Outstanding <i class="fas fa-chevron-right float-end"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('simple_interest')">Simple Interest</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('outstanding_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('outstanding_simple')">Simple Interest</a></li>
                                 </ul>
                             </li>
                             <li>
@@ -87,11 +88,35 @@
                                     Journal <i class="fas fa-chevron-right float-end"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('simple_interest')">Simple Interest</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('journal_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('journal_simple')">Simple Interest</a></li>
                                 </ul>
                             </li>
                         </ul>
+                    </div>
+
+                    <!-- Tambahan input bulan dan tahun -->
+                    <div class="d-flex align-items-center">
+                        <select class="form-select me-2" style="width: 120px;" id="monthSelect">
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+
+                        <input type="number" class="form-select" id="yearInput" 
+                               style="width: 100px;" 
+                               value="{{ date('Y') }}" 
+                               min="2000" 
+                               max="2099">
                     </div>
                 </div>
                 
@@ -148,21 +173,21 @@
                                         <td>{{ $loan->no_acc }}</td>
                                         <td>{{ $loan->deb_name }}</td>
                                         <td>{{ $loan->coa }}</td>
-                                        <td>{{ $loan->LN_TYPE }}</td>
+                                        <td>{{ $loan->ln_type }}</td>
                                         <td>{{ $loan->glgroup }}</td>
-                                        <td>{{ $loan->OrgdtConv }}</td>
+                                        <td>{{ $loan->orgdtconv }}</td>
                                         <td>{{ $loan->term }}</td>
-                                        <td>{{ number_format($loan->RATE, 4) }}%</td>
-                                        <td>{{ $loan->MtrdtConv }}</td>
+                                        <td>{{ number_format($loan->rate*100, 5) }}%</td>
+                                        <td>{{ $loan->mtrdtconv }}</td>
                                         <td class="text-right">{{ number_format($loan->pmtamt, 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->org_bal, 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->oldbal, 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->baleir, 0) }}</td>
-                                        <td>{{ number_format($loan->eirex, 14) }}%</td>
-                                        <td>{{ number_format($loan->eircalc, 14) }}%</td>
-                                        <td>{{ number_format($loan->eircalc_conv, 14) }}%</td>
-                                        <td>{{ number_format($loan->eircalc_cost, 14) }}%</td>
-                                        <td>{{ number_format($loan->eircalc_fee, 14) }}%</td>
+                                        <td>{{ number_format($loan->eirex*100, 14) }}%</td>
+                                        <td>{{ number_format($loan->eircalc*100, 14) }}%</td>
+                                        <td>{{ number_format($loan->eircalc_conv*100, 14) }}%</td>
+                                        <td>{{ number_format($loan->eircalc_cost*100, 14) }}%</td>
+                                        <td>{{ number_format($loan->eircalc_fee*100, 14) }}%</td>
                                         <td class="text-right">{{ number_format($loan->outsamtconv, 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->outsamtcost, 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->outsamtfee, 0) }}</td>
@@ -171,7 +196,7 @@
                                         $total['org_bal'] += $loan->org_bal;
                                         $total['oldbal'] += $loan->oldbal;
                                         $total['baleir'] += $loan->baleir;
-                                        $total['rate'] += $loan->RATE;
+                                        $total['rate'] += $loan->rate;
                                         $total['eirex'] += $loan->eirex;
                                         $total['eircalc'] += $loan->eircalc;
                                         $total['eircalc_conv'] += $loan->eircalc_conv;
@@ -187,16 +212,16 @@
                                 <tr class="font-weight-bold">
                                     <td colspan="8">Average</td>
                                     <td></td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['rate'] / count($loans), 4) : 0 }}%</td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['rate'] *100 / count($loans), 5) : 0 }}%</td>
                                     <td colspan="2"></td>
                                     <td class="text-right">{{ number_format($total['org_bal'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['oldbal'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['baleir'], 0) }}</td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['eirex'] / count($loans), 14) : 0 }}%</td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc'] / count($loans), 14) : 0 }}%</td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_conv'] / count($loans), 14) : 0 }}%</td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_cost'] / count($loans), 14) : 0 }}%</td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_fee'] / count($loans), 14) : 0 }}%</td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['eirex'] * 100/ count($loans), 14) : 0 }}%</td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc'] * 100/ count($loans), 14) : 0 }}%</td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_conv'] * 100/ count($loans), 14) : 0 }}%</td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_cost'] * 100/ count($loans), 14) : 0 }}%</td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_fee'] * 100/ count($loans), 14) : 0 }}%</td>
                                     <td class="text-right">{{ number_format($total['outsamtconv'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['outsamtcost'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['outsamtfee'], 0) }}</td>
@@ -226,7 +251,7 @@
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
         background-color: #fff;
         border-radius: 4px;
-        font-size: 11px;
+        font-size: 14px;
     }
     
     .custom-table th, .custom-table td {
@@ -236,6 +261,7 @@
     
     .text-right {
         text-align: right;
+        padding-right: 20px;
     }
     
     /* .no-data-message {
@@ -321,6 +347,57 @@
         border-color: #80bdff;
         box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
     }
+
+    .text-success {
+        color: #28a745;
+    }
+
+    .text-danger {
+        color: #dc3545;
+    }
+
+    #entityLabel, #accountLabel {
+        margin-left: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+        display: inline-block;
+        min-width: 150px;
+    }
+
+    .alert {
+        margin-bottom: 0;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+
+    .py-1 {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+
+    .px-2 {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .d-flex.align-items-center input {
+        flex: 1;
+    }
+
+    .d-flex.align-items-center span {
+        min-width: 150px;
+        margin-left: 10px;
+    }
 </style>
 
 <!-- Modal -->
@@ -343,15 +420,24 @@
                     </div>
                     <div class="mb-3">
                         <label for="entityNumber" class="form-label">Entity Number</label>
-                        <input type="text" class="form-control" id="entityNumber" required>
+                        <div class="d-flex align-items-center">
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="entityNumber" 
+                                   required
+                                   @if(!$isSuperAdmin) disabled @endif
+                                   value="{{ $user->id_pt ?? '' }}">
+                            <span id="entityLabel" class="ms-3 text-muted"></span>
+                        </div>
+                        <small id="entityError" class="text-danger" style="display: none;">Data tidak ditemukan</small>
                     </div>
                     <div class="mb-3">
                         <label for="accountNumber" class="form-label">Account Number</label>
-                        <input type="text" class="form-control" id="accountNumber" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="reportDate" class="form-label">Date of Report</label>
-                        <input type="date" class="form-control" id="reportDate" required>
+                        <div class="d-flex align-items-center">
+                            <input type="numeric" class="form-control" id="accountNumber" required>
+                            <span id="accountLabel" class="ms-3 text-muted"></span>
+                        </div>
+                        <small id="accountError" class="text-danger" style="display: none;">Data tidak ditemukan</small>
                     </div>
                 </form>
             </div>
@@ -392,17 +478,69 @@ function viewReport() {
     const reportType = document.getElementById('reportType').value;
     const entityNumber = document.getElementById('entityNumber').value;
     const accountNumber = document.getElementById('accountNumber').value;
-    const reportDate = document.getElementById('reportDate').value;
 
     // Tutup modal sebelum redirect
     closeModal();
 
-    // Buat URL dengan parameter
-    const url = `/report/initial-recognition/${reportType}?` + new URLSearchParams({
-        entity_number: entityNumber,
-        account_number: accountNumber,
-        report_date: reportDate
-    });
+    // Tentukan URL berdasarkan jenis report yang dipilih
+    let url;
+
+    // Log untuk debugging
+    console.log("Report Type:", reportType);
+
+    switch(reportType) {
+        case 'accrual_interest_effective':
+            url = `/report-accrual-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'accrual_interest_simple':
+            url = `/report/accrual-interest/simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_cost_effective':
+            url = `/report-amortised-cost-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_cost_simple':
+            url = `/report-amortised-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_initial_cost_effective':
+            url = `/report-amortised-initial-cost-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_initial_cost_simple':
+            url = `/report-amortised-initial-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_initial_fee_effective':
+            url = `/report-amortised-initial-fee-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_initial_fee_simple':
+            url = `/report-amortised-initial-fee-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'expected_cashflow_effective':
+            url = `/report-expective-cash-flow-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'expected_cashflow_simple':
+            url = `/report-expective-cash-flow-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'initial_recognition_effective':
+            url = `/report-initial-recognition/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'initial_recognition_simple':
+            url = `/report-initial-recognition-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'outstanding_effective':
+            url = `/report-outstanding-effective/view/${entityNumber}`;
+            break;
+        case 'outstanding_simple':
+            url = `/report-outstanding-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'journal_effective':
+            url = `/report-journal-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'journal_simple':
+            url = `/report-journal-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        default:
+            console.error('Tipe report tidak valid:', reportType);
+            return;
+    }
 
     // Redirect ke halaman report
     window.location.href = url;
@@ -421,4 +559,118 @@ $(document).ready(function() {
         closeModal();
     });
 });
+
+// Tambahkan variable untuk menyimpan URL route
+const reportUrl = "{{ route('report-initial-recognition.index') }}";
+
+// Set nilai default untuk bulan dan tahun dari parameter URL atau data yang dikirim dari controller
+document.addEventListener('DOMContentLoaded', function() {
+    // Ambil nilai bulan dari controller
+    const selectedMonth = "{{ $bulan ?? date('n') }}";
+    const selectedYear = "{{ $tahun ?? date('Y') }}";
+    
+    // Set nilai default untuk select bulan
+    document.getElementById('monthSelect').value = selectedMonth;
+    document.getElementById('yearInput').value = selectedYear;
+});
+
+// Event listener untuk perubahan bulan atau tahun
+document.getElementById('monthSelect').addEventListener('change', updateReport);
+document.getElementById('yearInput').addEventListener('change', updateReport);
+
+function updateReport() {
+    const month = document.getElementById('monthSelect').value;
+    const year = document.getElementById('yearInput').value;
+    const branch = '999'; // Sesuaikan dengan nilai branch yang diinginkan
+    
+    window.location.href = `${reportUrl}?bulan=${month}&tahun=${year}&branch=${branch}`;
+}
+
+// Event listener untuk document ready
+document.addEventListener('DOMContentLoaded', function() {
+    const entityInput = document.getElementById('entityNumber');
+    const isSuperAdmin = {{ $isSuperAdmin ? 'true' : 'false' }};
+    
+    if (!isSuperAdmin) {
+        entityInput.value = '{{ $user->id_pt ?? "" }}';
+        entityInput.disabled = true;
+        // Langsung jalankan pengecekan entity untuk non-superadmin
+        entityCheckFunction.call(entityInput);
+    } else {
+        // Untuk superadmin, tetap gunakan event listener blur
+        entityInput.addEventListener('blur', entityCheckFunction);
+    }
+});
+
+// Definisikan fungsi check entity
+const entityCheckFunction = function() {
+    const entityNumber = this.value;
+    const entityLabel = document.getElementById('entityLabel');
+    const entityError = document.getElementById('entityError');
+    
+    if (entityNumber) {
+        fetch(`/check-entity/${entityNumber}`)
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    entityLabel.textContent = data.entity_name;
+                    entityLabel.classList.remove('alert-danger');
+                    entityLabel.classList.add('alert', 'alert-success', 'py-1', 'px-2');
+                    entityLabel.style.display = 'inline-block';
+                    entityError.style.display = 'none';
+                } else {
+                    entityLabel.textContent = 'Data tidak ditemukan';
+                    entityLabel.classList.remove('alert-success');
+                    entityLabel.classList.add('alert', 'alert-danger', 'py-1', 'px-2');
+                    entityLabel.style.display = 'inline-block';
+                    entityError.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    } else {
+        entityLabel.style.display = 'none';
+        entityError.style.display = 'none';
+    }
+};
+
+// Event listener untuk account number
+document.getElementById('accountNumber').addEventListener('blur', function() {
+    const accountNumber = this.value;
+    const accountLabel = document.getElementById('accountLabel');
+    const accountError = document.getElementById('accountError');
+    const entityNumber = document.getElementById('entityNumber').value;
+    
+    if (accountNumber) {
+        fetch(`/check-account/${accountNumber}?entity_number=${entityNumber}`)
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    accountLabel.textContent = data.deb_name;
+                    accountLabel.classList.remove('alert-danger');
+                    accountLabel.classList.add('alert', 'alert-success', 'py-1', 'px-2');
+                    accountLabel.style.display = 'inline-block';
+                    accountError.style.display = 'none';
+                } else {
+                    accountLabel.textContent = 'Data tidak ditemukan';
+                    accountLabel.classList.remove('alert-success');
+                    accountLabel.classList.add('alert', 'alert-danger', 'py-1', 'px-2');
+                    accountLabel.style.display = 'inline-block';
+                    accountError.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    } else {
+        accountLabel.style.display = 'none';
+        accountError.style.display = 'none';
+    }
+});
+
 </script>
