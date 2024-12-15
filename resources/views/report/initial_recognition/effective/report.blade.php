@@ -413,9 +413,7 @@
                     <div class="mb-3">
                         <label for="reportType" class="form-label">Report Type</label>
                         <select class="form-select" id="reportType" required>
-                            <option value="">Pilih Report Type</option>
-                            <option value="effective">Effective</option>
-                            <option value="simple_interest">Simple Interest</option>
+                            <!-- Options will be populated by JavaScript -->
                         </select>
                     </div>
                     <div class="mb-3">
@@ -427,7 +425,7 @@
                                    required
                                    @if(!$isSuperAdmin) disabled @endif
                                    value="{{ $user->id_pt ?? '' }}">
-                            <span id="entityLabel" class="ms-3 text-muted"></span>
+                            <span id="entityLabel" class="ms-3 text-muted" style="display: inline-block;"></span>
                         </div>
                         <small id="entityError" class="text-danger" style="display: none;">Data tidak ditemukan</small>
                     </div>
@@ -451,21 +449,110 @@
 
 <script>
 function showModal(type) {
-    // Set value untuk report type
-    document.getElementById('reportType').value = type;
+    const reportTypeSelect = document.getElementById('reportType');
+    reportTypeSelect.innerHTML = ''; 
     
-    // Tampilkan modal menggunakan jQuery
+    // Modifikasi switch case untuk menangani setiap menu
+    let options;
+    switch(type) {
+        case 'accrual_interest_effective':
+        case 'accrual_interest_simple':
+            options = `
+                <option value="accrual_interest_effective">Effective</option>
+                <option value="accrual_interest_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_cost_effective':
+            options = `
+                <option value="amortised_cost_effective">Effective</option>
+                <option value="amortised_cost_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_initial_cost_effective':
+            options = `
+                <option value="amortised_initial_cost_effective">Effective</option>
+                <option value="amortised_initial_cost_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_initial_fee_effective':
+            options = `
+                <option value="amortised_initial_fee_effective">Effective</option>
+                <option value="amortised_initial_fee_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'expected_cashflow_effective':
+            options = `
+                <option value="expected_cashflow_effective">Effective</option>
+                <option value="expected_cashflow_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'initial_recognition_effective':
+            options = `
+                <option value="initial_recognition_effective">Effective</option>
+                <option value="initial_recognition_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'outstanding_effective':
+            options = `
+                <option value="outstanding_effective">Effective</option>
+                <option value="outstanding_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'journal_effective':
+            options = `
+                <option value="journal_effective">Effective</option>
+                <option value="journal_simple">Simple Interest</option>
+            `;
+            break;
+    }
+    
+    reportTypeSelect.innerHTML = options;
+    
+    // Set selected value berdasarkan tipe yang dipilih
+    if (type.includes('effective')) {
+        reportTypeSelect.value = type;
+    } else if (type.includes('simple')) {
+        reportTypeSelect.value = type;
+    }
+    
+    // Hanya reset error messages, jangan reset label entity
+    document.getElementById('accountError').style.display = 'none';
+    document.getElementById('accountLabel').textContent = '';
+    
+    // Jika bukan superadmin, jalankan ulang pengecekan entity
+    if (!{{ $isSuperAdmin ? 'true' : 'false' }}) {
+        const entityNumber = document.getElementById('entityNumber').value;
+        if (entityNumber) {
+            fetch(`/check-entity/${entityNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    const entityLabel = document.getElementById('entityLabel');
+                    if (data.success) {
+                        entityLabel.innerHTML = data.entity_name;
+                        entityLabel.style = `
+                            display: inline-block;
+                            visibility: visible;
+                            margin-left: 10px;
+                            padding: 4px 8px;
+                            background-color: #d4edda;
+                            color: #155724;
+                            border: 1px solid #c3e6cb;
+                            border-radius: 4px;
+                            font-size: 14px;
+                        `;
+                    }
+                });
+        }
+    }
+    
     $('#reportModal').modal('show');
-}
-
-function closeModal() {
-    $('#reportModal').modal('hide');
-    
-    // Bersihkan modal backdrop dan class
-    $('.modal-backdrop').remove();
-    $('body').removeClass('modal-open');
-    $('body').css('overflow', '');
-    $('body').css('padding-right', '');
 }
 
 function viewReport() {
@@ -484,69 +571,90 @@ function viewReport() {
 
     // Tentukan URL berdasarkan jenis report yang dipilih
     let url;
-
-    // Log untuk debugging
-    console.log("Report Type:", reportType);
-
     switch(reportType) {
+        // Accrual Interest
         case 'accrual_interest_effective':
             url = `/report-accrual-effective/view/${accountNumber}/${entityNumber}`;
             break;
         case 'accrual_interest_simple':
             url = `/report/accrual-interest/simple-interest/view/${accountNumber}/${entityNumber}`;
             break;
+            
+        // Amortised Cost
         case 'amortised_cost_effective':
             url = `/report-amortised-cost-effective/view/${accountNumber}/${entityNumber}`;
             break;
         case 'amortised_cost_simple':
             url = `/report-amortised-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
             break;
+            
+        // Amortised Initial Cost
         case 'amortised_initial_cost_effective':
             url = `/report-amortised-initial-cost-effective/view/${accountNumber}/${entityNumber}`;
             break;
         case 'amortised_initial_cost_simple':
             url = `/report-amortised-initial-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
             break;
+            
+        // Amortised Initial Fee
         case 'amortised_initial_fee_effective':
             url = `/report-amortised-initial-fee-effective/view/${accountNumber}/${entityNumber}`;
             break;
         case 'amortised_initial_fee_simple':
             url = `/report-amortised-initial-fee-simple-interest/view/${accountNumber}/${entityNumber}`;
             break;
+            
+        // Expected Cash Flow
         case 'expected_cashflow_effective':
             url = `/report-expective-cash-flow-effective/view/${accountNumber}/${entityNumber}`;
             break;
         case 'expected_cashflow_simple':
             url = `/report-expective-cash-flow-simple-interest/view/${accountNumber}/${entityNumber}`;
             break;
+            
+        // Initial Recognition
         case 'initial_recognition_effective':
             url = `/report-initial-recognition/view/${accountNumber}/${entityNumber}`;
             break;
         case 'initial_recognition_simple':
             url = `/report-initial-recognition-simple-interest/view/${accountNumber}/${entityNumber}`;
             break;
+            
+        // Outstanding
         case 'outstanding_effective':
             url = `/report-outstanding-effective/view/${entityNumber}`;
             break;
         case 'outstanding_simple':
             url = `/report-outstanding-simple-interest/view/${accountNumber}/${entityNumber}`;
             break;
+            
+        // Journal
         case 'journal_effective':
             url = `/report-journal-effective/view/${accountNumber}/${entityNumber}`;
             break;
         case 'journal_simple':
             url = `/report-journal-simple-interest/view/${accountNumber}/${entityNumber}`;
             break;
+            
         default:
             console.error('Tipe report tidak valid:', reportType);
             return;
     }
 
+
     // Redirect ke halaman report
     window.location.href = url;
 }
 
-// Tambahkan event listener saat dokumen siap
+// Fungsi untuk menutup modal
+function closeModal() {
+    $('#reportModal').modal('hide');
+    $('.modal-backdrop').remove();
+    $('body').removeClass('modal-open');
+    $('body').css('padding-right', '');
+}
+
+// Event listener saat dokumen siap
 $(document).ready(function() {
     // Reset modal state saat halaman dimuat
     $('.modal').on('hidden.bs.modal', function () {
@@ -557,6 +665,35 @@ $(document).ready(function() {
     $('[data-bs-dismiss="modal"]').on('click', function(e) {
         e.preventDefault();
         closeModal();
+    });
+
+    // Tambahkan event listener untuk modal
+    $('#reportModal').on('shown.bs.modal', function () {
+        // Re-check entity saat modal ditampilkan
+        if (!{{ $isSuperAdmin ? 'true' : 'false' }}) {
+            const entityNumber = document.getElementById('entityNumber').value;
+            if (entityNumber) {
+                fetch(`/check-entity/${entityNumber}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const entityLabel = document.getElementById('entityLabel');
+                        if (data.success) {
+                            entityLabel.innerHTML = data.entity_name;
+                            entityLabel.style = `
+                                display: inline-block;
+                                visibility: visible;
+                                margin-left: 10px;
+                                padding: 4px 8px;
+                                background-color: #d4edda;
+                                color: #155724;
+                                border: 1px solid #c3e6cb;
+                                border-radius: 4px;
+                                font-size: 14px;
+                            `;
+                        }
+                    });
+            }
+        }
     });
 });
 
@@ -589,15 +726,68 @@ function updateReport() {
 // Event listener untuk document ready
 document.addEventListener('DOMContentLoaded', function() {
     const entityInput = document.getElementById('entityNumber');
+    const entityLabel = document.getElementById('entityLabel');
+    
     const isSuperAdmin = {{ $isSuperAdmin ? 'true' : 'false' }};
     
     if (!isSuperAdmin) {
         entityInput.value = '{{ $user->id_pt ?? "" }}';
         entityInput.disabled = true;
-        // Langsung jalankan pengecekan entity untuk non-superadmin
-        entityCheckFunction.call(entityInput);
+        
+        const entityNumber = entityInput.value;
+        if (entityNumber) {
+            fetch(`/check-entity/${entityNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    const entityLabel = document.getElementById('entityLabel');
+                    const entityError = document.getElementById('entityError');
+                    
+                    if (data.success) {
+                        // Reset classes terlebih dahulu
+                        entityLabel.className = '';
+                        
+                        // Set content
+                        entityLabel.innerHTML = data.entity_name;
+                        
+                        // Tambahkan style inline
+                        entityLabel.style = `
+                            display: inline-block;
+                            visibility: visible;
+                            margin-left: 10px;
+                            padding: 4px 8px;
+                            background-color: #d4edda;
+                            color: #155724;
+                            border: 1px solid #c3e6cb;
+                            border-radius: 4px;
+                            font-size: 14px;
+                        `;
+                        
+                        entityError.style.display = 'none';
+                        
+                    } else {
+                        // Reset classes
+                        entityLabel.className = '';
+                        
+                        entityLabel.innerHTML = 'Data tidak ditemukan';
+                        entityLabel.style = `
+                            display: inline-block;
+                            visibility: visible;
+                            margin-left: 10px;
+                            padding: 4px 8px;
+                            background-color: #f8d7da;
+                            color: #721c24;
+                            border: 1px solid #f5c6cb;
+                            border-radius: 4px;
+                            font-size: 14px;
+                        `;
+                        entityError.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
     } else {
-        // Untuk superadmin, tetap gunakan event listener blur
         entityInput.addEventListener('blur', entityCheckFunction);
     }
 });
@@ -607,7 +797,7 @@ const entityCheckFunction = function() {
     const entityNumber = this.value;
     const entityLabel = document.getElementById('entityLabel');
     const entityError = document.getElementById('entityError');
-    
+
     if (entityNumber) {
         fetch(`/check-entity/${entityNumber}`)
             .then(response => {
