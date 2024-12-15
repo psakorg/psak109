@@ -12,9 +12,8 @@
                     <div class="card-header">
                         <h5 class="card-title"style="font-size: 16px;">REPORT OUTSTANDING - SIMPLE INTEREST</h5>
                     </div>
-                    <div class="card-body">
+                    <!-- <div class="card-body">
                         <form>
-                            <!-- Row 1 -->
                             <div class="form-row">
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Branch Number</label>
@@ -23,7 +22,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Row 2 -->
                             <div class="form-row">
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Branch Name</label>
@@ -32,7 +30,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Row 3 -->
                             <div class="form-row">
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">GL Group</label>
@@ -41,7 +38,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Row 4 -->
                             <div class="form-row">
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Date Of Report</label>
@@ -51,7 +47,7 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
+                    </div> -->
                 </div>
 
                 <!-- Report Table -->
@@ -61,7 +57,7 @@
                         <thead class="thead-dark">
                             <tr>
                                 <th>No.</th>
-                                <th>Branch Number</th>
+                                <th>Entity Number</th>
                                 <th>Account Number</th>
                                 <th>Debitor Name</th>
                                 <th>GL Account</th>

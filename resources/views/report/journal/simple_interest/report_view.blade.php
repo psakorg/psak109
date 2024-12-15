@@ -17,7 +17,7 @@
                             <!-- Row 1 -->
                             <div class="form-row">
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label">Branch Number</label>
+                                    <label class="col-sm-3 col-form-label">Entity Number</label>
                                     <div class="col-sm-6">
                                         <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ $loan->no_branch }}" readonly>
                                     </div>
@@ -26,7 +26,7 @@
                             <!-- Row 2 -->
                             <div class="form-row">
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label">Branch Name</label>
+                                    <label class="col-sm-3 col-form-label">Entity Name</label>
                                     <div class="col-sm-6">
                                         <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
                                     </div>
@@ -51,7 +51,7 @@
                     <table class="table table-striped table-bordered table-hover" style="font-size: 12px;">
                         <thead class="thead-dark">
                             <tr>
-                                <th>Branch Number</th>
+                                <th>Entity Number</th>
                                 <th>GL Account</th>
                                 <th>Description of Transaction</th>
                                 <th>Valuta</th>

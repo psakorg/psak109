@@ -177,7 +177,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-amortised-cost-simple-interest/export-pdf/{no_acc}/{id_pt}', [amorcostsiController::class, 'exportPdf'])->name('report-amorcost-si.exportPdf');
     Route::get('/report-amortised-cost-simple-interest/export-excel/{no_acc}/{id_pt}', [amorcostsiController::class, 'exportExcel'])->name('report-amorcost-si.exportExcel');
 });
-// Rute untuk report amortised cost effective
+// Rute untuk report amortised cost effectivev
 Route::middleware(['auth'])->group(function () {
     Route::get('/report-amortised-cost-effective', [amorcosteffControler::class, 'index'])->name('report-amorcost-eff.index');
     Route::get('/report-amortised-cost-effective/view/{no_acc}/{id_pt}', [amorcosteffControler::class, 'view'])->name('report-amorcost-eff.view');

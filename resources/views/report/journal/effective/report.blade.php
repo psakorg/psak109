@@ -12,8 +12,8 @@
                     <table class="table table-striped table-bordered custom-table" style="width: 100%; margin: 0 auto;">
                         <thead>
                             <tr>
-                                <th style="width: 20%;">Branch Number</th>
-                                <th style="width: 25%;">Branch Name</th>
+                                <th style="width: 20%;">Entity Number</th>
+                                <th style="width: 25%;">Entity Name</th>
                                 <th style="width: 20%;">Date Of Report</th>
                                 <th style="width: 10%;">Action</th>
                             </tr>

@@ -7,8 +7,8 @@
 
 <div class="content-wrapper">
     <div class="main-content" style="padding-top: 20px;">
-        <div class="container mt-5" style="padding-right: 50px;">
-            <section class="section">
+        <div class="container mt-5" style="padding-right: 50px; overflow: visible;">
+            <section class="section" style="overflow: visible;">
                 <div class="section-header">
                     <h4>REPORT INITIAL RECOGNITION NEW LOAN BY ENTITY - CONTRACTUAL EFFECTIVE</h4>
                 </div>
@@ -120,7 +120,7 @@
                     </div>
                 </div>
                 
-                <div class="table-responsive">
+                <div class="table-responsive" style="overflow: visible !important;">
                     <table class="table table-striped table-bordered custom-table">
                         <thead>
                             <tr>
@@ -170,7 +170,79 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $loan->no_branch }}</td>
-                                        <td>{{ $loan->no_acc }}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <span class="clickable-account" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    {{ $loan->no_acc }}
+                                                </span>
+                                                
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Accrual Interest <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'accrual_interest_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'accrual_interest_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Amortised Cost <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_cost_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_cost_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Amortised Initial Cost <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_cost_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_cost_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Amortised Initial Fee <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_fee_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_fee_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Expected Cash Flow <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'expected_cashflow_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'expected_cashflow_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Outstanding <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'outstanding_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'outstanding_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Journal <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'journal_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'journal_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
                                         <td>{{ $loan->deb_name }}</td>
                                         <td>{{ $loan->coa }}</td>
                                         <td>{{ $loan->ln_type }}</td>
@@ -398,6 +470,79 @@
         min-width: 150px;
         margin-left: 10px;
     }
+
+    .clickable-account {
+        cursor: pointer;
+        color: #007bff;
+        text-decoration: underline;
+    }
+
+    .clickable-account:hover {
+        color: #0056b3;
+    }
+
+    .dropdown-menu {
+        margin: 0;
+        padding: 0.5rem 0;
+        position: absolute;
+        z-index: 1000;
+        min-width: 200px;
+        background-color: #fff; /* Memastikan background putih */
+    }
+
+    .dropdown-item {
+        padding: 8px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #212529 !important; /* Memastikan teks selalu hitam */
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #16181b !important;
+    }
+
+    .dropdown-submenu {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: -7px;
+        z-index: 1001;
+        min-width: 200px;
+        background-color: #fff;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 0.25rem;
+    }
+
+    .dropdown-menu > li:hover > .dropdown-submenu {
+        display: block;
+    }
+
+    .dropdown-item i {
+        margin-right: 8px;
+        width: 20px;
+        line-height: 1;
+        vertical-align: middle;
+        color: #212529; /* Memastikan ikon juga hitam */
+    }
+
+    .dropdown-item i.float-end {
+        margin-right: 0;
+        margin-left: 8px;
+    }
+
+    .container {
+        overflow: visible !important;
+    }
+
+    .section {
+        overflow: visible !important;
+    }
+
+    .dropdown {
+        position: relative;
+    }
 </style>
 
 <!-- Modal -->
@@ -452,7 +597,8 @@ function showModal(type) {
     const reportTypeSelect = document.getElementById('reportType');
     reportTypeSelect.innerHTML = ''; 
     
-    // Modifikasi switch case untuk menangani setiap menu
+    console.log("Type:", type); // Untuk debugging
+    
     let options;
     switch(type) {
         case 'accrual_interest_effective':
@@ -464,6 +610,7 @@ function showModal(type) {
             break;
             
         case 'amortised_cost_effective':
+        case 'amortised_cost_simple':
             options = `
                 <option value="amortised_cost_effective">Effective</option>
                 <option value="amortised_cost_simple">Simple Interest</option>
@@ -471,6 +618,7 @@ function showModal(type) {
             break;
             
         case 'amortised_initial_cost_effective':
+        case 'amortised_initial_cost_simple':
             options = `
                 <option value="amortised_initial_cost_effective">Effective</option>
                 <option value="amortised_initial_cost_simple">Simple Interest</option>
@@ -478,6 +626,7 @@ function showModal(type) {
             break;
             
         case 'amortised_initial_fee_effective':
+        case 'amortised_initial_fee_simple':
             options = `
                 <option value="amortised_initial_fee_effective">Effective</option>
                 <option value="amortised_initial_fee_simple">Simple Interest</option>
@@ -485,6 +634,7 @@ function showModal(type) {
             break;
             
         case 'expected_cashflow_effective':
+        case 'expected_cashflow_simple':
             options = `
                 <option value="expected_cashflow_effective">Effective</option>
                 <option value="expected_cashflow_simple">Simple Interest</option>
@@ -492,6 +642,7 @@ function showModal(type) {
             break;
             
         case 'initial_recognition_effective':
+        case 'initial_recognition_simple':
             options = `
                 <option value="initial_recognition_effective">Effective</option>
                 <option value="initial_recognition_simple">Simple Interest</option>
@@ -499,6 +650,7 @@ function showModal(type) {
             break;
             
         case 'outstanding_effective':
+        case 'outstanding_simple':
             options = `
                 <option value="outstanding_effective">Effective</option>
                 <option value="outstanding_simple">Simple Interest</option>
@@ -506,51 +658,21 @@ function showModal(type) {
             break;
             
         case 'journal_effective':
+        case 'journal_simple':
             options = `
                 <option value="journal_effective">Effective</option>
                 <option value="journal_simple">Simple Interest</option>
             `;
             break;
+            
+        default:
+            console.error('Tipe report tidak valid:', type);
+            options = '<option value="">Pilih tipe report</option>';
+            break;
     }
     
     reportTypeSelect.innerHTML = options;
-    
-    // Set selected value berdasarkan tipe yang dipilih
-    if (type.includes('effective')) {
-        reportTypeSelect.value = type;
-    } else if (type.includes('simple')) {
-        reportTypeSelect.value = type;
-    }
-    
-    // Hanya reset error messages, jangan reset label entity
-    document.getElementById('accountError').style.display = 'none';
-    document.getElementById('accountLabel').textContent = '';
-    
-    // Jika bukan superadmin, jalankan ulang pengecekan entity
-    if (!{{ $isSuperAdmin ? 'true' : 'false' }}) {
-        const entityNumber = document.getElementById('entityNumber').value;
-        if (entityNumber) {
-            fetch(`/check-entity/${entityNumber}`)
-                .then(response => response.json())
-                .then(data => {
-                    const entityLabel = document.getElementById('entityLabel');
-                    if (data.success) {
-                        entityLabel.innerHTML = data.entity_name;
-                        entityLabel.style = `
-                            display: inline-block;
-                            visibility: visible;
-                            margin-left: 10px;
-                            padding: 4px 8px;
-                            background-color: #d4edda;
-                            color: #155724;
-                            border: 1px solid #c3e6cb;
-                            border-radius: 4px;
-                            font-size: 14px;
-                        `;
-                    }
-                });
-        }
-    }
+    reportTypeSelect.value = type; // Set nilai sesuai tipe yang dipilih
     
     $('#reportModal').modal('show');
 }
@@ -862,5 +984,118 @@ document.getElementById('accountNumber').addEventListener('blur', function() {
         accountError.style.display = 'none';
     }
 });
+
+function showModalWithAccount(accountNumber, type) {
+    const reportTypeSelect = document.getElementById('reportType');
+    reportTypeSelect.innerHTML = ''; 
+    
+    let options;
+    switch(type) {
+        case 'accrual_interest_effective':
+        case 'accrual_interest_simple':
+            options = `
+                <option value="accrual_interest_effective">Effective</option>
+                <option value="accrual_interest_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_cost_effective':
+        case 'amortised_cost_simple':
+            options = `
+                <option value="amortised_cost_effective">Effective</option>
+                <option value="amortised_cost_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_initial_cost_effective':
+        case 'amortised_initial_cost_simple':
+            options = `
+                <option value="amortised_initial_cost_effective">Effective</option>
+                <option value="amortised_initial_cost_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_initial_fee_effective':
+        case 'amortised_initial_fee_simple':
+            options = `
+                <option value="amortised_initial_fee_effective">Effective</option>
+                <option value="amortised_initial_fee_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'expected_cashflow_effective':
+        case 'expected_cashflow_simple':
+            options = `
+                <option value="expected_cashflow_effective">Effective</option>
+                <option value="expected_cashflow_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'initial_recognition_effective':
+        case 'initial_recognition_simple':
+            options = `
+                <option value="initial_recognition_effective">Effective</option>
+                <option value="initial_recognition_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'outstanding_effective':
+        case 'outstanding_simple':
+            options = `
+                <option value="outstanding_effective">Effective</option>
+                <option value="outstanding_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'journal_effective':
+        case 'journal_simple':
+            options = `
+                <option value="journal_effective">Effective</option>
+                <option value="journal_simple">Simple Interest</option>
+            `;
+            break;
+    }
+    
+    reportTypeSelect.innerHTML = options;
+    reportTypeSelect.value = type;
+    
+    // Set nilai account dan entity
+    document.getElementById('accountNumber').value = accountNumber;
+    
+    if (!{{ $isSuperAdmin ? 'true' : 'false' }}) {
+        const entityNumber = document.getElementById('entityNumber').value;
+        if (entityNumber) {
+            fetch(`/check-entity/${entityNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    const entityLabel = document.getElementById('entityLabel');
+                    if (data.success) {
+                        entityLabel.innerHTML = data.entity_name;
+                        entityLabel.style = `
+                            display: inline-block;
+                            visibility: visible;
+                            margin-left: 10px;
+                            padding: 4px 8px;
+                            background-color: #d4edda;
+                            color: #155724;
+                            border: 1px solid #c3e6cb;
+                            border-radius: 4px;
+                            font-size: 14px;
+                        `;
+                    }
+                });
+        }
+    }
+
+    // Trigger blur events
+    const accountNumberInput = document.getElementById('accountNumber');
+    const entityNumberInput = document.getElementById('entityNumber');
+    const event = new Event('blur');
+    accountNumberInput.dispatchEvent(event);
+    entityNumberInput.dispatchEvent(event);
+
+    // Tampilkan modal
+    $('#reportModal').modal('show');
+}
 
 </script>
