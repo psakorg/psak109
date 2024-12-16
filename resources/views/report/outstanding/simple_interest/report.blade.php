@@ -13,7 +13,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 20%;">Entity Number</th>
-                                <th style="width: 25%;">Entity Name</th>
+                                <th style="width: 25%;">Account Name</th>
                                 <th style="width: 20%;">GL Group</th>
                                 <th style="width: 15%;">Date Of Report</th>
                                 <th style="width: 10%;">Action</th>
@@ -23,7 +23,7 @@
                             @foreach ($loans as $loan)
                                 <tr>
                                     <td>{{ $loan->no_branch}}</td>
-                                    <td>{{ 'null'}}</td>
+                                    <td>{{ $loan->deb_name}}</td>
                                     <td>{{ 'null'}}</td>
                                     <td>{{ 'null'}}</td>
                                     <td>

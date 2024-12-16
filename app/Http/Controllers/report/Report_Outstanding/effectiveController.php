@@ -21,7 +21,7 @@ use Dompdf\Options;
 
 class effectiveController extends Controller
 {
-    // Method untuk menampilkan semua data pinjaman korporat
+    // Method untuk menampilkan semua data pinjaman korporatt
     public function index(Request $request)
     {
         $id_pt = Auth::user()->id_pt;
@@ -280,4 +280,54 @@ class effectiveController extends Controller
     // Kembalikan response PDF
     return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
 }
+
+    public function checkData($no_acc, $id_pt)
+    {
+        try {
+            $id_pt = Auth::user()->id_pt;
+
+            $loan = report_effective::getLoanDetailsbyidpt($id_pt);
+            $loanjoin = report_effective::getLoanjoinByIdPt($id_pt);
+            $loanfirst = $loan->first();
+            $master = report_effective::getMasterByIdPt($id_pt);
+
+            if (!$loan) {
+                return response()->json([
+                    'success' => false, 
+                    'message' => 'Data loan tidak ditemukan'
+                ]);
+            }
+
+            if (!$master) {
+                return response()->json([
+                    'success' => false, 
+                    'message' => 'Data master tidak ditemukan'
+                ]);
+            }
+
+            if (!$loanjoin) {
+                return response()->json([
+                    'success' => false, 
+                    'message' => 'Data loan join tidak ditemukan'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data ditemukan',
+                'data' => [
+                    'loan' => $loan,
+                    'master' => $master,
+                    'loanjoin' => $loanjoin,
+                    'loanfirst' => $loanfirst
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
+        }
+    }
 }

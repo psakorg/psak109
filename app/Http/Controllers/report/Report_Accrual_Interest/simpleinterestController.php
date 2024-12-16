@@ -303,4 +303,39 @@ class simpleinterestController extends Controller
     // Kembalikan response PDF
     return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
 }
+
+public function checkData($no_acc, $id_pt)
+{
+    try {
+        // Ambil data loan
+        $loan = report_simpleinterest::getLoanDetails(trim($no_acc), trim($id_pt));
+        
+        // Ambil data reports
+        $reports = report_simpleinterest::getReportsByNoAcc(trim($no_acc), trim($id_pt));
+
+        // Cek keberadaan data
+        if (!$loan || $reports->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan untuk nomor akun dan ID PT yang diberikan'
+            ]);
+        }
+
+        // Jika data ditemukan
+        return response()->json([
+            'success' => true,
+            'message' => 'Data ditemukan',
+            'data' => [
+                'loan' => $loan,
+                'reports_count' => $reports->count()
+            ]
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ]);
+    }
+}
 }

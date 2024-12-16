@@ -161,6 +161,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report/accrual-interest/simple-interest/view/{no_acc}/{id_pt}', [acrualsiControler::class, 'view'])->name('report-acc-si.view');
     Route::get('/report-accrual-simple-interest/export-pdf/{no_acc}/{id_pt}', [acrualsiControler::class, 'exportPdf'])->name('report-acc-si.exportPdf');
     Route::get('/report-accrual-simple-interest/export-excel/{no_acc}/{id_pt}', [acrualsiControler::class, 'exportExcel'])->name('report-acc-si.exportExcel');
+
+    Route::get('/check-report-accrual-simple/{no_acc}/{id_pt}', [acrualsiControler::class, 'checkData'])->name('check-report-accrual-simple');
 });
 // Rute untuk report accrual effective
 Route::middleware(['auth'])->group(function () {
@@ -168,6 +170,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-accrual-effective/view/{no_acc}/{id_pt}', [acrualeffControler::class, 'view'])->name('report-acc-eff.view');
     Route::get('/report-accrual-effective/export-pdf/{no_acc}/{id_pt}', [acrualeffControler::class, 'exportPdf'])->name('report-acc-eff.exportPdf');
     Route::get('/report-accrual-effective/export-excel/{no_acc}/{id_pt}', [acrualeffControler::class, 'exportExcel'])->name('report-acc-eff.exportExcel');
+    Route::get('/check-report-accrual-effective/{no_acc}/{id_pt}', [acrualeffControler::class, 'checkData'])
+        ->name('check-report-acc-eff');
 });
 
 // Rute untuk report amortised cost simple interest
@@ -176,6 +180,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-amortised-cost-simple-interest/view/{no_acc}/{id_pt}', [amorcostsiController::class, 'view'])->name('report-amorcost-si.view');
     Route::get('/report-amortised-cost-simple-interest/export-pdf/{no_acc}/{id_pt}', [amorcostsiController::class, 'exportPdf'])->name('report-amorcost-si.exportPdf');
     Route::get('/report-amortised-cost-simple-interest/export-excel/{no_acc}/{id_pt}', [amorcostsiController::class, 'exportExcel'])->name('report-amorcost-si.exportExcel');
+
+    Route::get('/check-report-amortised-cost-simple/{no_acc}/{id_pt}', [amorcostsiController::class, 'checkData'])
+        ->name('check-report-amortised-cost-simple');
 });
 // Rute untuk report amortised cost effectivev
 Route::middleware(['auth'])->group(function () {
@@ -183,6 +190,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-amortised-cost-effective/view/{no_acc}/{id_pt}', [amorcosteffControler::class, 'view'])->name('report-amorcost-eff.view');
     Route::get('/report-amortised-cost-effective/export-pdf/{no_acc}/{id_pt}', [amorcosteffControler::class, 'exportPdf'])->name('report-amorcost-eff.exportPdf');
     Route::get('/report-amortised-cost-effective/export-excel/{no_acc}/{id_pt}', [amorcosteffControler::class, 'exportExcel'])->name('report-amorcost-eff.exportExcel');
+
+    Route::get('/check-report-amortised-cost-effective/{no_acc}/{id_pt}', [amorcosteffControler::class, 'checkData'])
+        ->name('check-report-amortised-cost-effective');
 });
 
 // Rute untuk report amortised initial cost simple interest
@@ -191,6 +201,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-amortised-initial-cost-simple-interest/view/{no_acc}/{id_pt}', [amorinitcostsiControler::class, 'view'])->name('report-amorinitcost-si.view');
     Route::get('/report-amortised-initial-cost-simple-interest/export-pdf/{no_acc}/{id_pt}', [amorinitcostsiControler::class, 'exportPdf'])->name('report-amorinitcost-si.exportPdf');
     Route::get('/report-amortised-initial-cost-simple-interest/export-excel/{no_acc}/{id_pt}', [amorinitcostsiControler::class, 'exportExcel'])->name('report-amorinitcost-si.exportExcel');
+
+    Route::get('/check-report-amortised-initial-cost-simple/{no_acc}/{id_pt}', 
+        [amorinitcostsiControler::class, 'checkData'])
+        ->name('check-report-amortised-initial-cost-simple');
 });
 // Rute untuk report amortised-initial-cost effective
 Route::middleware(['auth'])->group(function () {
@@ -198,6 +212,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-amortised-initial-cost-effective/view/{no_acc}/{id_pt}', [amorinitcosteffControler::class, 'view'])->name('report-amorinitcost-eff.view');
     Route::get('/report-amortised-initial-cost-effective/export-pdf/{no_acc}/{id_pt}', [amorinitcosteffControler::class, 'exportPdf'])->name('report-amorinitcost-eff.exportPdf');
     Route::get('/report-amortised-initial-cost-effective/export-excel/{no_acc}/{id_pt}', [amorinitcosteffControler::class, 'exportExcel'])->name('report-amorinitcost-eff.exportExcel');
+
+    Route::get('/check-report-amortised-initial-cost-effective/{no_acc}/{id_pt}', 
+        [amorinitcosteffControler::class, 'checkData'])
+        ->name('check-report-amortised-initial-cost-effective');
 });
 
 // Rute untuk report amortised initial fee simple interest
@@ -206,13 +224,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-amortised-initial-fee-simple-interest/view/{no_acc}/{id_pt}', [amorinitfeesiControler::class, 'view'])->name('report-amorinitfee-si.view');
     Route::get('/report-amortised-initial-fee-simple-interest/export-pdf/{no_acc}/{id_pt}', [amorinitfeesiControler::class, 'exportPdf'])->name('report-amorinitfee-si.exportPdf');
     Route::get('/report-amortised-initial-fee-simple-interest/export-excel/{no_acc}/{id_pt}', [amorinitfeesiControler::class, 'exportExcel'])->name('report-amorinitfee-si.exportExcel');
+
+    Route::get('/check-report-amortised-initial-fee-simple/{no_acc}/{id_pt}', [amorinitfeesiControler::class, 'checkData'])
+        ->name('check-report-amortised-initial-fee-simple');
 });
-// Rute untuk report amortised-initial-cost effective
+// Rute untuk report amortised initial fee effective
 Route::middleware(['auth'])->group(function () {
     Route::get('/report-amortised-initial-fee-effective', [amorinitfeeeffControler::class, 'index'])->name('report-amorinitfee-eff.index');
     Route::get('/report-amortised-initial-fee-effective/view/{no_acc}/{id_pt}', [amorinitfeeeffControler::class, 'view'])->name('report-amorinitfee-eff.view');
     Route::get('/report-amortised-initial-fee-effective/export-pdf/{no_acc}/{id_pt}', [amorinitfeeeffControler::class, 'exportPdf'])->name('report-amorinitfee-eff.exportPdf');
     Route::get('/report-amortised-initial-fee-effective/export-excel/{no_acc}/{id_pt}', [amorinitfeeeffControler::class, 'exportExcel'])->name('report-amorinitfee-eff.exportExcel');
+
+    Route::get('/check-report-amortised-initial-fee-effective/{no_acc}/{id_pt}', [amorinitfeeeffControler::class, 'checkData'])
+        ->name('check-report-amortised-initial-fee-effective');
 });
 
 // Rute untuk report expective cash flow simple interest
@@ -221,6 +245,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-expective-cash-flow-simple-interest/view/{no_acc}/{id_pt}', [expectcfsiControler::class, 'view'])->name('report-expectcf-si.view');
     Route::get('/report-expective-cash-flow-simple-interest/export-pdf/{no_acc}/{id_pt}', [expectcfsiControler::class, 'exportPdf'])->name('report-expectcf-si.exportPdf');
     Route::get('/report-expective-cash-flow-simple-interest/export-excel/{no_acc}/{id_pt}', [expectcfsiControler::class, 'exportExcel'])->name('report-expectcf-si.exportExcel');
+
+    Route::get('/check-report-expected-cashflow-simple/{no_acc}/{id_pt}', 
+        [expectcfsiControler::class, 'checkData'])
+        ->name('check-report-expected-cashflow-simple');
 });
 // Rute untuk report expective cash flow effective
 Route::middleware(['auth'])->group(function () {
@@ -228,6 +256,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-expective-cash-flow-effective/view/{no_acc}/{id_pt}', [expectcfeffControler::class, 'view'])->name('report-expectcfeff-eff.view');
     Route::get('/report-expective-cash-flow-effective/export-pdf/{no_acc}/{id_pt}', [expectcfeffControler::class, 'exportPdf'])->name('report-expectcfeff-eff.exportPdf');
     Route::get('/report-expective-cash-flow-effective/export-excel/{no_acc}/{id_pt}', [expectcfeffControler::class, 'exportExcel'])->name('report-expectcfeff-eff.exportExcel');
+
+    Route::get('/check-report-expected-cashflow-effective/{no_acc}/{id_pt}', 
+        [expectcfeffControler::class, 'checkData'])
+        ->name('check-report-expected-cashflow-effective');
 });
 
 // Rute untuk report interest deferred simple interest
@@ -251,6 +283,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-journal-simple-interest/view/{no_acc}/{id_pt}', [journalsiControler::class, 'view'])->name('report-journal-si.view');
     Route::get('/report-journal-simple-interest/export-pdf/{no_acc}/{id_pt}', [journalsiControler::class, 'exportPdf'])->name('report-journal-si.exportPdf');
     Route::get('/report-journal-simple-interest/export-excel/{no_acc}/{id_pt}', [journalsiControler::class, 'exportExcel'])->name('report-journal-si.exportExcel');
+
+    Route::get('/check-report-journal-simple/{no_acc}/{id_pt}', 
+        [journalsiControler::class, 'checkData'])
+        ->name('check-report-journal-simple');
 });
 // Rute untuk report journal effective
 Route::middleware(['auth'])->group(function () {
@@ -258,6 +294,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-journal-effective/view/{no_acc}/{id_pt}', [journaleffControler::class, 'view'])->name('report-journal-eff.view');
     Route::get('/report-journal-effective/export-pdf/{no_acc}/{id_pt}', [journaleffControler::class, 'exportPdf'])->name('report-journal-eff.exportPdf');
     Route::get('/report-journal-effective/export-excel/{no_acc}/{id_pt}', [journaleffControler::class, 'exportExcel'])->name('report-journal-eff.exportExcel');
+
+    Route::get('/check-report-journal-effective/{no_acc}/{id_pt}', 
+        [journaleffControler::class, 'checkData'])
+        ->name('check-report-journal-effective');
 });
 
 // Rute untuk report outstanding simple interest
@@ -266,6 +306,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-outstanding-simple-interest/view/{no_acc}/{id_pt}', [outstandsiControler::class, 'view'])->name('report-outstanding-si.view');
     Route::get('/report-outstanding-simple-interest/export-pdf/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportPdf'])->name('report-outstanding-si.exportPdf');
     Route::get('/report-outstanding-simple-interest/export-excel/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportExcel'])->name('report-outstanding-si.exportExcel');
+
+    Route::get('/check-report-outstanding-simple/{no_acc}/{id_pt}', 
+        [outstandsiControler::class, 'checkData'])
+        ->name('check-report-outstanding-simple');
 });
 // Rute untuk report outstanding effective
 Route::middleware(['auth'])->group(function () {
@@ -273,6 +317,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-outstanding-effective/view/{id_pt}', [outstandeffControler::class, 'view'])->name('report-outstanding-eff.view');
     Route::get('/report-outstanding-effective/export-pdf/{id_pt}', [outstandeffControler::class, 'exportPdf'])->name('report-outstanding-eff.exportPdf');
     Route::get('/report-outstanding-effective/export-excel/{id_pt}', [outstandeffControler::class, 'exportExcel'])->name('report-outstanding-eff.exportExcel');
+
+    Route::get('/check-report-outstanding-effective/{no_acc}/{id_pt}', 
+        [outstandeffControler::class, 'checkData'])
+        ->name('check-report-outstanding-effective');
 });
 
                                                         // SECURITIES

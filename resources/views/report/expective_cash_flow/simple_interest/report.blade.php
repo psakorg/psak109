@@ -31,7 +31,7 @@
                                     <td>{{ date('d/m/Y', strtotime($loan->org_date)) }}</td>
                                     <td>{{ $loan->term }}</td>
                                     <td>{{ date('d/m/Y', strtotime($loan->mtr_date)) }}</td>
-                                    <td>{{ number_format($loan->interest * 100, 2) }}%</td>
+                                    <td>{{ number_format($loan->rate * 100, 5) }}%</td>
                                     <td>
                                         <a href="{{ route('report-expectcf-si.view',  ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt]) }}" class="btn btn-sm btn-info">
                                             <i class="fas fa-eye" style="margin-right: 5px;"></i> View

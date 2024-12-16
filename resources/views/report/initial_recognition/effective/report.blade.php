@@ -3,6 +3,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <div class="content-wrapper">
@@ -577,7 +579,7 @@
                     <div class="mb-3">
                         <label for="accountNumber" class="form-label">Account Number</label>
                         <div class="d-flex align-items-center">
-                            <input type="numeric" class="form-control" id="accountNumber" required>
+                            <input type="number" class="form-control" id="accountNumber" required>
                             <span id="accountLabel" class="ms-3 text-muted"></span>
                         </div>
                         <small id="accountError" class="text-danger" style="display: none;">Data tidak ditemukan</small>
@@ -641,13 +643,13 @@ function showModal(type) {
             `;
             break;
             
-        case 'initial_recognition_effective':
-        case 'initial_recognition_simple':
-            options = `
-                <option value="initial_recognition_effective">Effective</option>
-                <option value="initial_recognition_simple">Simple Interest</option>
-            `;
-            break;
+        // case 'initial_recognition_effective':
+        // case 'initial_recognition_simple':
+        //     options = `
+        //         <option value="initial_recognition_effective">Effective</option>
+        //         <option value="initial_recognition_simple">Simple Interest</option>
+        //     `;
+        //     break;
             
         case 'outstanding_effective':
         case 'outstanding_simple':
@@ -688,84 +690,140 @@ function viewReport() {
     const entityNumber = document.getElementById('entityNumber').value;
     const accountNumber = document.getElementById('accountNumber').value;
 
-    // Tutup modal sebelum redirect
-    closeModal();
-
-    // Tentukan URL berdasarkan jenis report yang dipilih
-    let url;
+    // Tentukan URL pengecekan berdasarkan jenis report
+    let checkUrl;
     switch(reportType) {
-        // Accrual Interest
         case 'accrual_interest_effective':
-            url = `/report-accrual-effective/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-accrual-effective/${accountNumber}/${entityNumber}`;
             break;
         case 'accrual_interest_simple':
-            url = `/report/accrual-interest/simple-interest/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-accrual-simple/${accountNumber}/${entityNumber}`;
             break;
-            
-        // Amortised Cost
         case 'amortised_cost_effective':
-            url = `/report-amortised-cost-effective/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-amortised-cost-effective/${accountNumber}/${entityNumber}`;
             break;
         case 'amortised_cost_simple':
-            url = `/report-amortised-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-amortised-cost-simple/${accountNumber}/${entityNumber}`;
             break;
-            
-        // Amortised Initial Cost
         case 'amortised_initial_cost_effective':
-            url = `/report-amortised-initial-cost-effective/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-amortised-initial-cost-effective/${accountNumber}/${entityNumber}`;
             break;
         case 'amortised_initial_cost_simple':
-            url = `/report-amortised-initial-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-amortised-initial-cost-simple/${accountNumber}/${entityNumber}`;
             break;
-            
-        // Amortised Initial Fee
         case 'amortised_initial_fee_effective':
-            url = `/report-amortised-initial-fee-effective/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-amortised-initial-fee-effective/${accountNumber}/${entityNumber}`;
             break;
         case 'amortised_initial_fee_simple':
-            url = `/report-amortised-initial-fee-simple-interest/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-amortised-initial-fee-simple/${accountNumber}/${entityNumber}`;
             break;
-            
-        // Expected Cash Flow
         case 'expected_cashflow_effective':
-            url = `/report-expective-cash-flow-effective/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-expected-cashflow-effective/${accountNumber}/${entityNumber}`;
             break;
         case 'expected_cashflow_simple':
-            url = `/report-expective-cash-flow-simple-interest/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-expected-cashflow-simple/${accountNumber}/${entityNumber}`;
             break;
-            
-        // Initial Recognition
-        case 'initial_recognition_effective':
-            url = `/report-initial-recognition/view/${accountNumber}/${entityNumber}`;
-            break;
-        case 'initial_recognition_simple':
-            url = `/report-initial-recognition-simple-interest/view/${accountNumber}/${entityNumber}`;
-            break;
-            
-        // Outstanding
+        // case 'initial_recognition_effective':
+        //     checkUrl = `/check-report-initial-recognition-effective/${accountNumber}/${entityNumber}`;
+        //     break;
+        // case 'initial_recognition_simple':
+        //     checkUrl = `/check-report-initial-recognition-simple/${accountNumber}/${entityNumber}`;
+        //     break;
         case 'outstanding_effective':
-            url = `/report-outstanding-effective/view/${entityNumber}`;
+            checkUrl = `/check-report-outstanding-effective/${accountNumber}/${entityNumber}`;
             break;
         case 'outstanding_simple':
-            url = `/report-outstanding-simple-interest/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-outstanding-simple/${accountNumber}/${entityNumber}`;
             break;
-            
-        // Journal
         case 'journal_effective':
-            url = `/report-journal-effective/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-journal-effective/${accountNumber}/${entityNumber}`;
             break;
         case 'journal_simple':
-            url = `/report-journal-simple-interest/view/${accountNumber}/${entityNumber}`;
+            checkUrl = `/check-report-journal-simple/${accountNumber}/${entityNumber}`;
             break;
-            
-        default:
-            console.error('Tipe report tidak valid:', reportType);
-            return;
     }
 
-
-    // Redirect ke halaman report
-    window.location.href = url;
+    // Cek ketersediaan data
+    fetch(checkUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Tutup modal
+                closeModal();
+                
+                // Tentukan URL redirect
+                let url;
+                switch(reportType) {
+                    case 'accrual_interest_effective':
+                        url = `/report-accrual-effective/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'accrual_interest_simple':
+                        url = `/report/accrual-interest/simple-interest/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'amortised_cost_effective':
+                        url = `/report-amortised-cost-effective/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'amortised_cost_simple':
+                        url = `/report-amortised-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'amortised_initial_cost_effective':
+                        url = `/report-amortised-initial-cost-effective/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'amortised_initial_cost_simple':
+                        url = `/report-amortised-initial-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'amortised_initial_fee_effective':
+                        url = `/report-amortised-initial-fee-effective/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'amortised_initial_fee_simple':
+                        url = `/report-amortised-initial-fee-simple-interest/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'expected_cashflow_effective':
+                        url = `/report-expective-cash-flow-effective/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'expected_cashflow_simple':
+                        url = `/report-expective-cash-flow-simple-interest/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    // case 'initial_recognition_effective':
+                    //     url = `/report-initial-recognition-effective/view/${accountNumber}/${entityNumber}`;
+                    //     break;
+                    // case 'initial_recognition_simple':
+                    //     url = `/report-initial-recognition-simple/view/${accountNumber}/${entityNumber}`;
+                    //     break;
+                    case 'outstanding_effective':
+                        url = `/report-outstanding-effective/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'outstanding_simple':
+                        url = `/report-outstanding-simple-interest/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'journal_effective':
+                        url = `/report-journal-effective/view/${accountNumber}/${entityNumber}`;
+                        break;
+                    case 'journal_simple':
+                        url = `/report-journal-simple-interest/view/${accountNumber}/${entityNumber}`;
+                        break;
+                }
+                
+                // Redirect ke halaman report
+                window.location.href = url;
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: data.message || 'Data tidak ditemukan',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                title: 'Error',
+                text: 'Terjadi kesalahan saat memeriksa data',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
 }
 
 // Fungsi untuk menutup modal

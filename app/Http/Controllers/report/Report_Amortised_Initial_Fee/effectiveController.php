@@ -320,4 +320,41 @@ class effectiveController extends Controller
     // Kembalikan response PDF
     return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
 }
+
+public function checkData($no_acc, $id_pt)
+{
+    try {
+        $no_acc = trim($no_acc);
+        
+        $loan = report_effective::getLoanDetails($no_acc, $id_pt);
+        $master = report_effective::getMasterDataByNoAcc($no_acc, $id_pt);
+        $reports = report_effective::getReportsByNoAcc($no_acc, $id_pt);
+
+        if (!$loan) {
+            return response()->json(['success' => false, 'message' => 'Data loan tidak ditemukan']);
+        }
+        if (!$master) {
+            return response()->json(['success' => false, 'message' => 'Data master tidak ditemukan']);
+        }
+        if ($reports->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'Data laporan tidak ditemukan']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data ditemukan',
+            'data' => [
+                'loan' => $loan,
+                'master' => $master,
+                'reports_count' => $reports->count()
+            ]
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ]);
+    }
+}
 }

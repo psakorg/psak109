@@ -34,7 +34,7 @@
                                     <td>{{ date('d/m/Y', strtotime($loan->org_date)) }}</td>
                                     <td>{{ $loan->term }}</td>
                                     <td>{{ date('d/m/Y', strtotime($loan->mtr_date)) }}</td>
-                                    <td>{{ number_format($loan->interest * 100, 2)}}%</td>
+                                    <td>{{ number_format($loan->rate * 100, 5)}}%</td>
                                     <td>{{ number_format($loan->trxcost, 2)}}</td>
                                     <td>{{ number_format($loan->org_bal, 2)}}</td>
                                     <td>{{ number_format($loan->eircalc_cost * 100, 14)}}%</td>
