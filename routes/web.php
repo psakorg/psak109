@@ -401,6 +401,9 @@ Route::middleware(['auth'])->group(function () {
             ->name('effective.tblmaster.execute-procedure');
         Route::post('/tblmaster/clear', [tblmaster_EFF::class, 'clear'])
             ->name('effective.tblmaster.clear');
+
+        Route::get('/outstanding', [outstandingController::class, 'index'])
+            ->name('effective.outstanding.index');
     });
 });
 

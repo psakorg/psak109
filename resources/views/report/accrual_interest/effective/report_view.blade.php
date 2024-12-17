@@ -126,11 +126,12 @@
                                 <td class="text-center" >{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
                                 <td>{{ number_format($report->pmtamt, 2) }}</td>
                                 <td>{{ number_format($report->accrconv, 2) }}</td>
-                                <td>{{ number_format($report->accrconv, 2) }}</td>
+                                <td>{{ number_format($report->bunga, 2) }}</td>
                                 <td>{{ number_format($report->timegap, 2) }}</td>
                                 <td>{{ number_format($report->outsamtconv, 2) }}</td>
                                 <td>{{ number_format($totalTimeGap, 2) }}</td>
                             </tr>
+
                             @endforeach
                         </tbody>
                     </table>

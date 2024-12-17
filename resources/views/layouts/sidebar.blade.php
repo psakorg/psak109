@@ -241,6 +241,12 @@
                                         <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Upload File tblcorporateloancabangdetail</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('corporate.index') }}" class="nav-link d-flex align-items-center">
+                                        <p class="ms-2 mb-0 text-center" style="width: 30px; font-size: 14px;">✦</p>
+                                        <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Upload Data Outstanding</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -253,6 +259,12 @@
                                     <a href="{{ route('effective.tblmaster.index') }}" class="nav-link d-flex align-items-center">
                                         <p class="ms-2 mb-0 text-center" style="width: 30px; font-size: 14px;">✦</p>
                                         <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Upload File tblmaster_tmp</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('effective.tblmaster.index') }}" class="nav-link d-flex align-items-center">
+                                        <p class="ms-2 mb-0 text-center" style="width: 30px; font-size: 14px;">✦</p>
+                                        <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Upload Data Outstanding</p>
                                     </a>
                                 </li>
                             </ul>
