@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use Illuminate\Support\Facades\DB; 
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -38,17 +39,22 @@ class effectiveController extends Controller
     {
         $id_pt = Auth::user()->id_pt;
 
-        $loan= report_effective::getLoanDetailsbyidpt($id_pt);
-        $loanjoin = report_effective::getLoanjoinByIdPt($id_pt);
-        $loanfirst =$loan->first();
-        $master = report_effective::getMasterByIdPt($id_pt);
-        //dd($loanjoin);
-        if (!$loan) {
-            abort(404, 'Loan not found');
-        }
+        // $loan= report_effective::getLoanDetailsbyidpt($id_pt);
+        // $loanjoin = report_effective::getLoanjoinByIdPt($id_pt);
+        // $loanfirst =$loan->first();
+        // $master = report_effective::getMasterByIdPt($id_pt);
+        // if (!$loan) {
+        //     abort(404, 'Loan not found');
+        // }
 
+        $master = DB::table('public.tblpsaklbueffective')
+        ->where('no_branch', $id_pt)
+        ->get();
 
-        return view('report.outstanding.effective.view', compact('master', 'loan','loanfirst','loanjoin'));
+        dd($master);
+
+        // return view('report.outstanding.effective.view', compact('master', 'loan','loanfirst','loanjoin'));
+        return view('report.outstanding.effective.view', compact('master'));
     }
 
     public function exportExcel($no_acc,$id_pt)

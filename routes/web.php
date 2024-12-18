@@ -54,6 +54,8 @@ use App\Models\Mapping;
 
 use App\Http\Controllers\report\ReportController;
 
+use App\Http\Controllers\upload\Effective\OutstandingController;
+
 
 
 // Rute untuk halaman utama
@@ -402,8 +404,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/tblmaster/clear', [tblmaster_EFF::class, 'clear'])
             ->name('effective.tblmaster.clear');
 
-        Route::get('/outstanding', [outstandingController::class, 'index'])
+        Route::get('/outstanding', [OutstandingController::class, 'index'])
             ->name('effective.outstanding.index');
+        Route::post('/outstanding/import', [OutstandingController::class, 'importExcel'])
+            ->name('effective.outstanding.import');
+        Route::post('/outstanding/execute-procedure', [OutstandingController::class, 'executeStoredProcedure'])
+            ->name('effective.outstanding.execute-procedure');
+        Route::post('/outstanding/clear', [OutstandingController::class, 'clear'])
+            ->name('effective.outstanding.clear');
     });
 });
 

@@ -67,15 +67,15 @@
                                 <th style="white-space: nowrap;">Term (Months)</th>
                                 <th style="white-space: nowrap;">Maturity Date</th>
                                 <th style="white-space: nowrap;">Interest Rate</th>
-                                <th style="white-space: nowrap;">Payment Amount</th>
+                                <th style="white-space: nowrap;">Payment Amount</th> // 1
                                 <th style="white-space: nowrap;">EIR Amortised Cost Exposure</th>
                                 <th style="white-space: nowrap;">EIR Amortised Cost Calculated</th>
-                                <th style="white-space: nowrap;">Current Balance</th>
-                                <th style="white-space: nowrap;">Carrying Amount</th>
-                                <th style="white-space: nowrap;">Oustanding Receivable</th>
+                                <th style="white-space: nowrap;">Current Balance</th> // 2
+                                <th style="white-space: nowrap;">Carrying Amount</th> // 3
+                                <th style="white-space: nowrap;">Oustanding Receivable</th> 
                                 <th style="white-space: nowrap;">Outstanding Interest</th>
                                 <th style="white-space: nowrap;">Cummulative Time Gap</th>
-                                <th style="white-space: nowrap;">Unamortized Transaction Cost</th>
+                                <th style="white-space: nowrap;">Unamortized Transaction Cost</th> 
                                 <th style="white-space: nowrap;">Unamortized UpFront Fee</th>
                                 <th style="white-space: nowrap;">Unamortized Interest Deferred</th>
                             </tr>
@@ -99,24 +99,24 @@
                                 <td class="text-center">{{ $loan->no_branch ?? 'Data tidak ditemukan' }}</td>
                                 <td class="text-center">{{ $loan->no_acc ?? 'Data tidak ditemukan' }}</td>
                                 <td style="white-space: nowrap;">{{ $loan->deb_name ?? 'Data tidak ditemukan' }}</td>
-                                <td class="text-center">{{ $loan->ln_type ?? 'Data tidak ditemukan' }}</td>
+                                <td class="text-center">{{ $loan->coa ?? 'Data tidak ditemukan' }}</td>
                                 <td class="text-center">{{ $loan->ln_type ?? 'Data tidak ditemukan' }}</td>
                                 <td class="text-center">{{ $loan->GROUP ?? 'Data tidak ditemukan' }}</td>
                                 <td class="text-center">{{ isset($loan->org_date_dt) ? date('d/m/Y', strtotime($loan->org_date_dt)) : 'Belum di-generate' }}</td>
                                 <td class="text-center">{{ $loan->master_term ?? 0 }}</td>
                                 <td class="text-center">{{ isset($loan->mtr_date) ? date('d/m/Y', strtotime($loan->mtr_date)) : 'Belum di-generate' }}</td>
                                 <td class="text-right">{{ number_format($loan->rate * 100?? 0, 5) }}%</td>
-                                <td class="text-right">{{ number_format($loan->pmtamt ?? 0, 2) }}</td>
+                                <td class="text-right">{{ number_format($loan->pmtamt ?? 0, 2) }}</td>     // 1
                                 <td class="text-right">{{ number_format($loan->eirex*100 ?? 0, 14) }}%</td>
                                 <td class="text-right">{{ number_format($loan->eircalc*100 ?? 0, 14) }}%</td>
-                                <td class="text-right">{{ number_format($loan->nbal ?? 0,2) }}</td>
-                                <td class="text-right">{{ number_format($CarryingAmount ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->interest ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->adjsmnt ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->interest ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->interest ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($upfrontFee ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->interest ?? 0, 2) }}</td>
+                                <td class="text-right">{{ number_format($loan->nbal ?? 0,2) }}</td>  // 2
+                                <td class="text-right">{{ number_format($CarryingAmount ?? 0, 2) }}</td> //3
+                                <td class="text-right">{{ number_format($loan->interest ?? 0, 2) }}</td> //4
+                                <td class="text-right">{{ number_format($loan->adjsmnt ?? 0, 2) }}</td> //5
+                                <td class="text-right">{{ number_format($loan->interest ?? 0, 2) }}</td> //6
+                                <td class="text-right">{{ number_format($loan->interest ?? 0, 2) }}</td> //7
+                                <td class="text-right">{{ number_format($upfrontFee ?? 0, 2) }}</td> //8
+                                <td class="text-right">{{ number_format($loan->interest ?? 0, 2) }}</td> //9
                             </tr>
                         @endforeach
                             @endif
