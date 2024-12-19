@@ -97,26 +97,44 @@
                                 <tr>
                                     <td colspan="10" class="text-center">Data tidak ditemukan atau belum di-generate</td>
                                 </tr>
-
                             @else
-                            @php
-                            $cumulativebunga=0;
-                        @endphp
-                                @foreach ($reports as $report)
                                 @php
-                                    $bunga = $report->bunga; // Ambil nilai amortized dari laporan
-                                    $cumulativebunga += $bunga;
+                                    $cumulativebunga = 0;
+                                    $totalPaymentAmount = 0;
+                                    $totalInterestPayment = 0;
+                                    $totalPrincipalPayment = 0;
+                                @endphp
+                                @foreach ($reports as $report)
+                                    @php
+                                        $bunga = $report->bunga;
+                                        $cumulativebunga += $bunga;
+                                        $totalPaymentAmount += $report->pmtamt;
+                                        $totalInterestPayment += $report->bunga;
+                                        $totalPrincipalPayment += $report->pokok;
                                     @endphp
                                     <tr style="font-weight:normal;">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y ', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
                                         <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->bunga ?? 0, 2) }}</td> <!-- Placeholder untuk Withdrawal -->
-                                        <td>{{ number_format($report->pokok ?? 0, 2) }}</td> <!-- Placeholder untuk Reimbursement -->
-                                        <td>{{ number_format($report->balance?? 0, 2) }}</td>
-                                        <td>{{ number_format( $cumulativebunga ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->bunga ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->pokok ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->balance ?? 0, 2) }}</td>
+                                        <td>{{ number_format($cumulativebunga ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
+                                <!-- Row Total -->
+                                <tr style="font-weight:normal;">
+                                    <td colspan="2" class="text-center">Total</td>
+                                    <td>{{ number_format($totalPaymentAmount, 2) }}</td>
+                                    <td>{{ number_format($totalInterestPayment, 2) }}</td>
+                                    <td>{{ number_format($totalPrincipalPayment, 2) }}</td>
+                                    <td></td>
+                                    <td>{{ number_format($cumulativebunga, 2) }}</td>
+                                </tr>
+                                <!-- Row Average -->
+                                <tr style="font-weight:normal;">
+                                    <td colspan="7" class="text-center">Average</td>
+                                </tr>
                             @endif
                         </tbody>
                     </table>

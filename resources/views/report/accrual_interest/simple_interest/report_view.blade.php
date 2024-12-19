@@ -111,11 +111,24 @@
                             @php
                                 $cumulativeTimeGap = 0;
                                 $totalTimeGap = 0;
+                                $totalPaymentAmount = 0;
+                                $totalAccruedInterest = 0;
+                                $totalInterestPayment = 0;
+                                $totalOutstandingAmount = 0;
+                                $totalWithdrawal = 0;
+                                $totalReimbursement = 0;
+                                $reportCount = count($reports);
                             @endphp
                             @foreach ($reports as $report)
                                 @php
                                     $cumulativeTimeGap += floatval($report->timegap);
                                     $totalTimeGap += ($report->timegap);
+                                    $totalPaymentAmount += $report->pmtamt;
+                                    $totalAccruedInterest += $report->bunga;
+                                    $totalInterestPayment += $report->balance;
+                                    $totalOutstandingAmount += $report->outsamtconv;
+                                    $totalWithdrawal += $report->penarikan;
+                                    $totalReimbursement += $report->pengembalian;
                                 @endphp
                                 <tr style="font-weight:normal">
                                     <td class="text-center" >{{ $report->bulanke }}</td>
@@ -128,9 +141,28 @@
                                     <td>{{ number_format($report->balance, 2) }}</td>
                                     <td>{{ number_format($report->timegap, 2) }}</td>
                                     <td>{{ number_format($report->outsamtconv, 2) }}</td>
-                                    {{-- <td>{{ number_format($cumulativeTimeGap, 2) }}</td> --}}
                                 </tr>
                             @endforeach
+                            <tr style="font-weight:bold">
+                                <td colspan="3" class="text-center">TOTAL</td>
+                                <td class="text-right"></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr style="font-weight:bold">
+                                <td colspan="3" class="text-center">AVERAGE</td>
+                                <td></td>
+                                <td>{{ number_format($totalWithdrawal / $reportCount, 2) }}</td>
+                                <td>{{ number_format($totalReimbursement / $reportCount, 2) }}</td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ number_format($totalTimeGap / $reportCount, 2) }}</td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

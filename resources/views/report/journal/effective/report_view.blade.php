@@ -66,10 +66,20 @@
                                     <td colspan="7" class="text-center">Data tidak ditemukan atau belum di-generate</td>
                                 </tr>
                             @else
+                                @php
+                                    $totalValuta = 0;
+                                    $totalPost = 0;
+                                    $totalAmount = 0;
+                                @endphp
                                 @foreach ($reports as $report)
+                                    @php
+                                        $totalValuta += $report->pmtamt ?? 0;
+                                        $totalPost += $report->post ?? 0;
+                                        $totalAmount += $report->amount ?? 0;
+                                    @endphp
                                     <tr>
                                         <td>{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center>{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
+                                        <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
                                         <td>{{ $report->days_interest ?? 0 }}</td>
                                         <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->withdrawal ?? 0, 2) }}</td>
@@ -77,6 +87,21 @@
                                         <td>{{ number_format($report->balance ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
+                                <!-- Row Total -->
+                                <tr>
+                                    <td colspan="3" class="text-center">Total</td>
+                                    <td>{{ number_format($totalValuta, 2) }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <!-- Row Average -->
+                                <tr>
+                                    <td colspan="4" class="text-center">Average</td>
+                                    <td>{{ number_format($totalPost / $reports->count(), 2) }}</td>
+                                    <td>{{ number_format($totalAmount / $reports->count(), 2) }}</td>
+                                    <td></td>
+                                </tr>
                             @endif
                         </tbody>
                     </table>

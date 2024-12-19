@@ -28,6 +28,8 @@ class effectiveController extends Controller
         // dd($id_pt);
 
         $loans = InitialRecognitionEffective::getInitialRecognition($branch, $tahun, $bulan);
+
+        // dd($loans);
         
         return view('report.initial_recognition.effective.master', compact('loans', 'bulan', 'tahun', 'user', 'isSuperAdmin'));
     }

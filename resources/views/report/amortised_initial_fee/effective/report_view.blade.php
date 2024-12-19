@@ -137,21 +137,29 @@
                             @else
                                 @php
                                     $cumulativeAmortized = 0; // Inisialisasi variabel kumulatif
-                                 @endphp
+                                    $totalPaymentAmount = 0;
+                                    $totalEffectiveInterest = 0;
+                                    $totalAccruedInterest = 0;
+                                    $totalAmortisedFee = 0;
+                                @endphp
                                 @foreach ($reports as $report)
                                     @php
-                                        $amortisefee=$report->amortisefee;
-                                        $cumulativeAmortized += $amortisefee; // Inisialisasi variabel kumulatif
-                                        $unamortprovFloat=$provFloat;
+                                        $amortisefee = $report->amortisefee;
+                                        $cumulativeAmortized += $amortisefee;
+                                        $unamortprovFloat = $provFloat;
 
                                         // Hitung nilai unamortized
                                         if ($loop->first) {
-                                            // Untuk baris pertama, gunakan nilai trxcost
                                             $unamort = $unamortprovFloat;
                                         } else {
-                                            // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
                                             $unamort = $unamort + $amortisefee;
                                         }
+
+                                        // Hitung total untuk setiap kolom
+                                        $totalPaymentAmount += $report->pmtamt ?? 0;
+                                        $totalEffectiveInterest += $report->bunga ?? 0;
+                                        $totalAccruedInterest += $report->accrfee ?? 0;
+                                        $totalAmortisedFee += $amortisefee;
                                     @endphp
                                     <tr style="font-weight:normal;">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
@@ -159,12 +167,32 @@
                                         <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->bunga ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->accrfee ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->amortisefee ?? 0, 2) }}</td>
+                                        <td>{{ number_format($amortisefee ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->outsamtfee ?? 0, 2) }}</td>
-                                        <td>{{ number_format($cumulativeAmortized?? 0, 2) }}</td>
+                                        <td>{{ number_format($cumulativeAmortized ?? 0, 2) }}</td>
                                         <td>{{ number_format($unamort ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
+                                <tr style="font-weight:bold;">
+                                    <td class="text-center" colspan="2">Total</td>
+                                    <td>{{ number_format($totalPaymentAmount, 2) }}</td>
+                                    <td>{{ number_format($totalEffectiveInterest, 2) }}</td>
+                                    <td>{{ number_format($totalAccruedInterest, 2) }}</td>
+                                    <td>{{ number_format($totalAmortisedFee, 2) }}</td>
+                                    <td></td>
+                                    <td>{{ number_format($cumulativeAmortized, 2) }}</td>
+                                    <td></td>
+                                </tr>
+                                <tr style="font-weight:bold;">
+                                    <td class="text-center" colspan="2">Average</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
                             @endif
                         </tbody>
                     </table>

@@ -40,10 +40,11 @@ class simpleinterestController extends Controller
         $loan = report_simpleinterest::getLoanDetails($no_acc,$id_pt);
         $reports = report_simpleinterest::getReportsByNoAcc($no_acc,$id_pt);
 
+        // dd($reports, $loan);
+
         if (!$loan) {
             abort(404, 'Loan not found');
         }
-
 
         return view('report.expective_cash_flow.simple_interest.view', compact('loan', 'reports'));
     }

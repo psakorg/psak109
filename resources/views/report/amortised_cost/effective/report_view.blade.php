@@ -165,6 +165,10 @@
                             @else
                             @php
                                 $cumulativeAmortized = 0; // Inisialisasi variabel kumulatif
+                                $totalPaymentAmount = 0;
+                                $totalInterestRecognition = 0;
+                                $totalInterestPayment = 0;
+                                $totalAmortised = 0;
                             @endphp
                                 @foreach ($reports as $report)
                                 @php
@@ -180,6 +184,12 @@
                                         // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
                                         $unamortized = $unamortized + $amortized;
                                     }
+
+                                    // Hitung total untuk setiap kolom
+                                    $totalPaymentAmount += $report->pmtamt ?? 0;
+                                    $totalInterestRecognition += $report->bungaeir ?? 0;
+                                    $totalInterestPayment += $report->bunga ?? 0;
+                                    $totalAmortised += $amortized;
                                 @endphp
                                     <tr style="font-weight:normal;">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
@@ -193,6 +203,22 @@
                                         <td>{{ number_format( $unamortized ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
+                                <!-- Row Total -->
+                                <tr style="font-weight:bold;">
+                                    <td class="text-center" colspan="2">Total</td>
+                                    <td>{{ number_format($totalPaymentAmount, 2) }}</td>
+                                    <td>{{ number_format($totalInterestRecognition, 2) }}</td>
+                                    <td>{{ number_format($totalInterestPayment, 2) }}</td>
+                                    <td>{{ number_format($totalAmortised, 2) }}</td>
+                                    <td></td>
+                                    <td>{{ number_format($cumulativeAmortized, 2) }}</td>
+                                    <td></td>
+                                </tr>
+                                <!-- Row Average -->
+                                <tr style="font-weight:bold;">
+                                    <td class="text-center" colspan="2">Rata-rata</td>
+                                    <td colspan="7" class="text-center"></td>
+                                </tr>
                             @endif
                         </tbody>
                     </table>

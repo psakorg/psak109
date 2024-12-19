@@ -124,6 +124,13 @@
                             @else
                             @php
                                 $cumulativeAmortized = 0; // Inisialisasi variabel kumulatif
+                                $totalPaymentAmount = 0;
+                                $totalEffectiveInterestUF_TC = 0;
+                                $totalEffectiveInterestUF = 0;
+                                $totalAmortisedTransactionCost = 0;
+                                $totalCumulativeAmortizedTransactionCost = 0;
+                                $totalUnamortizedTransactionCost = 0;
+                                $reportCount = count($reports);
                             @endphp
                                 @foreach ($reports as $report)
                                 @php
@@ -140,6 +147,13 @@
                                         $unamort = $unamort + $amortized;
                                     }
 
+                                    // Hitung total untuk setiap kolom
+                                    $totalPaymentAmount += $report->pmtamt ?? 0;
+                                    $totalEffectiveInterestUF_TC += $report->bunga ?? 0;
+                                    $totalEffectiveInterestUF += $report->bunga ?? 0;
+                                    $totalAmortisedTransactionCost += $report->amortisecost ?? 0;
+                                    $totalCumulativeAmortizedTransactionCost += $cumulativeAmortized;
+                                    $totalUnamortizedTransactionCost += $unamort;
                                 @endphp
                                     <tr style="font-weight:normal;">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
@@ -153,6 +167,25 @@
                                         <td>{{ number_format($unamort ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
+                                <!-- Row Total -->
+                                <tr style="font-weight:bold;">
+                                    <td class="text-center" colspan="2">TOTAL</td>
+                                    <td>{{ number_format($totalPaymentAmount, 2) }}</td>
+                                    <td>{{ number_format($totalEffectiveInterestUF_TC, 2) }}</td>
+                                    <td>{{ number_format($totalEffectiveInterestUF, 2) }}</td>
+                                    <td colspan="2"></td>
+                                    <td>{{ number_format($totalCumulativeAmortizedTransactionCost, 2) }}</td>
+                                    <td>{{ number_format($totalUnamortizedTransactionCost, 2) }}</td>
+                                </tr>
+                                <!-- Row Average -->
+                                <tr style="font-weight:bold;">
+                                    <td class="text-center" colspan="2">AVERAGE</td>
+                                    <td colspan="3"></td>
+                                    <td>{{ number_format($totalAmortisedTransactionCost / $reportCount, 2) }}</td>
+                                    <td></td>
+                                    <td>{{ number_format($totalCumulativeAmortizedTransactionCost / $reportCount, 2) }}</td>
+                                    <td>{{ number_format($totalUnamortizedTransactionCost / $reportCount, 2) }}</td>
+                                </tr>
                             @endif
                         </tbody>
                     </table>

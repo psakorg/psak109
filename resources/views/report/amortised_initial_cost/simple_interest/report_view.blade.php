@@ -124,15 +124,36 @@
                                     <td>{{ number_format($report->pengembalian, 2) }}</td>
                                     <td>{{ number_format(0, 2) }}</td>
                                     <td>{{ number_format(0, 2) }}</td>
-                                    {{-- <td>{{ number_format($report->bunga, 2) }}</td> --}}
-                                    {{-- <td>{{ number_format($report->balance, 2) }}</td> --}}
-                                    {{-- <td>{{ number_format($report->timegap, 2) }}</td> --}}
                                     <td>{{ number_format($report->amortisecost, 2) }}</td>
                                     <td>{{ number_format($report->outsamtconv, 2) }}</td>
                                     <td>{{ number_format(0, 2) }}</td>
                                     <td>{{ number_format(0, 2) }}</td>
                                 </tr>
                             @endforeach
+                            <!-- Row Total -->
+                            <tr class="text-right font-weight-bold">
+                                <td class="text-center" colspan="4">Total</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <!-- Row Average -->
+                            <tr class="text-right font-weight-bold">
+                                <td class="text-center" colspan="4">Average</td>
+                                <td>{{ number_format($reports->avg('penarikan'), 2) }}</td>
+                                <td>{{ number_format($reports->avg('pengembalian'), 2) }}</td>
+                                <td>{{ number_format(0, 2) }}</td>
+                                <td>{{ number_format(0, 2) }}</td>
+                                <td>{{ number_format($reports->avg('amortisecost'), 2) }}</td>
+                                <td>{{ number_format($reports->avg('outsamtconv'), 2) }}</td>
+                                <td>{{ number_format(0, 2) }}</td>
+                                <td>{{ number_format(0, 2) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

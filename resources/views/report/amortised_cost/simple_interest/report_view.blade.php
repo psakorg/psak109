@@ -147,7 +147,22 @@
                                     <td colspan="12" class="text-center">Data tidak ditemukan atau belum di-generate</td>
                                 </tr>
                             @else
+                            @php
+                                $totalAmortised = 0;
+                                $totalDaysInterest = 0;
+                                $totalWithdrawal = 0;
+                                $totalReimbursement = 0;
+                                $totalInterestPayment = 0;
+                                $reportCount = count($reports);
+                            @endphp
                                 @foreach ($reports as $report)
+                                @php
+                                    $totalAmortised += $report->amortized ?? 0;
+                                    $totalDaysInterest += $report->days_interest ?? 0;
+                                    $totalWithdrawal += $report->withdrawal ?? 0;
+                                    $totalReimbursement += $report->reimbursement ?? 0;
+                                    $totalInterestPayment += $report->bunga ?? 0;
+                                @endphp
                                     <tr style="font-weight:normal">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
@@ -163,6 +178,22 @@
                                         <td>{{ number_format($report->amortized + $report->outsamtconv ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
+                                <!-- Row Total -->
+                                <tr style="font-weight:bold;">
+                                    <td class="text-center" colspan="8">TOTAL</td>
+                                    <td>{{ number_format($totalAmortised, 2) }}</td>
+                                    <td colspan="3"></td>
+                                </tr>
+                                <!-- Row Average -->
+                                <tr style="font-weight:bold;">
+                                    <td class="text-center" colspan="2">AVERAGE</td>
+                                    <td>{{ number_format($totalDaysInterest / $reportCount, 2) }}</td>
+                                    <td colspan="2"></td>
+                                    <td>{{ number_format($totalWithdrawal / $reportCount, 2) }}</td>
+                                    <td>{{ number_format($totalReimbursement / $reportCount, 2) }}</td>
+                                    <td>{{ number_format(0, 2) }}</td>
+                                    <td colspan="4"></td>
+                                </tr>
                             @endif
                         </tbody>
                     </table>

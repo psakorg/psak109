@@ -129,6 +129,22 @@
                                     <td>{{ number_format(0, 2) }}</td>
                                 </tr>
                             @endforeach
+                            <!-- Row Total -->
+                            <tr class="text-right" style="font-weight:normal">
+                                <td colspan="12" class="text-center">Total</td>
+                            </tr>
+                            <!-- Row Average -->
+                            <tr class="text-right" style="font-weight:normal">
+                                <td colspan="4" class="text-center">Average</td>
+                                <td>{{ number_format($reports->avg('penarikan'), 2) }}</td>
+                                <td>{{ number_format($reports->avg('pengembalian'), 2) }}</td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ number_format($reports->avg('timegap'), 2) }}</td>
+                                <td></td>
+                                <td>{{ number_format(0, 2) }}</td>
+                                <td>{{ number_format(0, 2) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

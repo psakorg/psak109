@@ -115,11 +115,18 @@
                             @php
                                 $cumulativeTimeGap = 0;
                                 $totalTimeGap = 0;
+                                $totalPaymentAmount = 0;
+                                $totalAccruedInterest = 0;
+                                $totalInterestPayment = 0;
+                                $reportCount = count($reports);
                             @endphp
                             @foreach ($reports as $report)
                             @php
                                 $cumulativeTimeGap += floatval($report->timegap);
                                 $totalTimeGap += ($report->timegap);
+                                $totalPaymentAmount += $report->pmtamt;
+                                $totalAccruedInterest += $report->accrconv;
+                                $totalInterestPayment += $report->bunga;
                             @endphp
                             <tr>
                                 <td>{{ $report->bulanke }}</td>
@@ -131,8 +138,19 @@
                                 <td>{{ number_format($report->outsamtconv, 2) }}</td>
                                 <td>{{ number_format($totalTimeGap, 2) }}</td>
                             </tr>
-
                             @endforeach
+                            <tr>
+                                <td colspan="2" class="text-center"><strong>TOTAL</strong></td>
+                                <td>{{ number_format($totalPaymentAmount, 2) }}</td>
+                                <td>{{ number_format($totalAccruedInterest, 2) }}</td>
+                                <td>{{ number_format($totalInterestPayment, 2) }}</td>
+                                <td colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="text-center"><strong>AVERAGE</strong></td>
+                                <td>{{ number_format($totalTimeGap / $reportCount, 2) }}</td>
+                                <td colspan="2">{{ number_format($cumulativeTimeGap / $reportCount, 2) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
