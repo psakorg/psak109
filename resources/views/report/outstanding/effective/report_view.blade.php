@@ -114,33 +114,56 @@
                                     <td colspan="10" class="text-center">Data tidak ditemukan atau belum di-generate</td>
                                 </tr>
                             @else
+                                @foreach ($master as $index => $loan)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td class="text-center">{{ $loan->no_branch ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->no_acc ?? 'Data tidak ditemukan' }}</td>
+                                        <td style="white-space: nowrap;">{{ $loan->deb_name ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->coa ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->ln_type ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->GROUP ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ isset($loan->org_date_dt) ? date('d/m/Y', strtotime($loan->org_date_dt)) : 'Belum di-generate' }}</td>
+                                        <td class="text-center">{{ $loan->term ?? 0 }}</td>
+                                        <td class="text-center">{{ isset($loan->mtr_date_dt) ? date('d/m/Y', strtotime($loan->mtr_date_dt)) : 'Belum di-generate' }}</td>
+                                        <td class="text-right">{{ number_format($loan->rate * 100?? 0, 5) }}%</td>
+                                        <td class="text-right">{{ number_format($loan->pmtamt ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->eirex*100 ?? 0, 14) }}%</td>
+                                        <td class="text-right">{{ number_format($loan->eircalc*100 ?? 0, 14) }}%</td>
+                                        <td class="text-right">{{ number_format($loan->cbal ?? 0,2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->carrying_amount ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cbal - $loan->carrying_amount ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cum_bunga ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cum_timegap ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cum_amortisecost ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cum_amortisefee ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cum_amortized ?? 0, 2) }}</td>
+                                    </tr>
+                                @endforeach
 
-                            @foreach ($master as $index => $loan)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td class="text-center">{{ $loan->no_branch ?? 'Data tidak ditemukan' }}</td>
-                                <td class="text-center">{{ $loan->no_acc ?? 'Data tidak ditemukan' }}</td>
-                                <td style="white-space: nowrap;">{{ $loan->deb_name ?? 'Data tidak ditemukan' }}</td>
-                                <td class="text-center">{{ $loan->coa ?? 'Data tidak ditemukan' }}</td>
-                                <td class="text-center">{{ $loan->ln_type ?? 'Data tidak ditemukan' }}</td>
-                                <td class="text-center">{{ $loan->GROUP ?? 'Data tidak ditemukan' }}</td>
-                                <td class="text-center">{{ isset($loan->org_date_dt) ? date('d/m/Y', strtotime($loan->org_date_dt)) : 'Belum di-generate' }}</td>
-                                <td class="text-center">{{ $loan->term ?? 0 }}</td>
-                                <td class="text-center">{{ isset($loan->mtr_date_dt) ? date('d/m/Y', strtotime($loan->mtr_date_dt)) : 'Belum di-generate' }}</td>
-                                <td class="text-right">{{ number_format($loan->rate * 100?? 0, 5) }}%</td>
-                                <td class="text-right">{{ number_format($loan->pmtamt ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->eirex*100 ?? 0, 14) }}%</td>
-                                <td class="text-right">{{ number_format($loan->eircalc*100 ?? 0, 14) }}%</td>
-                                <td class="text-right">{{ number_format($loan->cbal ?? 0,2) }}</td>
-                                <td class="text-right">{{ number_format($loan->carrying_amount ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->cbal - $loan->carrying_amount ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->cum_bunga ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->cum_timegap ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->cum_amortisecost ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->cum_amortisefee ?? 0, 2) }}</td>
-                                <td class="text-right">{{ number_format($loan->cum_amortized ?? 0, 2) }}</td>
-                            </tr>
-                        @endforeach
+                                <!-- Tambahkan row total -->
+                                <tr class="table-secondary font-weight-bold">
+                                    <td colspan="11" class="text-center"><strong>TOTAL:</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('pmtamt') ?? 0, 2) }}</strong></td>
+                                    <td colspan="2"></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('cbal') ?? 0, 2) }}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('carrying_amount') ?? 0, 2) }}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('cbal') - $master->sum('carrying_amount') ?? 0, 2) }}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_bunga') ?? 0, 2) }}</strong></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_amortisefee') ?? 0, 2) }}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_amortized') ?? 0, 2) }}</strong></td>
+                                </tr>
+
+                                <!-- Row rata-rata EIR -->
+                                <tr class="table-secondary font-weight-bold">
+                                    <td colspan="11" class="text-center"><strong>AVERAGE:</strong></td>
+                                    <td></td>
+                                    <td class="text-right"><strong>{{ number_format(($master->avg('eirex') * 100) ?? 0, 14) }}%</strong></td>
+                                    <td class="text-right"><strong>{{ number_format(($master->avg('eircalc') * 100) ?? 0, 14) }}%</strong></td>
+                                    <td colspan="8"></td>
+                                </tr>
                             @endif
                         </tbody>
                     </table>
@@ -174,3 +197,24 @@ function updateReport() {
     window.location.href = `/report-outstanding-effective/view/${id_pt}?bulan=${month}&tahun=${year}`;
 }
 </script>
+
+<style>
+    /* ... style yang sudah ada ... */
+    
+    .table-secondary {
+        background-color: #f2f2f2 !important;
+    }
+
+    .font-weight-bold {
+        font-weight: bold;
+    }
+
+    .text-end {
+        text-align: right;
+    }
+
+    .text-right {
+        text-align: right;
+        padding-right: 20px;
+    }
+</style>

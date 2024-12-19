@@ -391,25 +391,6 @@
         color: #721c24;
     }
 
-    .py-1 {
-        padding-top: 0.25rem;
-        padding-bottom: 0.25rem;
-    }
-
-    .px-2 {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-
-    .d-flex.align-items-center input {
-        flex: 1;
-    }
-
-    .d-flex.align-items-center span {
-        min-width: 150px;
-        margin-left: 10px;
-    }
-
     .clickable-account {
         cursor: pointer;
         color: #007bff;
