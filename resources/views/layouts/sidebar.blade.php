@@ -95,7 +95,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('report-outstanding-eff.index') }}" class="nav-link">
+                                    <a href="{{ route('report-outstanding-eff.view', ['id_pt' => Auth::user()->id_pt]) }}" class="nav-link">
                                         <p class="text-start" style="font-size: 14px;">Report Outstanding</p>
                                     </a>
                                 </li>

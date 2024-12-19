@@ -23,6 +23,9 @@
                     <button type="button" class="btn btn-danger btn-icon-split me-2" data-bs-toggle="modal" data-bs-target="#clearModal">
                         <i class="fas fa-trash"></i> Clear
                     </button>
+                    <button type="button" class="btn btn-warning btn-icon-split me-2" data-bs-toggle="modal" data-bs-target="#executeModal">
+                        <i class="fas fa-play"></i> Execute
+                    </button>
                     <!-- Tambahan input bulan dan tahun -->
                     <div class="d-flex align-items-center">
                         <select class="form-select me-2" style="width: 120px;" id="monthSelect">
@@ -134,6 +137,22 @@
                                 <td>{{ $item->gol }}</td>
                             </tr>
                             @endforeach
+                            
+                            <!-- Tambahkan row total -->
+                            <tr class="table-secondary font-weight-bold">
+                                <td colspan="13" class="text-end"><strong>TOTAL:</strong></td>
+                                <td class="text-right"><strong>{{ number_format($tblmaster->sum('org_bal'), 2) }}</strong></td>
+                                <td></td>
+                                <td class="text-right"><strong>{{ number_format($tblmaster->sum('cbal'), 2) }}</strong></td>
+                                <td class="text-right"><strong>{{ number_format($tblmaster->sum('prebal'), 2) }}</strong></td>
+                                <td class="text-right"><strong>{{ number_format($tblmaster->sum('bilprn'), 2) }}</strong></td>
+                                <td class="text-right"><strong>{{ number_format($tblmaster->sum('pmtamt'), 2) }}</strong></td>
+                                <td class="text-right"><strong>{{ number_format($tblmaster->sum('prov'), 2) }}</strong></td>
+                                <td class="text-right"><strong>{{ number_format($tblmaster->sum('trxcost'), 2) }}</strong></td>
+                                <td colspan="7"></td>
+                                <td class="text-right"><strong>{{ number_format($tblmaster->sum('bilint'), 2) }}</strong></td>
+                                <td colspan="9"></td>
+                            </tr>
                         </tbody>
                     </table>
                     @else
@@ -240,6 +259,54 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-danger">Hapus Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Execute Modal -->
+<div class="modal fade" id="executeModal" tabindex="-1" aria-labelledby="executeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="executeModalLabel">Execute Stored Procedure</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('effective.outstanding.execute-procedure') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="execute_bulan" class="form-label">Bulan:</label>
+                                <select name="bulan" id="execute_bulan" class="form-control">
+                                    <option value="1">Januari</option>
+                                    <option value="2">Februari</option>
+                                    <option value="3">Maret</option>
+                                    <option value="4">April</option>
+                                    <option value="5">Mei</option>
+                                    <option value="6">Juni</option>
+                                    <option value="7">Juli</option>
+                                    <option value="8">Agustus</option>
+                                    <option value="9">September</option>
+                                    <option value="10">Oktober</option>
+                                    <option value="11">November</option>
+                                    <option value="12">Desember</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="execute_tahun" class="form-label">Tahun:</label>
+                                <input type="number" name="tahun" id="execute_tahun" class="form-control" value="{{ date('Y') }}" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Execute</button>
                 </div>
             </form>
         </div>
@@ -500,6 +567,18 @@
     .no-data-message i {
         color: #6c757d;
     }
+
+    .table-info {
+        background-color: #f2f2f2 !important; /* Warna abu-abu light */
+    }
+
+    .font-weight-bold {
+        font-weight: bold;
+    }
+
+    .text-end {
+        text-align: right;
+    }
 </style>
 
 <script>
@@ -530,6 +609,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('displayBulan').textContent = monthNames[month - 1];
         document.getElementById('displayTahun').textContent = year;
     });
+
+    // Set nilai default untuk modal execute
+    const currentMonth = "{{ date('n') }}";
+    const currentYear = "{{ date('Y') }}";
+    
+    document.getElementById('execute_bulan').value = currentMonth;
+    document.getElementById('execute_tahun').value = currentYear;
 });
 
 // Event listener untuk perubahan bulan atau tahun
@@ -558,4 +644,16 @@ function changePerPage() {
     window.location.href = url;
 }
 
+</script>
+
+<script>
+    // Check if there's a flash message
+    @if(session('swal'))
+        Swal.fire({
+            title: "{{ session('swal')['title'] }}",
+            text: "{{ session('swal')['text'] }}",
+            icon: "{{ session('swal')['icon'] }}",
+            confirmButtonText: 'OK'
+        });
+    @endif
 </script>

@@ -169,6 +169,7 @@ class simpleinterestController extends Controller
         foreach (range('A', 'J') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
+        
 
         // Siapkan nama file
         $filename = "accrual_interest_report_$no_acc.xlsx";

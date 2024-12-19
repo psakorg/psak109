@@ -35,7 +35,7 @@ class effectiveController extends Controller
     }
 
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
-    public function view($id_pt)
+    public function view(Request $request, $id_pt)
     {
         $id_pt = Auth::user()->id_pt;
 
@@ -47,14 +47,19 @@ class effectiveController extends Controller
         //     abort(404, 'Loan not found');
         // }
 
+        $bulan = $request->input('bulan', date('n'));
+        $tahun = $request->input('tahun', date('Y'));
+
         $master = DB::table('public.tblpsaklbueffective')
         ->where('no_branch', $id_pt)
+        ->where('bulan', $bulan)
+        ->where('tahun', $tahun)
         ->get();
 
-        dd($master);
+        // dd($master);
 
         // return view('report.outstanding.effective.view', compact('master', 'loan','loanfirst','loanjoin'));
-        return view('report.outstanding.effective.view', compact('master'));
+        return view('report.outstanding.effective.view', compact('master', 'bulan', 'tahun'));
     }
 
     public function exportExcel($no_acc,$id_pt)

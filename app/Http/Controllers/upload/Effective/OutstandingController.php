@@ -29,7 +29,7 @@ class OutstandingController extends Controller
             ->where('bulan', $bulan)
             ->paginate($perPage);
 
-        // dd($tblmaster);
+        // dd($tblmaster);a
 
         return view('upload.effective.layouts.outstanding', compact('tblmaster', 'bulan', 'tahun'));
     }
@@ -179,23 +179,11 @@ class OutstandingController extends Controller
             }
 
             if ($successCount > 0) {
-                try {
-                    DB::select("CALL public.spoutbaleffective(?, ?, ?)", [
-                        $tahun,
-                        $bulan,
-                        (int)$user->id_pt
-                    ]);
-
-                    $message = "✓ Import $successCount data berhasil\n";
-                    $message .= "✓ Stored procedure berhasil dijalankan";
-                    if ($existingData) {
-                        $message = "✓ Data lama berhasil dihapus\n" . $message;
-                    }
-                    return redirect()->back()->with('success', $message);
-                } catch (\Exception $e) {
-                    Log::error('Error saat menjalankan stored procedure: ' . $e->getMessage());
-                    return redirect()->back()->with('error', 'Import berhasil tapi gagal menjalankan stored procedure: ' . $e->getMessage());
+                $message = "✓ Import $successCount data berhasil";
+                if ($existingData) {
+                    $message = "✓ Data lama berhasil dihapus\n" . $message;
                 }
+                return redirect()->back()->with('success', $message);
             }
 
             throw new \Exception('Tidak ada data yang berhasil diimport.');
@@ -203,6 +191,37 @@ class OutstandingController extends Controller
         } catch (\Exception $e) {
             Log::error('Import gagal: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Import gagal: ' . $e->getMessage());
+        }
+    }
+
+    public function executeStoredProcedure(Request $request)
+    {
+        try {
+            $request->validate([
+                'tahun' => 'required|integer',
+                'bulan' => 'required|integer|min:1|max:12',
+            ]);
+
+            $user = Auth::user();
+            
+            DB::select("CALL public.spoutbaleffective(?, ?, ?)", [
+                (int)$request->tahun,
+                (int)$request->bulan,
+                (int)$user->id_pt
+            ]);
+
+            return redirect()->back()->with('swal', [
+                'title' => 'Berhasil!',
+                'text' => 'Stored procedure berhasil dijalankan',
+                'icon' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error saat menjalankan stored procedure: ' . $e->getMessage());
+            return redirect()->back()->with('swal', [
+                'title' => 'Error!',
+                'text' => 'Gagal menjalankan stored procedure: ' . $e->getMessage(),
+                'icon' => 'error'
+            ]);
         }
     }
 
