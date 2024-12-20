@@ -117,7 +117,7 @@
                                 @foreach ($reports as $report)
                                     <tr>
                                         <td>{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center>{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
+                                        <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
                                         <td>{{ $report->haribunga ?? 0 }}</td>
                                         <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->penarikan ?? 0, 2) }}</td>
@@ -128,6 +128,18 @@
                                         <td>{{ number_format($report->outsamtconv ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
+                                <!-- Row Total / Average -->
+                                <tr class="font-weight-bold">
+                                    <td class="text-center" colspan="2">TOTAL / AVERAGE</td>
+                                    <td>{{ number_format($reports->sum('payment_amount'), 2) }}</td>
+                                    <td>{{ number_format($reports->sum('days_interest'), 2) }}</td>
+                                    <td>{{ number_format($reports->sum('accrual_interest_deferred'), 2) }}</td>
+                                    <td>{{ number_format($reports->sum('effective_interest_yield'), 2) }}</td>
+                                    <td>{{ number_format($reports->sum('amortised_interest_deferred'), 2) }}</td>
+                                    <td>{{ number_format($reports->sum('outstanding_amount_initial_interest'), 2) }}</td>
+                                    <td>{{ number_format($reports->sum('cumulative_amortized_interest_deferred'), 2) }}</td>
+                                    <td>{{ number_format($reports->sum('unamortized_interest_deferred'), 2) }}</td>
+                                </tr>
                             @endif
                         </tbody>
                     </table>

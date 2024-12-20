@@ -69,7 +69,7 @@
                             @foreach ($reports as $report)
                                 <tr>
                                     <td>{{ $report->bulanke }}</td>
-                                    <td class="text-center>{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
+                                    <td class="text-center">{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
                                     <td>{{ $report->haribunga }}</td>
                                     <td>{{ number_format($report->pmtamt, 2) }}</td>
                                     <td>{{ number_format($report->penarikan, 2) }}</td>
@@ -81,6 +81,14 @@
                                 </tr>
                             @endforeach
                             @endif
+                            <!-- Row Total / Average -->
+                            <tr class="font-weight-bold">
+                                <td class="text-center" colspan="3">TOTAL / AVERAGE</td>
+                                <td>{{ number_format($reports->sum('valuta'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('post') / $reports->count(), 2) }}</td>
+                                <td>{{ number_format($reports->sum('amount') / $reports->count(), 2) }}</td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

@@ -167,20 +167,12 @@
                                         <td>{{ number_format($unamort ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
-                                <!-- Row Total -->
+                                <!-- Row Total / Average -->
                                 <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="2">TOTAL</td>
+                                    <td class="text-center" colspan="2">TOTAL / AVERAGE</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalEffectiveInterestUF_TC, 2) }}</td>
                                     <td>{{ number_format($totalEffectiveInterestUF, 2) }}</td>
-                                    <td colspan="2"></td>
-                                    <td>{{ number_format($totalCumulativeAmortizedTransactionCost, 2) }}</td>
-                                    <td>{{ number_format($totalUnamortizedTransactionCost, 2) }}</td>
-                                </tr>
-                                <!-- Row Average -->
-                                <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="2">AVERAGE</td>
-                                    <td colspan="3"></td>
                                     <td>{{ number_format($totalAmortisedTransactionCost / $reportCount, 2) }}</td>
                                     <td></td>
                                     <td>{{ number_format($totalCumulativeAmortizedTransactionCost / $reportCount, 2) }}</td>

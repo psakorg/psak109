@@ -165,7 +165,8 @@
                                     'eircalc_fee' => 0,
                                     'outsamtconv' => 0,
                                     'outsamtcost' => 0,
-                                    'outsamtfee' => 0
+                                    'outsamtfee' => 0,
+                                    'pmtamt' => 0
                                 ]; @endphp
                                 
                                 @foreach($loans as $index => $loan)
@@ -279,23 +280,25 @@
                                         $total['outsamtconv'] += $loan->outsamtconv;
                                         $total['outsamtcost'] += $loan->outsamtcost;
                                         $total['outsamtfee'] += $loan->outsamtfee;
+                                        $total['pmtamt'] += $loan->pmtamt;
                                     @endphp
                                 @endforeach
                                 
                                 <!-- Row Total/Average -->
                                 <tr class="font-weight-bold">
-                                    <td colspan="8">Average</td>
+                                    <td colspan="8">TOTAL / AVERAGE</td>
                                     <td></td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['rate'] *100 / count($loans), 5) : 0 }}%</td>
-                                    <td colspan="2"></td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['rate'] * 100 / count($loans), 5) : 0 }}%</td>
+                                    <td></td>
+                                    <td class="text-right">{{ number_format($total['pmtamt'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['org_bal'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['oldbal'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['baleir'], 0) }}</td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['eirex'] * 100/ count($loans), 14) : 0 }}%</td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc'] * 100/ count($loans), 14) : 0 }}%</td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_conv'] * 100/ count($loans), 14) : 0 }}%</td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_cost'] * 100/ count($loans), 14) : 0 }}%</td>
-                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_fee'] * 100/ count($loans), 14) : 0 }}%</td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['eirex'] * 100 / count($loans), 14) : 0 }}%</td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc'] * 100 / count($loans), 14) : 0 }}%</td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_conv'] * 100 / count($loans), 14) : 0 }}%</td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_cost'] * 100 / count($loans), 14) : 0 }}%</td>
+                                    <td>{{ count($loans) > 0 ? number_format($total['eircalc_fee'] * 100 / count($loans), 14) : 0 }}%</td>
                                     <td class="text-right">{{ number_format($total['outsamtconv'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['outsamtcost'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['outsamtfee'], 0) }}</td>

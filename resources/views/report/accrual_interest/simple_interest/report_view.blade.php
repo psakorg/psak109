@@ -144,24 +144,14 @@
                                 </tr>
                             @endforeach
                             <tr style="font-weight:bold">
-                                <td colspan="3" class="text-center">TOTAL</td>
-                                <td class="text-right"></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr style="font-weight:bold">
-                                <td colspan="3" class="text-center">AVERAGE</td>
-                                <td></td>
+                                <td colspan="3" class="text-center">TOTAL / AVERAGE</td>
+                                <td class="text-right">{{ number_format($totalPaymentAmount, 2) }}</td>
                                 <td>{{ number_format($totalWithdrawal / $reportCount, 2) }}</td>
                                 <td>{{ number_format($totalReimbursement / $reportCount, 2) }}</td>
-                                <td></td>
-                                <td></td>
+                                <td>{{ number_format($totalAccruedInterest, 2) }}</td>
+                                <td>{{ number_format($totalInterestPayment / $reportCount, 2) }}</td>
                                 <td>{{ number_format($totalTimeGap / $reportCount, 2) }}</td>
-                                <td></td>
+                                <td>{{ number_format($totalOutstandingAmount, 2) }}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -140,14 +140,10 @@
                             </tr>
                             @endforeach
                             <tr>
-                                <td colspan="2" class="text-center"><strong>TOTAL</strong></td>
+                                <td colspan="2" class="text-center"><strong>TOTAL / AVERAGE</strong></td>
                                 <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                 <td>{{ number_format($totalAccruedInterest, 2) }}</td>
                                 <td>{{ number_format($totalInterestPayment, 2) }}</td>
-                                <td colspan="3"></td>
-                            </tr>
-                            <tr>
-                                <td colspan="5" class="text-center"><strong>AVERAGE</strong></td>
                                 <td>{{ number_format($totalTimeGap / $reportCount, 2) }}</td>
                                 <td colspan="2">{{ number_format($cumulativeTimeGap / $reportCount, 2) }}</td>
                             </tr>

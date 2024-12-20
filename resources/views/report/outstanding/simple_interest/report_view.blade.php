@@ -84,7 +84,7 @@
                             @foreach ($reports as $report)
                                 <tr>
                                     <td>{{ $report->bulanke }}</td>
-                                    <td class="text-center>{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
+                                    <td class="text-center">{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
                                     <td>{{ $report->haribunga }}</td>
                                     <td>{{ number_format($report->pmtamt, 2) }}</td>
                                     <td>{{ number_format($report->penarikan, 2) }}</td>
@@ -95,6 +95,23 @@
                                     <td>{{ number_format($report->outsamtconv, 2) }}</td>
                                 </tr>
                             @endforeach
+                            <!-- Row Total / Average -->
+                            <tr class="font-weight-bold">
+                                <td colspan="10" class="text-center">TOTAL / AVERAGE</td>
+                                <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td>
+                                <td>{{ number_format($reports->avg('interest_rate'), 2) }}%</td>
+                                <td>{{ number_format($reports->sum('original_balance'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('current_balance'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('carrying_amount'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('eir_amortised_cost_exposure'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('eir_amortised_cost_calculated'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('eir_calculated_conversion'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('eir_calculated_transaction_cost'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('eir_calculated_up_front_fee'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('outstanding_amount'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('outstanding_amount_initial_transaction_cost'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('outstanding_amount_initial_up_front_fee'), 2) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

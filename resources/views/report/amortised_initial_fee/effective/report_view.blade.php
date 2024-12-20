@@ -174,23 +174,13 @@
                                     </tr>
                                 @endforeach
                                 <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="2">Total</td>
+                                    <td class="text-center" colspan="2">TOTAL / AVERAGE</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalEffectiveInterest, 2) }}</td>
                                     <td>{{ number_format($totalAccruedInterest, 2) }}</td>
                                     <td>{{ number_format($totalAmortisedFee, 2) }}</td>
                                     <td></td>
                                     <td>{{ number_format($cumulativeAmortized, 2) }}</td>
-                                    <td></td>
-                                </tr>
-                                <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="2">Average</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
                                     <td></td>
                                 </tr>
                             @endif

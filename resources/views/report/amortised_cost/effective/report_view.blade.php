@@ -205,7 +205,7 @@
                                 @endforeach
                                 <!-- Row Total -->
                                 <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="2">Total</td>
+                                    <td class="text-center" colspan="2">TOTAL / AVERAGE</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalInterestRecognition, 2) }}</td>
                                     <td>{{ number_format($totalInterestPayment, 2) }}</td>
@@ -213,11 +213,6 @@
                                     <td></td>
                                     <td>{{ number_format($cumulativeAmortized, 2) }}</td>
                                     <td></td>
-                                </tr>
-                                <!-- Row Average -->
-                                <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="2">Rata-rata</td>
-                                    <td colspan="7" class="text-center"></td>
                                 </tr>
                             @endif
                         </tbody>

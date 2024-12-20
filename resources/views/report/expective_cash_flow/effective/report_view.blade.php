@@ -122,18 +122,14 @@
                                         <td>{{ number_format($cumulativebunga ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
-                                <!-- Row Total -->
-                                <tr style="font-weight:normal;">
-                                    <td colspan="2" class="text-center">Total</td>
+                                <!-- Row Total / Average -->
+                                <tr style="font-weight:bold;">
+                                    <td colspan="2" class="text-center">TOTAL / AVERAGE</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalInterestPayment, 2) }}</td>
                                     <td>{{ number_format($totalPrincipalPayment, 2) }}</td>
                                     <td></td>
                                     <td>{{ number_format($cumulativebunga, 2) }}</td>
-                                </tr>
-                                <!-- Row Average -->
-                                <tr style="font-weight:normal;">
-                                    <td colspan="7" class="text-center">Average</td>
                                 </tr>
                             @endif
                         </tbody>

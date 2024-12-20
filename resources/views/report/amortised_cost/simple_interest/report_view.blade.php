@@ -178,21 +178,15 @@
                                         <td>{{ number_format($report->amortized + $report->outsamtconv ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
-                                <!-- Row Total -->
+                                <!-- Row Total / Average -->
                                 <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="8">TOTAL</td>
-                                    <td>{{ number_format($totalAmortised, 2) }}</td>
-                                    <td colspan="3"></td>
-                                </tr>
-                                <!-- Row Average -->
-                                <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="2">AVERAGE</td>
+                                    <td class="text-center" colspan="2">TOTAL / AVERAGE</td>
                                     <td>{{ number_format($totalDaysInterest / $reportCount, 2) }}</td>
                                     <td colspan="2"></td>
                                     <td>{{ number_format($totalWithdrawal / $reportCount, 2) }}</td>
-                                    <td>{{ number_format($totalReimbursement / $reportCount, 2) }}</td>
-                                    <td>{{ number_format(0, 2) }}</td>
-                                    <td colspan="4"></td>
+                                    <td colspan="2">{{ number_format($totalReimbursement / $reportCount, 2) }}</td>
+                                    <td>{{ number_format($totalAmortised, 2) }}</td>
+                                    <td colspan="3"></td>
                                 </tr>
                             @endif
                         </tbody>

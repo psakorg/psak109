@@ -87,17 +87,10 @@
                                         <td>{{ number_format($report->balance ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
-                                <!-- Row Total -->
-                                <tr>
-                                    <td colspan="3" class="text-center">Total</td>
+                                <!-- Row Total / Average -->
+                                <tr class="font-weight-bold">
+                                    <td class="text-center" colspan="3">TOTAL / AVERAGE</td>
                                     <td>{{ number_format($totalValuta, 2) }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <!-- Row Average -->
-                                <tr>
-                                    <td colspan="4" class="text-center">Average</td>
                                     <td>{{ number_format($totalPost / $reports->count(), 2) }}</td>
                                     <td>{{ number_format($totalAmount / $reports->count(), 2) }}</td>
                                     <td></td>
