@@ -132,7 +132,7 @@
                                         <td class="text-right">{{ number_format($loan->eircalc*100 ?? 0, 14) }}%</td>
                                         <td class="text-right">{{ number_format($loan->cbal ?? 0,2) }}</td>
                                         <td class="text-right">{{ number_format($loan->carrying_amount ?? 0, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->cbal - $loan->carrying_amount ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->bilprn + $loan->bilint ?? 0, 2) }}</td> //
                                         <td class="text-right">{{ number_format($loan->cum_bunga ?? 0, 2) }}</td>
                                         <td class="text-right">{{ number_format($loan->cum_timegap ?? 0, 2) }}</td>
                                         <td class="text-right">{{ number_format($loan->cum_amortisecost ?? 0, 2) }}</td>
