@@ -5,6 +5,6 @@
 
 @include('layouts.sidebar')
 
-@include('report.accrual_interest.effective.report_view')
+@include('report.initial_recognition.simple_interest.report_view')
 
 @include('layouts.footer')

@@ -99,6 +99,11 @@
                                         <p class="text-start" style="font-size: 14px;">Report Outstanding</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('report-initial-recognition.index') }}" class="nav-link">
+                                        <p class="text-start" style="font-size: 14px;">Report Initial Recognition</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
@@ -143,6 +148,11 @@
                                 <li class="nav-item">
                                     <a href="{{ route('report-outstanding-si.index') }}" class="nav-link">
                                         <p class="text-start" style="font-size: 14px;">Report Outstanding</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('report-initial-recognition.simple-interest') }}" class="nav-link">
+                                        <p class="text-start" style="font-size: 14px;">Report Initial Recognition</p>
                                     </a>
                                 </li>
                             </ul>

@@ -56,7 +56,7 @@ class effectiveController extends Controller
         ->where('tahun', $tahun)
         ->get();
 
-        dd($master);
+        // dd($master);
 
         // return view('report.outstanding.effective.view', compact('master', 'loan','loanfirst','loanjoin'));
         return view('report.outstanding.effective.view', compact('master', 'bulan', 'tahun'));

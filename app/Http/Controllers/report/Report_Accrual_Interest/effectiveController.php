@@ -129,12 +129,31 @@ class effectiveController extends Controller
             $sheet->setCellValue('G' . $row, 'Rp ' . number_format($report->outsamtconv, 2));
             $sheet->setCellValue('H' . $row, number_format($totalTimeGap, 2));
 
+            // Mengatur angka menjadi rata kanan
+            $sheet->getStyle('C' . $row . ':H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+
             $row++;
         }
 
         foreach (range('A', 'H') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
+
+        // Mengatur border untuk tabel
+        $styleArray = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => Color::COLOR_BLACK],
+                ],
+            ],
+        ];
+
+        // Set border untuk header tabel
+        $sheet->getStyle('A12:H12')->applyFromArray($styleArray);
+
+        // Set border untuk semua data laporan
+        $sheet->getStyle('A13:H' . ($row - 1))->applyFromArray($styleArray);
 
         $filename = "accrual_interest_report_$no_acc.xlsx";
         $writer = new Xlsx($spreadsheet);
@@ -218,19 +237,8 @@ class effectiveController extends Controller
 
         $row = 13;
         $totalTimeGap = 0;
-        $totalPaymentAmount = 0;
-        $totalAccruedInterest = 0;
-        $totalInterestPayment = 0;
-        $totalTimeGapSum = 0;
-        $totalOutstandingAmount = 0;
-
         foreach ($reports as $report) {
-            $totalTimeGap += ($report->timegap);
-            $totalPaymentAmount += $report->pmtamt;
-            $totalAccruedInterest += $report->accrconv;
-            $totalInterestPayment += $report->bunga;
-            $totalTimeGapSum += $report->timegap;
-            $totalOutstandingAmount += $report->outsamtconv;
+            $totalTimeGap += $report->timegap;
 
             $sheet->setCellValue('A' . $row, $report->bulanke);
             $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($report->tglangsuran)));
@@ -241,12 +249,31 @@ class effectiveController extends Controller
             $sheet->setCellValue('G' . $row, 'Rp ' . number_format($report->outsamtconv, 2));
             $sheet->setCellValue('H' . $row, number_format($totalTimeGap, 2));
 
+            // Mengatur angka menjadi rata kanan
+            $sheet->getStyle('C' . $row . ':H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+
             $row++;
         }
 
         foreach (range('A', 'H') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
+
+        // Mengatur border untuk tabel
+        $styleArray = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => Color::COLOR_BLACK],
+                ],
+            ],
+        ];
+
+        // Set border untuk header tabel
+        $sheet->getStyle('A12:H12')->applyFromArray($styleArray);
+
+        // Set border untuk semua data laporan
+        $sheet->getStyle('A13:H' . ($row - 1))->applyFromArray($styleArray);
 
         $filename = "accrual_interest_report_$no_acc.pdf";
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);

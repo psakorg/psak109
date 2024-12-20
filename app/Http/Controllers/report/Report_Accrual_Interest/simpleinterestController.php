@@ -1,7 +1,5 @@
 <?php
 
-namespace App\Http\Controllers\report\Report_Accrual_Interest;
-
 use App\Models\report_simpleinterest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -25,11 +23,11 @@ class simpleinterestController extends Controller
     public function index(Request $request)
     {
         $id_pt = Auth::user()->id_pt;
-    // Ambil jumlah item per halaman dari query string, default 10
+        // Ambil jumlah item per halaman dari query string, default 10
         $perPage = $request->input('per_page', 10);
-    // Ambil data dengan pagination
-    $loans = report_simpleinterest::fetchAll($id_pt, $perPage);
-// dd($loans);
+        // Ambil data dengan pagination
+        $loans = report_simpleinterest::fetchAll($id_pt, $perPage);
+        // dd($loans);
         return view('report.accrual_interest.simple_interest.master', compact('loans'));
     }
 
@@ -78,7 +76,7 @@ class simpleinterestController extends Controller
         $sheet->setCellValue('A5', 'Original Amount');
         $sheet->getStyle('A5')->getFont()->setBold(true);
         $sheet->setCellValue('B5', ':');
-        $sheet->setCellValue('C5', 'Rp ' . number_format($loan->org_bal, 2));
+        $sheet->setCellValue('C5', $loan->org_bal);
         $sheet->getStyle('A5')->getAlignment()->setWrapText(false);
 
         $sheet->setCellValue('A6', 'Term');
@@ -97,7 +95,7 @@ class simpleinterestController extends Controller
         $sheet->setCellValue('E4', $loan->deb_name);
         $sheet->setCellValue('D5', 'Original Loan Date');
         $sheet->getStyle('D5')->getFont()->setBold(true); // Set bold untuk Original Loan Date
-        $sheet->setCellValue('E5', number_format($loan->org_bal, 2));
+        $sheet->setCellValue('E5', $loan->org_bal);
         $sheet->setCellValue('D6', 'Maturity Date');
         $sheet->getStyle('E6')->getFont()->setBold(true); // Set bold untuk Maturity Date
 
@@ -129,13 +127,13 @@ class simpleinterestController extends Controller
             $sheet->setCellValue('A' . $row, $report->bulanke);
             $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($report->tglangsuran)));
             $sheet->setCellValue('C' . $row, $report->haribunga);
-            $sheet->setCellValue('D' . $row, number_format($report->pmtamt, 2));
-            $sheet->setCellValue('E' . $row, number_format($report->penarikan, 2));
-            $sheet->setCellValue('F' . $row, number_format($report->pengembalian, 2));
-            $sheet->setCellValue('G' . $row, number_format($report->bunga, 2));
-            $sheet->setCellValue('H' . $row, number_format($report->balance, 2));
+            $sheet->setCellValue('D' . $row, $report->pmtamt);
+            $sheet->setCellValue('E' . $row, $report->penarikan);
+            $sheet->setCellValue('F' . $row, $report->pengembalian);
+            $sheet->setCellValue('G' . $row, $report->bunga);
+            $sheet->setCellValue('H' . $row, $report->balance);
             $sheet->setCellValue('I' . $row, $report->timegap);
-            $sheet->setCellValue('J' . $row, number_format($report->outsamtconv, 2));
+            $sheet->setCellValue('J' . $row, $report->outsamtconv);
 
             // Mengatur font menjadi bold untuk setiap baris data
             $sheet->getStyle('A' . $row . ':J' . $row)->getFont()->setBold(true);
@@ -145,6 +143,9 @@ class simpleinterestController extends Controller
                 $sheet->getStyle('A' . $row . ':J' . $row)->getFill()->setFillType(Fill::FILL_SOLID);
                 $sheet->getStyle('A' . $row . ':J' . $row)->getFill()->getStartColor()->setARGB('FFEFEFEF'); // Warna latar belakang untuk baris genap
             }
+
+            // Mengatur angka menjadi rata kanan
+            $sheet->getStyle('D' . $row . ':J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
             $row++;
         }
@@ -183,8 +184,6 @@ class simpleinterestController extends Controller
         return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
     }
 
-
-
     // Method untuk mengekspor data ke PDF
     public function exportPdf($no_acc, $id_pt)
     {
@@ -197,114 +196,61 @@ class simpleinterestController extends Controller
             return response()->json(['message' => 'No data found for the given account number.'], 404);
         }
 
-    // Buat spreadsheet baru
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-    $sheet->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
-    $sheet->getPageSetup()->setPaperSize(PageSetup::PAPERSIZE_A4);
-    $sheet->getPageMargins()->setTop(0.5);
-    $sheet->getPageMargins()->setRight(0.5);
-    $sheet->getPageMargins()->setLeft(0.5);
-    $sheet->getPageMargins()->setBottom(0.5);
+        // Buat spreadsheet baru
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+        $sheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+        $sheet->getPageMargins()->setTop(0.5);
+        $sheet->getPageMargins()->setRight(0.5);
+        $sheet->getPageMargins()->setLeft(0.5);
+        $sheet->getPageMargins()->setBottom(0.5);
 
-    // Set lebar kolom untuk informasi header (kiri dan kanan)
-    $sheet->getColumnDimension('A')->setWidth(30)->setAutoSize(true);
-    $sheet->getColumnDimension('B')->setWidth(5)->setAutoSize(true);
-    $sheet->getColumnDimension('C')->setWidth(30);
-    $sheet->getColumnDimension('D')->setWidth(30)->setAutoSize(true);
-    $sheet->getColumnDimension('G')->setWidth(30)->setAutoSize(true);
-    $sheet->getColumnDimension('H')->setWidth(30)->setAutoSize(true);
-    $sheet->getColumnDimension('I')->setWidth(30)->setAutoSize(true);
+        $sheet->getColumnDimension('A')->setWidth(20);
+        $sheet->getColumnDimension('B')->setWidth(5);
+        $sheet->getColumnDimension('C')->setWidth(30);
 
-    // Informasi pinjaman sebelah kiri
-    $leftInfoRows = [
-        ['Account Number', ':', $loan->no_acc],
-        ['Debitor Name', ':', $loan->deb_name],
-        ['Original Amount', ':', 'Rp ' . number_format($loan->org_bal, 2)],
-        ['Term', ':', $loan->TERM . ' Months']
-    ];
+        $infoRows = [
+            ['No. Account', ':', $loan->no_acc],
+            ['Debtor Name', ':', $loan->deb_name],
+            ['Original Balance', ':', number_format($loan->org_bal, 2)],
+            ['Original Date', ':', date('d/m/Y', strtotime($loan->org_date))],
+            ['Term', ':', $loan->TERM . ' Months'],
+            ['Maturity Date', ':', date('d/m/Y', strtotime($loan->mtr_date))],
+        ];
 
-    // Informasi pinjaman sebelah kanan
-    $rightInfoRows = [
-        ['Outstanding Amount', ':', 'Rp ' . number_format($loan->org_bal, 2)],
-        ['EIR Conversion Calculated', ':', number_format($loan->eircalc_conv*100, 14) . '%'],
-        ['Original Loan Date', ':', date('d/m/Y', strtotime($loan->org_date))],
-        ['Maturity Date', ':', date('d/m/Y', strtotime($loan->mtr_date))]
-    ];
+        $currentRow = 3;
+        foreach ($infoRows as $info) {
+            $sheet->setCellValue('A' . $currentRow, $info[0]);
+            $sheet->setCellValue('B' . $currentRow, $info[1]);
+            $sheet->setCellValue('C' . $currentRow, $info[2]);
+            $sheet->getRowDimension($currentRow)->setRowHeight(25);
+            $currentRow++;
+        }
 
-    $currentRow = 3;
-    foreach ($leftInfoRows as $index => $leftInfo) {
-        // Informasi sebelah kiri
-        $sheet->setCellValue('A' . $currentRow, $leftInfo[0]);
-        $sheet->setCellValue('B' . $currentRow, $leftInfo[1]); 
-        $sheet->setCellValue('C' . $currentRow, $leftInfo[2]);
-
-        // Informasi sebelah kanan (mulai dari kolom G untuk menyesuaikan dengan lebar tabel)
-        $rightInfo = $rightInfoRows[$index];
-        $sheet->setCellValue('H' . $currentRow, $rightInfo[0]);
-        $sheet->setCellValue('I' . $currentRow, $rightInfo[1]);
-        $sheet->setCellValue('J' . $currentRow, $rightInfo[2]);
-
-        // Styling untuk baris sebelah kiri
-        $sheet->getStyle('A' . $currentRow . ':C' . $currentRow)->applyFromArray([
-            'font' => ['bold' => true],
-            'alignment' => [
-                'vertical' => Alignment::VERTICAL_CENTER,
-                'wrapText' => false
-            ],
-            'borders' => [
-                'bottom' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['argb' => Color::COLOR_BLACK],
-                ],
-            ],
-        ]);
-
-        // Styling untuk baris sebelah kanan
-        $sheet->getStyle('H' . $currentRow . ':J' . $currentRow)->applyFromArray([
-            'font' => ['bold' => true],
-            'alignment' => [
-                'vertical' => Alignment::VERTICAL_CENTER,
-            ],
-            'borders' => [
-                'bottom' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['argb' => Color::COLOR_BLACK],
-                ],
-            ],
-        ]);
-
-        // Set alignment kiri
-        $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->getStyle('B' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('C' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-
-        // Set alignment kanan
-        $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->getStyle('I' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('J' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-
-        // Set tinggi baris
-        $sheet->getRowDimension($currentRow)->setRowHeight(25);
-
-        $currentRow++;
-    }
-
-        // Set judul tabel laporan
         $sheet->setCellValue('A10', 'Accrual Interest Report - Report Details');
-        $sheet->mergeCells('A10:J10');
-        $sheet->getStyle('A10')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A10')->getFill()->setFillType(Fill::FILL_SOLID);
-        $sheet->getStyle('A10')->getFill()->getStartColor()->setARGB('FF006600');
-        $sheet->getStyle('A10')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+        $sheet->mergeCells('A10:H10');
+        $sheet->getStyle('A10:H10')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A10:H10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A10:H10')->getFill()->setFillType(Fill::FILL_SOLID);
+        $sheet->getStyle('A10:H10')->getFill()->getStartColor()->setARGB('FF006600');
+        $sheet->getStyle('A10:H10')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
-        // Set header tabel
-        $headers = ['Months', 'Transaction Date', 'Day of Interest', 'Payment Amount', 'Withdrawal', 'Reimbursement', 'Accrued interest', 'Interest Payment', 'Time Gap', 'Outstanding Amount'];
+        $headers = [
+            'Month',
+            'Payment Date',
+            'Payment Amount',
+            'Accrued Interest',
+            'Interest Payment',
+            'Time Gap',
+            'Outstanding Amount',
+            'Cummulative Time Gap'
+        ];
+
         $columnIndex = 'A';
         foreach ($headers as $header) {
             $sheet->setCellValue($columnIndex . '12', $header);
-            $sheet->getStyle($columnIndex . '12')->getFont()->setBold(false);
+            $sheet->getStyle($columnIndex . '12')->getFont()->setBold(true);
             $sheet->getStyle($columnIndex . '12')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle($columnIndex . '12')->getFill()->setFillType(Fill::FILL_SOLID);
             $sheet->getStyle($columnIndex . '12')->getFill()->getStartColor()->setARGB('FF4F81BD');
@@ -312,110 +258,31 @@ class simpleinterestController extends Controller
             $columnIndex++;
         }
 
-        // Mengisi data laporan ke dalam tabel
         $row = 13;
-        $totalPmtAmt = 0;
-        $totalPenarikan = 0;
-        $totalPengembalian = 0;
-        $totalBunga = 0;
-        $totalBalance = 0;
         $totalTimeGap = 0;
-        $totalOutstanding = 0;
-
         foreach ($reports as $report) {
-            // Menambah total
-            $totalPmtAmt += $report->pmtamt;
-            $totalPenarikan += $report->penarikan;
-            $totalPengembalian += $report->pengembalian;
-            $totalBunga += $report->bunga;
-            $totalBalance += $report->balance;
             $totalTimeGap += $report->timegap;
-            $totalOutstanding += $report->outsamtconv;
 
             $sheet->setCellValue('A' . $row, $report->bulanke);
             $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($report->tglangsuran)));
-            $sheet->setCellValue('C' . $row, $report->haribunga);
-            $sheet->setCellValue('D' . $row, 'Rp ' . number_format($report->pmtamt, 2));
-            $sheet->setCellValue('E' . $row, 'Rp ' . number_format($report->penarikan, 2));
-            $sheet->setCellValue('F' . $row, 'Rp ' . number_format($report->pengembalian, 2));
-            $sheet->setCellValue('G' . $row, 'Rp ' . number_format($report->bunga, 2));
-            $sheet->setCellValue('H' . $row, 'Rp ' . number_format($report->balance, 2));
-            $sheet->setCellValue('I' . $row, number_format($report->timegap, 2));
-            $sheet->getStyle('I' . $row)->getNumberFormat()->setFormatCode('0.00');
-            $sheet->setCellValue('J' . $row, 'Rp ' . number_format($report->outsamtconv, 2));
+            $sheet->setCellValue('C' . $row, number_format($report->pmtamt, 2));
+            $sheet->setCellValue('D' . $row, number_format($report->accrconv ?? 0, 2));
+            $sheet->setCellValue('E' . $row, number_format($report->bunga, 2));
+            $sheet->setCellValue('F' . $row, number_format($report->timegap, 2));
+            $sheet->setCellValue('G' . $row, number_format($report->outsamtconv, 2));
+            $sheet->setCellValue('H' . $row, number_format($totalTimeGap, 2));
 
-            // Mengatur alignment
-            $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('D' . $row . ':J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-
-            // Menambahkan warna latar belakang alternatif
-            if ($row % 2 == 0) {
-                $sheet->getStyle('A' . $row . ':J' . $row)->getFill()->setFillType(Fill::FILL_SOLID);
-                $sheet->getStyle('A' . $row . ':J' . $row)->getFill()->getStartColor()->setARGB('FFEFEFEF');
-            }
+            // Mengatur angka menjadi rata kanan
+            $sheet->getStyle('C' . $row . ':H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
             $row++;
         }
 
-        // Menambahkan baris total
-        $totalRow = $row;
-        $sheet->setCellValue('A' . $totalRow, 'TOTAL');
-        $sheet->mergeCells('A' . $totalRow . ':C' . $totalRow);
-        $sheet->setCellValue('D' . $totalRow, 'Rp ' . number_format($totalPmtAmt, 2));
-        $sheet->setCellValue('E' . $totalRow, 'Rp ' . number_format($totalPenarikan, 2));
-        $sheet->setCellValue('F' . $totalRow, 'Rp ' . number_format($totalPengembalian, 2));
-        $sheet->setCellValue('G' . $totalRow, 'Rp ' . number_format($totalBunga, 2));
-        $sheet->setCellValue('H' . $totalRow, 'Rp ' . number_format($totalBalance, 2));
-        $sheet->setCellValue('I' . $totalRow, number_format($totalTimeGap, 2));
-        $sheet->setCellValue('J' . $totalRow, 'Rp ' . number_format($totalOutstanding, 2));
+        foreach (range('A', 'H') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
 
-        // Styling untuk baris total
-        $sheet->getStyle('A' . $totalRow . ':J' . $totalRow)->applyFromArray([
-            'font' => ['bold' => false],
-            'fill' => [
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['argb' => 'FFD3D3D3']
-            ],
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['argb' => Color::COLOR_BLACK],
-                ],
-            ]
-        ]);
-
-        // Alignment untuk baris total
-        $sheet->getStyle('A' . $totalRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('D' . $totalRow . ':J' . $totalRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-
-        // Border untuk seluruh tabel
-        $sheet->getStyle('A12:J' . $totalRow)->applyFromArray([
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['argb' => Color::COLOR_BLACK],
-                ],
-            ],
-        ]);
-
-        // Mengatur lebar kolom
-        $sheet->getColumnDimension('A')->setWidth(10);  // Bulanke
-        $sheet->getColumnDimension('B')->setWidth(15);  // Tgl Angsuran
-        $sheet->getColumnDimension('C')->setWidth(35);   // Hari Bunga (diatur lebih kecil)
-        $sheet->getColumnDimension('D')->setAutoSize(true);  // PMT Amt
-        $sheet->getColumnDimension('E')->setAutoSize(true);  // Penarikan
-        $sheet->getColumnDimension('F')->setAutoSize(true);  // Pengembalian
-        $sheet->getColumnDimension('G')->setAutoSize(true);  // Bunga
-        $sheet->getColumnDimension('H')->setAutoSize(true);  // Balance
-        $sheet->getColumnDimension('I')->setAutoSize(true);  // Time Gap
-        $sheet->getColumnDimension('J')->setAutoSize(true);  // Outstanding Amount
-
-        // Siapkan nama file
         $filename = "accrual_interest_report_$no_acc.pdf";
-
-        // Set pengaturan untuk PDF
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
         $temp_file = tempnam(sys_get_temp_dir(), 'phpspreadsheet_pdf');
         $writer->save($temp_file);
