@@ -309,7 +309,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-outstanding-simple-interest/view/{no_acc}/{id_pt}', [outstandsiControler::class, 'view'])->name('report-outstanding-si.view');
     Route::get('/report-outstanding-simple-interest/export-pdf/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportPdf'])->name('report-outstanding-si.exportPdf');
     Route::get('/report-outstanding-simple-interest/export-excel/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportExcel'])->name('report-outstanding-si.exportExcel');
-
+    Route::get('/report-outstanding-simple-interest/export-csv/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportCsv'])->name('report-outstanding-si.exportCsv');
+    
     Route::get('/check-report-outstanding-simple/{no_acc}/{id_pt}', 
         [outstandsiControler::class, 'checkData'])
         ->name('check-report-outstanding-simple');
@@ -319,11 +320,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-outstanding-effective', [outstandeffControler::class, 'index'])->name('report-outstanding-eff.index');
     Route::get('/report-outstanding-effective/view/{id_pt}', [outstandeffControler::class, 'view'])->name('report-outstanding-eff.view');
     Route::get('/report-outstanding-effective/export-pdf/{id_pt}', [outstandeffControler::class, 'exportPdf'])->name('report-outstanding-eff.exportPdf');
+
     Route::get('/report-outstanding-effective/export-excel/{id_pt}', [outstandeffControler::class, 'exportExcel'])->name('report-outstanding-eff.exportExcel');
 
+    Route::get('/report-outstanding-effective/export-csv/{id_pt}', [outstandeffControler::class, 'exportCsv'])->name('report-outstanding-eff.exportCsv');
+    
     Route::get('/check-report-outstanding-effective/{no_acc}/{id_pt}', 
         [outstandeffControler::class, 'checkData'])
-        ->name('check-report-outstanding-effective');
+        ->name('check-report-outstanding-effective');    
 });
 
                                                         // SECURITIES

@@ -68,7 +68,7 @@ class effectiveController extends Controller
         $sheet->getColumnDimension('C')->setWidth(30);
 
         $infoRows = [
-            ['No. Account', ':', $loan->no_acc],
+            ['No. Account', ':', "'" . $loan->no_acc],
             ['Debtor Name', ':', $loan->deb_name],
             ['Original Balance', ':', 'Rp ' . number_format($loan->org_bal, 2)],
             ['Original Date', ':', date('d/m/Y', strtotime($loan->org_date))],
@@ -122,6 +122,7 @@ class effectiveController extends Controller
 
             $sheet->setCellValue('A' . $row, $report->bulanke);
             $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($report->tglangsuran)));
+            $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('C' . $row, 'Rp ' . number_format($report->pmtamt, 2));
             $sheet->setCellValue('D' . $row, 'Rp ' . number_format($report->accrconv ?? 0, 2));
             $sheet->setCellValue('E' . $row, 'Rp ' . number_format($report->bunga, 2));
@@ -188,7 +189,7 @@ class effectiveController extends Controller
         $sheet->getColumnDimension('C')->setWidth(30);
 
         $infoRows = [
-            ['No. Account', ':', $loan->no_acc],
+            ['No. Account', ':', "'" . $loan->no_acc],
             ['Debtor Name', ':', $loan->deb_name],
             ['Original Balance', ':', 'Rp ' . number_format($loan->org_bal, 2)],
             ['Original Date', ':', date('d/m/Y', strtotime($loan->org_date))],
@@ -242,6 +243,7 @@ class effectiveController extends Controller
 
             $sheet->setCellValue('A' . $row, $report->bulanke);
             $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($report->tglangsuran)));
+            $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('C' . $row, 'Rp ' . number_format($report->pmtamt, 2));
             $sheet->setCellValue('D' . $row, 'Rp ' . number_format($report->accrconv ?? 0, 2));
             $sheet->setCellValue('E' . $row, 'Rp ' . number_format($report->bunga, 2));
@@ -307,4 +309,6 @@ class effectiveController extends Controller
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat memeriksa data']);
         }
     }
+
+    
 }

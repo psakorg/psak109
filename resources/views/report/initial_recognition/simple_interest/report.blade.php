@@ -131,13 +131,12 @@
                                 <th>Account Number</th>
                                 <th>Debitor Name</th>
                                 <th>GL Account</th>
-                                <th>Loan Type</th>
+                                <th>Loan Group</th>
                                 <th>GL Group</th>
                                 <th>Original Date</th>
                                 <th>Term (Months)</th>
                                 <th>Interest Rate</th>
                                 <th>Maturity Date</th>
-                                <th>Payment Amount</th>
                                 <th>Original Balance</th>
                                 <th>Current Balance</th>
                                 <th>Carrying Amount</th>
@@ -166,7 +165,6 @@
                                     'outsamtconv' => 0,
                                     'outsamtcost' => 0,
                                     'outsamtfee' => 0,
-                                    'pmtamt' => 0
                                 ]; @endphp
                                 
                                 @foreach($loans as $index => $loan)
@@ -254,7 +252,6 @@
                                         <td>{{ $loan->term }}</td>
                                         <td>{{ number_format($loan->rate*100, 5) }}%</td>
                                         <td>{{ $loan->mtrdtconv }}</td>
-                                        <td class="text-right">{{ number_format($loan->pmtamt, 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->org_bal, 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->oldbal, 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->baleir, 0) }}</td>
@@ -280,7 +277,6 @@
                                         $total['outsamtconv'] += $loan->outsamtconv;
                                         $total['outsamtcost'] += $loan->outsamtcost;
                                         $total['outsamtfee'] += $loan->outsamtfee;
-                                        $total['pmtamt'] += $loan->pmtamt;
                                     @endphp
                                 @endforeach
                                 
@@ -290,7 +286,6 @@
                                     <td></td>
                                     <td>{{ count($loans) > 0 ? number_format($total['rate'] * 100 / count($loans), 5) : 0 }}%</td>
                                     <td></td>
-                                    <td class="text-right">{{ number_format($total['pmtamt'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['org_bal'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['oldbal'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['baleir'], 0) }}</td>

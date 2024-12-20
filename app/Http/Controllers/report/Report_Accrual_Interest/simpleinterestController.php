@@ -324,4 +324,44 @@ class simpleinterestController extends Controller
             ]);
         }
     }
+
+    public function exportCsv($no_acc, $id_pt)
+    {
+        $loan = report_simpleinterest::getLoanDetails($no_acc, $id_pt);
+        $reports = report_simpleinterest::getReportsByNoAcc($no_acc, $id_pt);
+
+        if (!$loan || $reports->isEmpty()) {
+            return response()->json(['message' => 'No data found for the given account number.'], 404);
+        }
+
+        $csvData = [];
+        $csvData[] = ['Month', 'Payment Date', 'Payment Amount', 'Accrued Interest', 'Interest Payment', 'Time Gap', 'Outstanding Amount', 'Cummulative Time Gap'];
+
+        $totalTimeGap = 0;
+        foreach ($reports as $report) {
+            $totalTimeGap += $report->timegap;
+            $csvData[] = [
+                $report->bulanke,
+                date('Y-m-d', strtotime($report->tglangsuran)),
+                number_format($report->pmtamt, 2),
+                number_format($report->accrconv ?? 0, 2),
+                number_format($report->bunga, 2),
+                number_format($report->timegap, 2),
+                number_format($report->outsamtconv, 2),
+                number_format($totalTimeGap, 2)
+            ];
+        }
+
+        $filename = "accrual_interest_report_$no_acc.csv";
+        $handle = fopen('php://output', 'w');
+        foreach ($csvData as $row) {
+            fputcsv($handle, $row);
+        }
+        fclose($handle);
+
+        return response()->streamDownload(function() use ($handle) {
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
+    
 }
