@@ -118,6 +118,7 @@
                                 $totalPaymentAmount = 0;
                                 $totalAccruedInterest = 0;
                                 $totalInterestPayment = 0;
+                                $totalOutstandingAmount = 0;
                                 $reportCount = count($reports);
                             @endphp
                             @foreach ($reports as $report)
@@ -127,6 +128,7 @@
                                 $totalPaymentAmount += $report->pmtamt;
                                 $totalAccruedInterest += $report->accrconv;
                                 $totalInterestPayment += $report->bunga;
+                                $totalOutstandingAmount += $report->outsamtconv;
                             @endphp
                             <tr>
                                 <td>{{ $report->bulanke }}</td>
@@ -140,12 +142,13 @@
                             </tr>
                             @endforeach
                             <tr>
-                                <td colspan="2" class="text-center"><strong>TOTAL / AVERAGE</strong></td>
+                                <td colspan="2" class="text-center"><strong>TOTAL</strong></td>
                                 <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                 <td>{{ number_format($totalAccruedInterest, 2) }}</td>
                                 <td>{{ number_format($totalInterestPayment, 2) }}</td>
                                 <td>{{ number_format($totalTimeGap / $reportCount, 2) }}</td>
-                                <td colspan="2">{{ number_format($cumulativeTimeGap / $reportCount, 2) }}</td>
+                                <td>{{ number_format($totalOutstandingAmount, 2) }}</td>
+                                <td>{{ number_format($cumulativeTimeGap / $reportCount, 2) }}</td>
                             </tr>
                         </tbody>
                     </table>

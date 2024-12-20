@@ -282,7 +282,7 @@
                                 
                                 <!-- Row Total/Average -->
                                 <tr class="font-weight-bold">
-                                    <td colspan="8">TOTAL / AVERAGE</td>
+                                    <td colspan="8">TOTAL</td>
                                     <td></td>
                                     <td>{{ count($loans) > 0 ? number_format($total['rate'] * 100 / count($loans), 5) : 0 }}%</td>
                                     <td></td>

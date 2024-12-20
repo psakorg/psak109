@@ -169,6 +169,8 @@
                                 $totalInterestRecognition = 0;
                                 $totalInterestPayment = 0;
                                 $totalAmortised = 0;
+                                $totalCarryingAmount = 0;
+                                $totalCumulativeAmortized = 0;
                             @endphp
                                 @foreach ($reports as $report)
                                 @php
@@ -190,6 +192,8 @@
                                     $totalInterestRecognition += $report->bungaeir ?? 0;
                                     $totalInterestPayment += $report->bunga ?? 0;
                                     $totalAmortised += $amortized;
+                                    $totalCarryingAmount += $carryingAmount;
+                                    $totalCumulativeAmortized += $cumulativeAmortized;
                                 @endphp
                                     <tr style="font-weight:normal;">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
@@ -205,13 +209,13 @@
                                 @endforeach
                                 <!-- Row Total -->
                                 <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="2">TOTAL / AVERAGE</td>
+                                    <td class="text-center" colspan="2">TOTAL</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalInterestRecognition, 2) }}</td>
                                     <td>{{ number_format($totalInterestPayment, 2) }}</td>
                                     <td>{{ number_format($totalAmortised, 2) }}</td>
-                                    <td></td>
-                                    <td>{{ number_format($cumulativeAmortized, 2) }}</td>
+                                    <td>{{ number_format($totalCarryingAmount, 2) }}</td>
+                                    <td>{{ number_format($totalCumulativeAmortized, 2) }}</td>
                                     <td></td>
                                 </tr>
                             @endif

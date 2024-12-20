@@ -132,7 +132,7 @@
                                         <td class="text-right">{{ number_format($loan->eircalc*100 ?? 0, 14) }}%</td>
                                         <td class="text-right">{{ number_format($loan->cbal ?? 0,2) }}</td>
                                         <td class="text-right">{{ number_format($loan->carrying_amount ?? 0, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->bilprn + $loan->bilint ?? 0, 2) }}</td> //
+                                        <td class="text-right">{{ number_format($loan->bilprn + $loan->bilint ?? 0, 2) }}</td> 
                                         <td class="text-right">{{ number_format($loan->bilint + $loan->bilprn ?? 0, 2) }}</td>
                                         <td class="text-right">{{ number_format($loan->cum_timegap ?? 0, 2) }}</td>
                                         <td class="text-right">{{ number_format($loan->cum_amortisecost ?? 0, 2) }}</td>
@@ -143,16 +143,17 @@
 
                                 <!-- Row Total / Average -->
                                 <tr class="table-secondary font-weight-bold">
-                                    <td colspan="11" class="text-center"><strong>TOTAL / AVERAGE:</strong></td>
+                                    <td colspan="10" class="text-center"><strong>TOTAL:</strong></td>
+                                    <td class="text-right"><strong>{{ number_format(($master->avg('rate') * 100) ?? 0, 5) }}%</strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('pmtamt') ?? 0, 2) }}</strong></td>
                                     <td class="text-right"><strong>{{ number_format(($master->avg('eirex') * 100) ?? 0, 14) }}%</strong></td>
                                     <td class="text-right"><strong>{{ number_format(($master->avg('eircalc') * 100) ?? 0, 14) }}%</strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('cbal') ?? 0, 2) }}</strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('carrying_amount') ?? 0, 2) }}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('cbal') - $master->sum('carrying_amount') ?? 0, 2) }}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_bunga') ?? 0, 2) }}</strong></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td class="text-end"></td>
+                                    <td class="text-end"></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_timegap') ?? 0, 2) }}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_amortisecost') ?? 0, 2) }}</strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('cum_amortisefee') ?? 0, 2) }}</strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('cum_amortized') ?? 0, 2) }}</strong></td>
                                 </tr>

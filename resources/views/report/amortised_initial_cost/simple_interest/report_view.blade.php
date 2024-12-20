@@ -132,15 +132,16 @@
                             @endforeach
                             <!-- Row Total / Average -->
                             <tr class="text-right font-weight-bold">
-                                <td class="text-center" colspan="4">TOTAL / AVERAGE</td>
+                                <td class="text-center" colspan="3">TOTAL</td>
+                                <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('penarikan'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('pengembalian'), 2) }}</td>
-                                <td>{{ number_format(0, 2) }}</td>
-                                <td>{{ number_format(0, 2) }}</td>
+                                <td>{{ number_format($reports->sum('effective_interest_uf_tc'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('effective_interest_uf'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('amortisecost'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('outsamtconv'), 2) }}</td>
-                                <td>{{ number_format(0, 2) }}</td>
-                                <td>{{ number_format(0, 2) }}</td>
+                                <td>{{ number_format($reports->sum('cumm_amortized_cost'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('unamortized_cost'), 2) }}</td>
                             </tr>
                         </tbody>
                     </table>

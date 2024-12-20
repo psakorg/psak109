@@ -127,8 +127,7 @@
                                 $totalPaymentAmount = 0;
                                 $totalEffectiveInterestUF_TC = 0;
                                 $totalEffectiveInterestUF = 0;
-                                $totalAmortisedTransactionCost = 0;
-                                $totalCumulativeAmortizedTransactionCost = 0;
+                                $totalOutstandingAmountInitialTransactionCost = 0;
                                 $totalUnamortizedTransactionCost = 0;
                                 $reportCount = count($reports);
                             @endphp
@@ -151,8 +150,7 @@
                                     $totalPaymentAmount += $report->pmtamt ?? 0;
                                     $totalEffectiveInterestUF_TC += $report->bunga ?? 0;
                                     $totalEffectiveInterestUF += $report->bunga ?? 0;
-                                    $totalAmortisedTransactionCost += $report->amortisecost ?? 0;
-                                    $totalCumulativeAmortizedTransactionCost += $cumulativeAmortized;
+                                    $totalOutstandingAmountInitialTransactionCost += $report->outsamtcost ?? 0;
                                     $totalUnamortizedTransactionCost += $unamort;
                                 @endphp
                                     <tr style="font-weight:normal;">
@@ -169,14 +167,14 @@
                                 @endforeach
                                 <!-- Row Total / Average -->
                                 <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="2">TOTAL / AVERAGE</td>
+                                    <td class="text-center" colspan="2">TOTAL</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalEffectiveInterestUF_TC, 2) }}</td>
                                     <td>{{ number_format($totalEffectiveInterestUF, 2) }}</td>
-                                    <td>{{ number_format($totalAmortisedTransactionCost / $reportCount, 2) }}</td>
                                     <td></td>
-                                    <td>{{ number_format($totalCumulativeAmortizedTransactionCost / $reportCount, 2) }}</td>
-                                    <td>{{ number_format($totalUnamortizedTransactionCost / $reportCount, 2) }}</td>
+                                    <td>{{ number_format($totalOutstandingAmountInitialTransactionCost, 2) }}</td>
+                                    <td></td>
+                                    <td>{{ number_format($totalUnamortizedTransactionCost, 2) }}</td>
                                 </tr>
                             @endif
                         </tbody>

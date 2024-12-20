@@ -153,7 +153,11 @@
                                 $totalWithdrawal = 0;
                                 $totalReimbursement = 0;
                                 $totalInterestPayment = 0;
-                                $reportCount = count($reports);
+                                $totalPaymentAmount = 0;
+                                $totalInterestRecognition = 0;
+                                $totalCarryingAmount = 0;
+                                $totalCummulativeAmortized = 0;
+                                $totalUnamortized = 0;
                             @endphp
                                 @foreach ($reports as $report)
                                 @php
@@ -162,6 +166,11 @@
                                     $totalWithdrawal += $report->withdrawal ?? 0;
                                     $totalReimbursement += $report->reimbursement ?? 0;
                                     $totalInterestPayment += $report->bunga ?? 0;
+                                    $totalPaymentAmount += $report->pmtamt ?? 0;
+                                    $totalInterestRecognition += $report->bunga ?? 0; // Assuming interest recognition is bunga
+                                    $totalCarryingAmount += $report->baleir ?? 0;
+                                    $totalCummulativeAmortized += $report->outsamtconv ?? 0;
+                                    $totalUnamortized += $report->amortized + $report->outsamtconv ?? 0;
                                 @endphp
                                     <tr style="font-weight:normal">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
@@ -178,15 +187,19 @@
                                         <td>{{ number_format($report->amortized + $report->outsamtconv ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
-                                <!-- Row Total / Average -->
+                                <!-- Row Total -->
                                 <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="2">TOTAL / AVERAGE</td>
-                                    <td>{{ number_format($totalDaysInterest / $reportCount, 2) }}</td>
-                                    <td colspan="2"></td>
-                                    <td>{{ number_format($totalWithdrawal / $reportCount, 2) }}</td>
-                                    <td colspan="2">{{ number_format($totalReimbursement / $reportCount, 2) }}</td>
+                                    <td class="text-center" colspan="2">TOTAL</td>
+                                    <td>{{ number_format($totalDaysInterest, 2) }}</td>
+                                    <td>{{ number_format($totalPaymentAmount, 2) }}</td>
+                                    <td>{{ number_format($totalWithdrawal, 2) }}</td>
+                                    <td>{{ number_format($totalReimbursement, 2) }}</td>
+                                    <td>{{ number_format($totalInterestRecognition, 2) }}</td>
+                                    <td>{{ number_format($totalInterestPayment, 2) }}</td>
                                     <td>{{ number_format($totalAmortised, 2) }}</td>
-                                    <td colspan="3"></td>
+                                    <td>{{ number_format($totalCarryingAmount, 2) }}</td>
+                                    <td>{{ number_format($totalCummulativeAmortized, 2) }}</td>
+                                    <td>{{ number_format($totalUnamortized, 2) }}</td>
                                 </tr>
                             @endif
                         </tbody>

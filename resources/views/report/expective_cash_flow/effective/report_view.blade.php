@@ -103,6 +103,7 @@
                                     $totalPaymentAmount = 0;
                                     $totalInterestPayment = 0;
                                     $totalPrincipalPayment = 0;
+                                    $totalBalanceContractual = 0;
                                 @endphp
                                 @foreach ($reports as $report)
                                     @php
@@ -111,6 +112,7 @@
                                         $totalPaymentAmount += $report->pmtamt;
                                         $totalInterestPayment += $report->bunga;
                                         $totalPrincipalPayment += $report->pokok;
+                                        $totalBalanceContractual += $report->balance;
                                     @endphp
                                     <tr style="font-weight:normal;">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
@@ -122,13 +124,13 @@
                                         <td>{{ number_format($cumulativebunga ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
-                                <!-- Row Total / Average -->
+                                <!-- Row Total -->
                                 <tr style="font-weight:bold;">
-                                    <td colspan="2" class="text-center">TOTAL / AVERAGE</td>
+                                    <td colspan="2" class="text-center">TOTAL</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalInterestPayment, 2) }}</td>
                                     <td>{{ number_format($totalPrincipalPayment, 2) }}</td>
-                                    <td></td>
+                                    <td>{{ number_format($totalBalanceContractual, 2) }}</td>
                                     <td>{{ number_format($cumulativebunga, 2) }}</td>
                                 </tr>
                             @endif

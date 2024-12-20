@@ -140,7 +140,9 @@
                                     $totalPaymentAmount = 0;
                                     $totalEffectiveInterest = 0;
                                     $totalAccruedInterest = 0;
-                                    $totalAmortisedFee = 0;
+                                    $totalAmortisedUpFrontFee = 0;
+                                    $totalOutstandingAmountInitialUpFrontFee = 0;
+                                    $totalCumulativeAmortizedUpFrontFee = 0;
                                 @endphp
                                 @foreach ($reports as $report)
                                     @php
@@ -159,7 +161,9 @@
                                         $totalPaymentAmount += $report->pmtamt ?? 0;
                                         $totalEffectiveInterest += $report->bunga ?? 0;
                                         $totalAccruedInterest += $report->accrfee ?? 0;
-                                        $totalAmortisedFee += $amortisefee;
+                                        $totalAmortisedUpFrontFee += $report->amortisefee ?? 0;
+                                        $totalOutstandingAmountInitialUpFrontFee += $report->outsamtfee ?? 0;
+                                        $totalCumulativeAmortizedUpFrontFee += $cumulativeAmortized;
                                     @endphp
                                     <tr style="font-weight:normal;">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
@@ -174,13 +178,13 @@
                                     </tr>
                                 @endforeach
                                 <tr style="font-weight:bold;">
-                                    <td class="text-center" colspan="2">TOTAL / AVERAGE</td>
+                                    <td class="text-center" colspan="2">TOTAL</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalEffectiveInterest, 2) }}</td>
                                     <td>{{ number_format($totalAccruedInterest, 2) }}</td>
-                                    <td>{{ number_format($totalAmortisedFee, 2) }}</td>
-                                    <td></td>
-                                    <td>{{ number_format($cumulativeAmortized, 2) }}</td>
+                                    <td>{{ number_format($totalAmortisedUpFrontFee, 2) }}</td>
+                                    <td>{{ number_format($totalOutstandingAmountInitialUpFrontFee, 2) }}</td>
+                                    <td>{{ number_format($totalCumulativeAmortizedUpFrontFee, 2) }}</td>
                                     <td></td>
                                 </tr>
                             @endif
