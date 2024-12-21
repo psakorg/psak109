@@ -13,6 +13,8 @@ use App\Http\Controllers\upload\simple_interest\tblcorporateController;
 use App\Http\Controllers\upload\simple_interest\tblmasterController as tblmaster_SI;
 use App\Http\Controllers\upload\effective\tblmasterController as tblmaster_EFF;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\upload\Effective\OutstandingController;
+use App\Http\Controllers\upload\simple_interest\OutstandingController as Outstanding_SI;
 
 
 use App\Http\Controllers\MappingAdminController;
@@ -55,7 +57,6 @@ use App\Models\Mapping;
 
 use App\Http\Controllers\report\ReportController;
 
-use App\Http\Controllers\upload\Effective\OutstandingController;
 
 
 
@@ -395,6 +396,15 @@ Route::middleware(['auth'])->group(function () {
             ->name('simple-interest.tblmaster.execute-procedure');
         Route::post('/tblmaster/clear', [tblmaster_SI::class, 'clear'])
             ->name('simple-interest.tblmaster.clear');
+
+        Route::get('/outstanding', [Outstanding_SI::class, 'index'])
+            ->name('simple-interest.outstanding.index');
+        Route::post('/outstanding/import', [Outstanding_SI::class, 'importExcel'])
+            ->name('simple-interest.outstanding.import');
+        Route::post('/outstanding/execute-procedure', [Outstanding_SI::class, 'executeStoredProcedure'])
+            ->name('simple-interest.outstanding.execute-procedure');
+        Route::post('/outstanding/clear', [Outstanding_SI::class, 'clear'])
+            ->name('simple-interest.outstanding.clear');
     });
 });
 Route::middleware(['auth'])->group(function () {

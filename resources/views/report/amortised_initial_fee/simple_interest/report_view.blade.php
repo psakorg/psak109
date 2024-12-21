@@ -139,7 +139,7 @@
                                 <td>{{ number_format($reports->sum('balance'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('timegap'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('outsamtconv'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('cumulative_amortized'), 2) }}</td>
+                                <td></td>
                                 <td>{{ number_format($reports->sum('unamortized'), 2) }}</td>
                             </tr>
                         </tbody>

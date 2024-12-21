@@ -174,7 +174,7 @@
                                     <td></td>
                                     <td>{{ number_format($totalOutstandingAmountInitialTransactionCost, 2) }}</td>
                                     <td></td>
-                                    <td>{{ number_format($totalUnamortizedTransactionCost, 2) }}</td>
+                                    <td></td>
                                 </tr>
                             @endif
                         </tbody>

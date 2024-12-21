@@ -288,7 +288,7 @@
                                     <td></td>
                                     <td class="text-right">{{ number_format($total['org_bal'], 0) }}</td>
                                     <td class="text-right">{{ number_format($total['oldbal'], 0) }}</td>
-                                    <td class="text-right">{{ number_format($total['baleir'], 0) }}</td>
+                                    <td class="text-right"></td>
                                     <td>{{ count($loans) > 0 ? number_format($total['eirex'] * 100 / count($loans), 14) : 0 }}%</td>
                                     <td>{{ count($loans) > 0 ? number_format($total['eircalc'] * 100 / count($loans), 14) : 0 }}%</td>
                                     <td>{{ count($loans) > 0 ? number_format($total['eircalc_conv'] * 100 / count($loans), 14) : 0 }}%</td>

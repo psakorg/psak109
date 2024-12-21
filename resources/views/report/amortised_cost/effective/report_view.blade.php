@@ -214,8 +214,8 @@
                                     <td>{{ number_format($totalInterestRecognition, 2) }}</td>
                                     <td>{{ number_format($totalInterestPayment, 2) }}</td>
                                     <td>{{ number_format($totalAmortised, 2) }}</td>
-                                    <td>{{ number_format($totalCarryingAmount, 2) }}</td>
-                                    <td>{{ number_format($totalCumulativeAmortized, 2) }}</td>
+                                    <td></td>
+                                    <td></td>
                                     <td></td>
                                 </tr>
                             @endif

@@ -149,13 +149,13 @@
                                     <td class="text-right"><strong>{{ number_format(($master->avg('eirex') * 100) ?? 0, 14) }}%</strong></td>
                                     <td class="text-right"><strong>{{ number_format(($master->avg('eircalc') * 100) ?? 0, 14) }}%</strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('cbal') ?? 0, 2) }}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('carrying_amount') ?? 0, 2) }}</strong></td>
+                                    <td class="text-end"></td>
                                     <td class="text-end"></td>
                                     <td class="text-end"></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('cum_timegap') ?? 0, 2) }}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_amortisecost') ?? 0, 2) }}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_amortisefee') ?? 0, 2) }}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_amortized') ?? 0, 2) }}</strong></td>
+                                    <td class="text-end"></td>
+                                    <td class="text-end"></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_bunga') ?? 0, 2) }}</strong></td>
                                 </tr>
                             @endif
                         </tbody>

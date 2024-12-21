@@ -141,7 +141,7 @@
                                 <td>{{ number_format($reports->sum('amortisecost'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('outsamtconv'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('cumm_amortized_cost'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('unamortized_cost'), 2) }}</td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>

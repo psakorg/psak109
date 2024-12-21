@@ -218,7 +218,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('corporate.index') }}" class="nav-link d-flex align-items-center">
+                                    <a href="{{ route('simple-interest.outstanding.index') }}" class="nav-link d-flex align-items-center">
                                         <p class="ms-2 mb-0 text-center" style="width: 30px; font-size: 14px;">✦</p>
                                         <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Upload Data Outstanding</p>
                                     </a>
