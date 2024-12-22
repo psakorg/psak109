@@ -5,8 +5,7 @@
                 <div class="mb-3">
                     <a href="{{ route('report-acc-si.exportPdf',  ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt]) }}" class="btn btn-danger">Export to PDF</a>
                     <a href="{{ route('report-acc-si.exportExcel',  ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])}}" class="btn btn-success">Export to Excel</a>
-                    
-                    <a href="{{ route('report-outstanding-eff.exportCsv',  ['no_acc'=> $loan->no_acc, 'id_pt' => $loan->id_pt])}}" class="btn btn-warning text-white">Export to CSV</a>
+                    <a href="{{ route('report-acc-si.exportCsv',  ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])}}" class="btn btn-warning text-white">Export to CSV</a>
                 </div>
 
                 <!-- Loan Details Form -->

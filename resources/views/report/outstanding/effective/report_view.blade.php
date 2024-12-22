@@ -2,15 +2,6 @@
     <div class="main-content" style="padding-top: 20px;">
         <div class="container mt-5">
             <section class="section">
-                <div class="d-flex justify-content-start mb-3 align-items-center">
-                   
-
-                    @if(isset($masters) && count($masters) > 0)
-                        <a href="{{ route('report-outstanding-eff.exportPdf', ['id_pt' => $masters[0]['no_branch']])}}" class="btn btn-danger">Export to PDF</a>
-                        <a href="{{ route('report-outstanding-eff.exportExcel', ['id_pt' => $masters[0]['no_branch']])}}" class="btn btn-success">Export to Excel</a>
-                    @endif
-                </div>
-
                 <!-- Loan Details Form -->
                 <div class="card mb-4">
                     <div class="card-header">
@@ -56,7 +47,7 @@
                     </div> -->
                 </div>
 
-                 <div class="d-flex align-items-center me-3 mb-3">
+                 <div class="d-flex align-items-center me-3 mb-3 gap-3">
                         <select class="form-select me-2" style="width: 140px;" id="monthSelect">
                             <option value="1" {{ date('n') == 1 ? 'selected' : '' }}>January</option>
                             <option value="2" {{ date('n') == 2 ? 'selected' : '' }}>February</option>
@@ -77,8 +68,14 @@
                                value="{{ date('Y') }}" 
                                min="2000" 
                                max="2099">
+                    
+                    <div class="d-flex justify-content-start  align-items-center gap-3">    
+                        <a href="{{ route('report-outstanding-eff.exportPdf', ['id_pt' => $id_pt]) }}" class="btn btn-danger">Export to PDF</a>
+                        <a href="{{ route('report-outstanding-eff.exportExcel', ['id_pt' => $id_pt]) }}" class="btn btn-success">Export to Excel</a>
+                        <a href="{{ route('report-outstanding-eff.exportCsv', ['id_pt' => $id_pt]) }}" class="btn btn-primary">Export to Csv</a>
+                </div>
                     </div>
-
+                    
                 <!-- Report Table -->
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover" style="font-size: 12px;">

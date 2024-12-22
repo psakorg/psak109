@@ -117,6 +117,8 @@ class OutstandingController extends Controller
                     return date('Y-m-d H:i:s', strtotime($date));
                 };
 
+                // dd($row[25]);
+
                 try {
                         $data = [
                         'no_acc' => trim((string)$row[0]),
@@ -125,7 +127,7 @@ class OutstandingController extends Controller
                         'bulan' => (int)$bulan,
                         'deb_name' => trim((string)$row[2]),
                         'status' => substr(trim((string)$row[3]), 0, 1),
-                        'ln_type' => trim((string)$row[4]),
+                        'ln_type' => substr(trim((string)$row[4]), 0, 2),
                         'org_date' => (int)$row[5],
                         'org_date_dt' => $convertDate($row[6]),
                         'term' => (int)$row[7],
@@ -145,7 +147,7 @@ class OutstandingController extends Controller
                         'GROUP' => trim($row[21]),
                         'bilint' => (float)str_replace(['$', ','], '', $row[22]),
                         'bisifa' => (float)str_replace(['$', ','], '', $row[23]),
-                        'birest' => trim((string)$row[24]),
+                        'birest' => substr(trim((string)$row[24]), 0, 2),
                         'freldt' => (int)$row[25],
                         'freldt_dt' => $convertDate($row[26]),
                         'resdt' => (int)$row[27],

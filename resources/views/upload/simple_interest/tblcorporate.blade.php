@@ -135,7 +135,7 @@
                         <tbody>
                             @foreach($tblcorporateloancabangdetail as $tb)
                                 <tr class="text-center">
-                                    <td>{{ $tb->idtrx }}</td>
+                                    <td>{{ $tb->id }}</td>
                                     <td>{{ $tb->id_ktr_cabang }}</td>
                                     <td>{{ $tb->cif_bank }}</td>
                                     <td>{{ $tb->no_rekening }}</td>

@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Http\Controllers\report\Report_Accrual_Interest;
+
 use App\Models\report_simpleinterest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

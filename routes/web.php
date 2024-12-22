@@ -311,7 +311,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-outstanding-simple-interest/export-pdf/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportPdf'])->name('report-outstanding-si.exportPdf');
     Route::get('/report-outstanding-simple-interest/export-excel/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportExcel'])->name('report-outstanding-si.exportExcel');
     Route::get('/report-outstanding-simple-interest/export-csv/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportCsv'])->name('report-outstanding-si.exportCsv');
-    
+    Route::get('report-acc-si/exportCsv/{no_acc}/{id_pt}', [simpleinterestController::class, 'exportCsv'])->name('report-acc-si.exportCsv');
     Route::get('/check-report-outstanding-simple/{no_acc}/{id_pt}', 
         [outstandsiControler::class, 'checkData'])
         ->name('check-report-outstanding-simple');
