@@ -56,23 +56,120 @@
                         <i class="nav-arrow bi bi-chevron-right"></i>
                     </a>
                     <ul class="nav nav-treeview">
+                        <!-- Initial Recognition -->
                        <li class="nav-item">
                             <div class="sidebar-dropdown">
                                 <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
-                                    <i class="fas fa-file"></i>
                                     <p class="ms-2 mb-0" style="font-size: 14px;">Initial Recognition</p>
                                     <i class="bi bi-chevron-right ms-auto"></i>
                                 </a>
                                 <div class="sidebar-dropdown-menu">
-                                    <a href="#" class="dropdown-link">Menu A</a>
-                                    <a href="#" class="dropdown-link">Menu B</a>
-                                    <a href="#" class="dropdown-link">Menu C</a>
+                                    <a href="{{ route('report-initial-recognition.index') }}" class="dropdown-link">Effective</a>
+                                    <a href="{{ route('report-initial-recognition.simple-interest') }}" class="dropdown-link">Simple Interest</a>
+                                    <a href="#" class="dropdown-link">Securities</a>
                                 </div>
                             </div>
                         </li>
 
-                        <!-- Effective -->
+                        <!-- Outstanding Report -->
+                       <li class="nav-item">
+                            <div class="sidebar-dropdown">
+                                <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
+                                    <p class="ms-2 mb-0" style="font-size: 14px;">Outstanding Report</p>
+                                    <i class="bi bi-chevron-right ms-auto"></i>
+                                </a>
+                                <div class="sidebar-dropdown-menu">
+                                    <a href="{{ route('report-outstanding-eff.view', ['id_pt' => Auth::user()->id_pt]) }}" class="dropdown-link">Effective</a>
+                                    <a href="{{ route('report-outstanding-si.index') }}" class="dropdown-link">Simple Interest</a>
+                                    <a href="#" class="dropdown-link">Securities</a>
+                                </div>
+                            </div>
+                        </li>
+
+                        <!-- Journal Report -->
+                       <li clatss="nav-item">
+                            <div class="sidebar-dropdown">
+                                <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
+                                    <p class="ms-2 mb-0" style="font-size: 14px;">Journal</p>
+                                    <i class="bi bi-chevron-right ms-auto"></i>
+                                </a>
+                                <div class="sidebar-dropdown-menu">
+                                    <a href="{{ route('report-journal-eff.index') }}" class="dropdown-link">Effective</a>
+                                    <a href="{{ route('report-outstanding-si.index') }}" class="dropdown-link">Simple Interest</a>
+                                    <a href="#" class="dropdown-link">Securities</a>
+                                </div>
+                            </div>
+                        </li>
+
+                        <!-- Detail Report -->
                         <li class="nav-item">
+                            <a href="#" class="nav-link d-flex align-items-center">
+                                <p class="ms-2 mb-0 text-start" style="white-space: nowrap; font-size: 14px;">Detail Report</p>
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <div class="sidebar-dropdown">
+                                        <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
+                                            <p class="ms-2 mb-0" style="font-size: 14px;">Accrual Interest</p>
+                                            <i class="bi bi-chevron-right ms-auto"></i>
+                                        </a>
+                                        <div class="sidebar-dropdown-menu">
+                                            <a href="{{ route('report-acc-eff.index') }}" class="dropdown-link">Effective</a>
+                                            <a href="{{ route('report-acc-si.index') }}" class="dropdown-link">Simple Interest</a>
+                                            <a href="#" class="dropdown-link">Securities</a>
+                                        </div>
+                                    </div>
+                                    <div class="sidebar-dropdown">
+                                        <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
+                                            <p class="ms-2 mb-0" style="font-size: 14px;">Amortised Cost</p>
+                                            <i class="bi bi-chevron-right ms-auto"></i>
+                                        </a>
+                                        <div class="sidebar-dropdown-menu">
+                                            <a href="{{ route('report-amorcost-eff.index') }}" class="dropdown-link">Effective</a>
+                                            <a href="{{ route('report-amorcost-si.index') }}" class="dropdown-link">Simple Interest</a>
+                                            <a href="#" class="dropdown-link">Securities</a>
+                                        </div>
+                                    </div>
+                                    <div class="sidebar-dropdown">
+                                        <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
+                                            <p class="ms-2 mb-0" style="font-size: 14px;">Amortised Initial Cost</p>
+                                            <i class="bi bi-chevron-right ms-auto"></i>
+                                        </a>
+                                        <div class="sidebar-dropdown-menu">
+                                            <a href="{{ route('report-amorinitcost-eff.index') }}" class="dropdown-link">Effective</a>
+                                            <a href="{{ route('report-amorinitcost-si.index') }}" class="dropdown-link">Simple Interest</a>
+                                            <a href="#" class="dropdown-link">Securities</a>
+                                        </div>
+                                    </div>
+                                    <div class="sidebar-dropdown">
+                                        <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
+                                            <p class="ms-2 mb-0" style="font-size: 14px;">Amortised Initial Fee</p>
+                                            <i class="bi bi-chevron-right ms-auto"></i>
+                                        </a>
+                                        <div class="sidebar-dropdown-menu">
+                                            <a href="{{ route('report-amorinitfee-eff.index') }}" class="dropdown-link">Effective</a>
+                                            <a href="{{ route('report-amorinitfee-si.index') }}" class="dropdown-link">Simple Interest</a>
+                                            <a href="#" class="dropdown-link">Securities</a>
+                                        </div>
+                                    </div>
+                                    <div class="sidebar-dropdown">
+                                        <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
+                                            <p class="ms-2 mb-0" style="font-size: 14px;">Expected Cashflow</p>
+                                            <i class="bi bi-chevron-right ms-auto"></i>
+                                        </a>
+                                        <div class="sidebar-dropdown-menu">
+                                            <a href="{{ route('report-expectcfeff-eff.index') }}" class="dropdown-link">Effective</a>
+                                            <a href="{{ route('report-expectcf-si.index') }}" class="dropdown-link">Simple Interest</a>
+                                            <a href="#" class="dropdown-link">Securities</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Effective -->
+                        <!-- <li class="nav-item">
                             <a href="#" class="nav-link d-flex align-items-center">
                                 <i class="fas fa-signal"></i>
                                 <p class="ms-2 mb-0 text-start" style="white-space: nowrap; font-size: 14px;">Effective</p>
@@ -120,10 +217,10 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> -->
 
                         <!-- Simple Interest -->
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a href="#" class="nav-link d-flex align-items-center">
                                 <i class="fas fa-money-bill-wave"></i>
                                 <p class="ms-2 mb-0 text-start" style="white-space: nowrap; font-size: 14px;">Simple Interest</p>
@@ -171,7 +268,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> -->
 
                         <!-- Securities -->
                         <li class="nav-item">

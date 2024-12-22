@@ -544,7 +544,7 @@
                     <div class="mb-3  ">
                         <label for="reportType" class="form-label me-2">Report Type</label>
                         <select class="form-select" id="reportType" required style="width: 100%;">
-                            <!-- Options will be populated by JavaScript -->
+                            <!-- Options will be populated by JavaScriptt -->
                         </select>
                     </div>
                     <div class="mb-3">

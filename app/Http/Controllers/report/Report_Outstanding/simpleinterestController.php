@@ -40,12 +40,18 @@ class simpleinterestController extends Controller
         $loan = report_simpleinterest::getLoanDetails($no_acc,$id_pt);
         $reports = report_simpleinterest::getReportsByNoAcc($no_acc,$id_pt);
 
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect('https://psak.pramatech.id');
+        }
+
         if (!$loan) {
             abort(404, 'Loan not found');
         }
 
-
-        return view('report.outstanding.simple_interest.view', compact('loan', 'reports'));
+        $isSuperAdmin = $user->role === 'superadmin';
+        return view('report.outstanding.simple_interest.view', compact('loan', 'reports', 'isSuperAdmin', 'user'));
     }
 
     public function exportExcel($no_acc, $id_pt)

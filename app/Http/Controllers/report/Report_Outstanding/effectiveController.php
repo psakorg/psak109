@@ -47,8 +47,16 @@ class effectiveController extends Controller
         //     abort(404, 'Loan not found');
         // }
 
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect('https://psak.pramatech.id');
+        }
+            
         $bulan = $request->input('bulan', date('n'));
         $tahun = $request->input('tahun', date('Y'));
+
+        $isSuperAdmin = $user->role === 'superadmin';
 
         $master = DB::table('public.tblpsaklbueffective')
         ->where('no_branch', $id_pt)
@@ -59,7 +67,7 @@ class effectiveController extends Controller
         // dd($master);
 
         // return view('report.outstanding.effective.view', compact('master', 'loan','loanfirst','loanjoin'));
-        return view('report.outstanding.effective.view', compact('master', 'bulan', 'tahun'));
+        return view('report.outstanding.effective.view', compact('master', 'bulan', 'tahun' ,'isSuperAdmin', "user"));
     }
 
     public function exportExcel($no_acc,$id_pt)

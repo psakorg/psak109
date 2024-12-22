@@ -43,8 +43,14 @@ class effectiveController extends Controller
             abort(404, 'Loan not found');
         }
 
+        $user = Auth::user();
 
-        return view('report.journal.effective.view', compact('loan', 'reports'));
+        if (!$user) {
+            return redirect('https://psak.pramatech.id');
+        }
+
+        $isSuperAdmin = $user->role === 'superadmin';
+        return view('report.journal.effective.view', compact('loan', 'reports', 'isSuperAdmin', 'user'));
     }
 
     public function exportExcel($no_acc,$id_pt)
