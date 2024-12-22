@@ -56,6 +56,21 @@
                         <i class="nav-arrow bi bi-chevron-right"></i>
                     </a>
                     <ul class="nav nav-treeview">
+                       <li class="nav-item">
+                            <div class="sidebar-dropdown">
+                                <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
+                                    <i class="fas fa-file"></i>
+                                    <p class="ms-2 mb-0" style="font-size: 14px;">Initial Recognition</p>
+                                    <i class="bi bi-chevron-right ms-auto"></i>
+                                </a>
+                                <div class="sidebar-dropdown-menu">
+                                    <a href="#" class="dropdown-link">Menu A</a>
+                                    <a href="#" class="dropdown-link">Menu B</a>
+                                    <a href="#" class="dropdown-link">Menu C</a>
+                                </div>
+                            </div>
+                        </li>
+
                         <!-- Effective -->
                         <li class="nav-item">
                             <a href="#" class="nav-link d-flex align-items-center">
@@ -356,4 +371,107 @@
         background-color: rgba(255, 255, 255, 0.2);
         color: #ffffff;
     }
+
+    .sidebar-dropdown {
+        position: relative;
+        width: 100%;
+    }
+
+    .sidebar-dropdown-toggle {
+        width: 100%;
+        color: #b8c7ce !important;
+        transition: all 0.3s ease;
+        font-size: 14px !important;
+    }
+
+    .sidebar-dropdown-toggle:hover {
+        background-color: rgba(255,255,255,.1);
+        color: #fff !important;
+    }
+
+    .sidebar-dropdown-toggle p {
+        font-size: 14px !important;
+    }
+
+    .sidebar-dropdown-toggle i {
+        font-size: 14px;
+    }
+
+    .sidebar-dropdown-menu {
+        display: none;
+        position: fixed;
+        left: 250px;
+        min-width: 200px;
+        background-color: #343a40;
+        border: 1px solid rgba(255,255,255,.1);
+        z-index: 9999;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .sidebar-dropdown-menu.show {
+        display: block;
+    }
+
+    .dropdown-link {
+        display: block;
+        padding: 8px 15px;
+        color: #b8c7ce;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .dropdown-link:hover {
+        background-color: rgba(255,255,255,.1);
+        color: #fff;
+        text-decoration: none;
+    }
+
+    /* Reset overflow untuk container */
+    .wrapper,
+    .main-sidebar,
+    .sidebar,
+    .nav-sidebar,
+    .nav-item {
+        overflow: visible !important;
+    }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdowns = document.querySelectorAll('.sidebar-dropdown-toggle');
+    
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Tutup semua dropdown yang terbuka
+            document.querySelectorAll('.sidebar-dropdown-menu').forEach(menu => {
+                if (menu !== this.nextElementSibling) {
+                    menu.classList.remove('show');
+                }
+            });
+            
+            // Toggle dropdown yang diklik
+            const menu = this.closest('.sidebar-dropdown').querySelector('.sidebar-dropdown-menu');
+            menu.classList.toggle('show');
+            
+            // Atur posisi menu
+            if (menu.classList.contains('show')) {
+                const rect = this.getBoundingClientRect();
+                menu.style.top = `${rect.top}px`;
+            }
+        });
+    });
+    
+    // Tutup dropdown saat klik di luar
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.sidebar-dropdown')) {
+            document.querySelectorAll('.sidebar-dropdown-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        }
+    });
+});
+</script>

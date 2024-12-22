@@ -315,20 +315,26 @@ public function checkData($no_acc, $id_pt)
 
 public function exportCsv($no_acc, $id_pt)
 {
-    // Fetch loan and reports data
+    // Ambil data loan dan reports
     $loan = report_simpleinterest::getLoanDetails(trim($no_acc), trim($id_pt));
     $reports = report_simpleinterest::getReportsByNoAcc(trim($no_acc), trim($id_pt));
 
-    // Check if data exists
+    // Cek apakah data loan dan reports ada
     if (!$loan || $reports->isEmpty()) {
         return response()->json(['message' => 'No data found for the given account number.'], 404);
     }
 
-    // Prepare CSV data
+    // Siapkan data CSV
     $csvData = [];
-    $headers = ['Bulanke', 'Tgl Angsuran', 'Hari Bunga', 'PMT Amt', 'Penarikan', 'Pengembalian', 'Bunga', 'Balance', 'Time Gap', 'Outs Amt Conv'];
-    $csvData[] = $headers;
+    $csvData[] = ['Branch Number', $loan->no_acc];
+    $csvData[] = ['Branch Name', $loan->deb_name];
+    $csvData[] = ['GL Group', number_format($loan->org_bal, 2)];
+    $csvData[] = ['Date Of Report', date('Y-m-d', strtotime($loan->org_date))];
+    $csvData[] = [];
+    $csvData[] = ['Accrual Interest Report - Report Details'];
+    $csvData[] = ['Bulanke', 'Tgl Angsuran', 'Hari Bunga', 'PMT Amt', 'Penarikan', 'Pengembalian', 'Bunga', 'Balance', 'Time Gap', 'Outs Amt Conv'];
 
+    // Mengisi data laporan ke dalam CSV
     foreach ($reports as $report) {
         $csvData[] = [
             $report->bulanke,
@@ -340,12 +346,14 @@ public function exportCsv($no_acc, $id_pt)
             number_format($report->bunga, 2),
             number_format($report->balance, 2),
             $report->timegap,
-            number_format($report->outsamtconv, 2),
+            number_format($report->outsamtconv, 2)
         ];
     }
 
-    // Create CSV file
+    // Siapkan nama file
     $filename = "accrual_interest_report_$no_acc.csv";
+
+    // Buat file CSV
     $handle = fopen('php://output', 'w');
     ob_start();
     foreach ($csvData as $row) {
@@ -354,7 +362,7 @@ public function exportCsv($no_acc, $id_pt)
     fclose($handle);
     $csvContent = ob_get_clean();
 
-    // Return CSV response
+    // Kembalikan response CSV
     return response($csvContent)
         ->header('Content-Type', 'text/csv')
         ->header('Content-Disposition', "attachment; filename=\"$filename\"");
