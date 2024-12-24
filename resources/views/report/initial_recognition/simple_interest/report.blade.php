@@ -658,6 +658,145 @@ function showModal(type) {
     $('#reportModal').modal('show');
 }
 
+function showModalWithAccount(accountNumber, type) {
+    console.log('Account Number:', accountNumber);
+    console.log('Type:', type);
+    
+    // Bersihkan whitespace dan pastikan tipe data string
+    const cleanAccountNumber = accountNumber.toString().trim();
+    
+    const accountNumberInput = document.getElementById('accountNumber');
+    console.log('Account Input Element:', accountNumberInput);
+    
+    // Set nilai dengan timeout untuk memastikan DOM sudah siap
+    setTimeout(() => {
+        // Set nilai menggunakan setAttribute
+        accountNumberInput.setAttribute('value', cleanAccountNumber);
+        // Set juga menggunakan property value
+        accountNumberInput.value = cleanAccountNumber;
+        
+        console.log('Value after set:', accountNumberInput.value);
+        
+        // Trigger change event
+        const event = new Event('change', { bubbles: true });
+        accountNumberInput.dispatchEvent(event);
+        
+        // Trigger blur event
+        const blurEvent = new Event('blur', { bubbles: true });
+        accountNumberInput.dispatchEvent(blurEvent);
+    }, 100);
+
+    const reportTypeSelect = document.getElementById('reportType');
+    reportTypeSelect.innerHTML = ''; 
+    
+    let options;
+    switch(type) {
+        case 'accrual_interest_effective':
+        case 'accrual_interest_simple':
+            options = `
+                <option value="accrual_interest_effective">Effective</option>
+                <option value="accrual_interest_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_cost_effective':
+        case 'amortised_cost_simple':
+            options = `
+                <option value="amortised_cost_effective">Effective</option>
+                <option value="amortised_cost_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_initial_cost_effective':
+        case 'amortised_initial_cost_simple':
+            options = `
+                <option value="amortised_initial_cost_effective">Effective</option>
+                <option value="amortised_initial_cost_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_initial_fee_effective':
+        case 'amortised_initial_fee_simple':
+            options = `
+                <option value="amortised_initial_fee_effective">Effective</option>
+                <option value="amortised_initial_fee_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'expected_cashflow_effective':
+        case 'expected_cashflow_simple':
+            options = `
+                <option value="expected_cashflow_effective">Effective</option>
+                <option value="expected_cashflow_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'initial_recognition_effective':
+        case 'initial_recognition_simple':
+            options = `
+                <option value="initial_recognition_effective">Effective</option>
+                <option value="initial_recognition_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'outstanding_effective':
+        case 'outstanding_simple':
+            options = `
+                <option value="outstanding_effective">Effective</option>
+                <option value="outstanding_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'journal_effective':
+        case 'journal_simple':
+            options = `
+                <option value="journal_effective">Effective</option>
+                <option value="journal_simple">Simple Interest</option>
+            `;
+            break;
+    }
+    
+    reportTypeSelect.innerHTML = options;
+    reportTypeSelect.value = type;
+    
+    
+    if (!{{ $isSuperAdmin ? 'true' : 'false' }}) {
+        const entityNumber = document.getElementById('entityNumber').value;
+        if (entityNumber) {
+            fetch(`/check-entity/${entityNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    const entityLabel = document.getElementById('entityLabel');
+                    if (data.success) {
+                        entityLabel.innerHTML = data.entity_name;
+                        entityLabel.style = `
+                            display: inline-block;
+                            visibility: visible;
+                            margin-left: 10px;
+                            padding: 4px 8px;
+                            background-color: #d4edda;
+                            color: #155724;
+                            border: 1px solid #c3e6cb;
+                            border-radius: 4px;
+                            font-size: 14px;
+                        `;
+                    }
+                });
+        }
+    }
+    $('#reportModal').modal('show');
+
+    setTimeout(() => {
+        const accountNumberInput = document.getElementById('accountNumber');
+        const entityNumberInput = document.getElementById('entityNumber');
+        const event = new Event('blur');
+        
+        accountNumberInput.dispatchEvent(event);
+        entityNumberInput.dispatchEvent(event);
+    }, 100);
+
+}
+
 function viewReport() {
     const form = document.getElementById('reportForm');
     if (!form.checkValidity()) {
@@ -1022,117 +1161,6 @@ document.getElementById('accountNumber').addEventListener('blur', function() {
     }
 });
 
-function showModalWithAccount(accountNumber, type) {
-    const reportTypeSelect = document.getElementById('reportType');
-    reportTypeSelect.innerHTML = ''; 
-    
-    let options;
-    switch(type) {
-        case 'accrual_interest_effective':
-        case 'accrual_interest_simple':
-            options = `
-                <option value="accrual_interest_effective">Effective</option>
-                <option value="accrual_interest_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'amortised_cost_effective':
-        case 'amortised_cost_simple':
-            options = `
-                <option value="amortised_cost_effective">Effective</option>
-                <option value="amortised_cost_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'amortised_initial_cost_effective':
-        case 'amortised_initial_cost_simple':
-            options = `
-                <option value="amortised_initial_cost_effective">Effective</option>
-                <option value="amortised_initial_cost_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'amortised_initial_fee_effective':
-        case 'amortised_initial_fee_simple':
-            options = `
-                <option value="amortised_initial_fee_effective">Effective</option>
-                <option value="amortised_initial_fee_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'expected_cashflow_effective':
-        case 'expected_cashflow_simple':
-            options = `
-                <option value="expected_cashflow_effective">Effective</option>
-                <option value="expected_cashflow_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'initial_recognition_effective':
-        case 'initial_recognition_simple':
-            options = `
-                <option value="initial_recognition_effective">Effective</option>
-                <option value="initial_recognition_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'outstanding_effective':
-        case 'outstanding_simple':
-            options = `
-                <option value="outstanding_effective">Effective</option>
-                <option value="outstanding_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'journal_effective':
-        case 'journal_simple':
-            options = `
-                <option value="journal_effective">Effective</option>
-                <option value="journal_simple">Simple Interest</option>
-            `;
-            break;
-    }
-    
-    reportTypeSelect.innerHTML = options;
-    reportTypeSelect.value = type;
-    
-    // Set nilai account dan entity
-    document.getElementById('accountNumber').value = accountNumber;
-    
-    if (!{{ $isSuperAdmin ? 'true' : 'false' }}) {
-        const entityNumber = document.getElementById('entityNumber').value;
-        if (entityNumber) {
-            fetch(`/check-entity/${entityNumber}`)
-                .then(response => response.json())
-                .then(data => {
-                    const entityLabel = document.getElementById('entityLabel');
-                    if (data.success) {
-                        entityLabel.innerHTML = data.entity_name;
-                        entityLabel.style = `
-                            display: inline-block;
-                            visibility: visible;
-                            margin-left: 10px;
-                            padding: 4px 8px;
-                            background-color: #d4edda;
-                            color: #155724;
-                            border: 1px solid #c3e6cb;
-                            border-radius: 4px;
-                            font-size: 14px;
-                        `;
-                    }
-                });
-        }
-    }
 
-    // Trigger blur events
-    const accountNumberInput = document.getElementById('accountNumber');
-    const entityNumberInput = document.getElementById('entityNumber');
-    const event = new Event('blur');
-    accountNumberInput.dispatchEvent(event);
-    entityNumberInput.dispatchEvent(event);
-
-    // Tampilkan modal
-    $('#reportModal').modal('show');
-}
 
 </script>

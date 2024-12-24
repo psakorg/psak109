@@ -35,12 +35,12 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Initial Recognition -->
-                <li class="nav-item active">
+                <!-- <li class="nav-item active">
                     <a class="nav-link" href="{{ route('report-initial-recognition.index') }}">
                         <i class="fas fa-fw fa-tachometer-alt"></i>
                         <span class="d-none d-md-inline" style="font-size: 14px;">Initial Recognition</span>
                     </a>
-                </li>
+                </li> -->
 
                 <hr class="sidebar-divider">
 

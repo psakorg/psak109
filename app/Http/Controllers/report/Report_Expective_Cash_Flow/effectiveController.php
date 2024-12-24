@@ -21,7 +21,7 @@ use Dompdf\Options;
 
 class effectiveController extends Controller
 {
-    // Method untuk menampilkan semua data pinjaman korporat
+    // Method untuk menampilkan semua data pinjaman korporatt
     public function index(Request $request)
     {
         $id_pt = Auth::user()->id_pt;
