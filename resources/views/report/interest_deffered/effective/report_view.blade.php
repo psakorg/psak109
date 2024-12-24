@@ -119,26 +119,26 @@
                                         <td>{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
                                         <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
-                                        <td>{{ $report->days_interest ?? '0' }}</td>
-                                        <td>{{ number_format($report->accrual_interest ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->effective_interest ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->amortised_interest ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->outstanding_amount ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->cummulative_amortized ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->unamortized_interest ?? 0, 2) }}</td>
+                                        <td>{{ $report->haribunga ?? '0' }}</td>
+                                        <td>{{ number_format($report->accrual_interest ?? 0, 5) }}</td>
+                                        <td>{{ number_format($report->effective_interest ?? 0, 5) }}</td>
+                                        <td>{{ number_format($report->amortised_interest ?? 0, 5) }}</td>
+                                        <td>{{ number_format($report->outstanding_amount ?? 0, 5) }}</td>
+                                        <td>{{ number_format($report->cummulative_amortized ?? 0, 5) }}</td>
+                                        <td>{{ number_format($report->unamortized_interest ?? 0, 5) }}</td>
                                     </tr>
                                 @endforeach
                                 <!-- Row Total / Average -->
-                                <tr class="font-weight-bold">
+                                <tr class="font-weight-normal">
                                     <td class="text-center" colspan="2">TOTAL / AVERAGE</td>
                                     <td>{{ number_format($reports->sum('payment_amount'), 2) }}</td>
-                                    <td>{{ number_format($reports->sum('days_interest'), 2) }}</td>
-                                    <td>{{ number_format($reports->sum('accrual_interest'), 2) }}</td>
-                                    <td>{{ number_format($reports->sum('effective_interest'), 2) }}</td>
-                                    <td>{{ number_format($reports->sum('amortised_interest'), 2) }}</td>
-                                    <td>{{ number_format($reports->sum('outstanding_amount'), 2) }}</td>
-                                    <td>{{ number_format($reports->sum('cummulative_amortized'), 2) }}</td>
-                                    <td>{{ number_format($reports->sum('unamortized_interest'), 2) }}</td>
+                                    <td>{{ number_format($reports->sum('haribunga'), 2) }}</td>
+                                    <td>{{ number_format($reports->sum('accrual_interest'), 5) }}</td>
+                                    <td>{{ number_format($reports->sum('effective_interest'), 5) }}</td>
+                                    <td>{{ number_format($reports->sum('amortised_interest'), 5) }}</td>
+                                    <td>{{ number_format($reports->sum('outstanding_amount'), 5) }}</td>
+                                    <td>{{ number_format($reports->sum('cummulative_amortized'), 5) }}</td>
+                                    <td>{{ number_format($reports->sum('unamortized_interest'), 5) }}</td>
                                 </tr>
                             @endif
                         </tbody>

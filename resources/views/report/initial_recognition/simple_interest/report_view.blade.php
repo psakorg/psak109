@@ -40,7 +40,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label text-right" style="white-space: nowrap;">EIR Conversion Calculated</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->eircalc_conv * 100, 15) . '%' }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->eircalc_conv * 100, 14) . '%' }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +79,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Interest Rate</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($master->rate * 100, 2) . '%'}}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($master->rate * 100, 5) . '%'}}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
@@ -125,8 +125,8 @@
                                 <td>{{ $report->bulanke }}</td>
                                 <td class="text-center" >{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
                                 <td>{{ number_format($report->pmtamt, 2) }}</td>
-                                <td>{{ number_format($report->accrconv, 2) }}</td>
-                                <td>{{ number_format($report->accrconv, 2) }}</td>
+                                <td>{{ number_format($report->accrconv, 5) }}</td>
+                                <td>{{ number_format($report->accrconv, 5) }}</td>
                                 <td>{{ number_format($report->timegap, 2) }}</td>
                                 <td>{{ number_format($report->outsamtconv, 2) }}</td>
                                 <td>{{ number_format($totalTimeGap, 2) }}</td>

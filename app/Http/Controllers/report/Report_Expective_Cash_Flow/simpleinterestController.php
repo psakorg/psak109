@@ -18,6 +18,8 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class simpleinterestController extends Controller
 {
@@ -34,19 +36,46 @@ class simpleinterestController extends Controller
     }
 
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
-    public function view($no_acc,$id_pt)
+    public function view($no_acc, $id_pt)
     {
-        $no_acc = trim($no_acc,$id_pt);
-        $loan = report_simpleinterest::getLoanDetails($no_acc,$id_pt);
-        $reports = report_simpleinterest::getReportsByNoAcc($no_acc,$id_pt);
+        try {
+            $no_acc = trim($no_acc);
 
-        // dd($reports, $loan);
+            // $no_acc = trim($no_acc,$id_pt);
+            // $loan = report_simpleinterest::getLoanDetails($no_acc,$id_pt);
+            // $reports = report_simpleinterest::getReportsByNoAcc($no_acc,$id_pt);
+            
+            // Eksekusi stored procedure
+            DB::beginTransaction();
+            
+            // Panggil procedure
+            DB::select("CALL spexpectedcashflowcorporateloan_view(?, ?, 'result_cursor')", [
+                $no_acc,
+                $id_pt
+            ]);
+            
+            // Ambil hasil dari cursor
+            $reports = DB::select('FETCH ALL FROM result_cursor');
+            
+            DB::commit();
 
-        if (!$loan) {
-            abort(404, 'Loan not found');
+            // dd($reports);
+
+            $loan = report_simpleinterest::getLoanDetails($no_acc, $id_pt);
+
+            if (!$loan) {
+                abort(404, 'Loan not found');
+            }
+
+            // dd($reports, $loan); // Uncomment untuk debug
+
+            return view('report.expective_cash_flow.simple_interest.view', compact('loan', 'reports'));
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error executing stored procedure: ' . $e->getMessage());
+            abort(500, 'Error executing report: ' . $e->getMessage());
         }
-
-        return view('report.expective_cash_flow.simple_interest.view', compact('loan', 'reports'));
     }
 
     public function exportExcel($no_acc, $id_pt)

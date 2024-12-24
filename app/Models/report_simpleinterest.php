@@ -32,7 +32,7 @@ public static function getLoanDetails($no_acc, $id_pt)
     return self::join('public.tblmaster_tmpcorporate as master', 'public.tblobalcorporateloan.no_acc', '=', DB::raw("master.no_acc::varchar")) // Join ke tblmaster_tmpcorporate dengan alias 'master'
         ->where('public.tblobalcorporateloan.no_acc', $no_acc)
         ->where('public.tblobalcorporateloan.id_pt', $id_pt)
-        ->select('public.tblobalcorporateloan.*', 'master.term') // Memilih semua kolom dari tblobalcorporateloan dan kolom term dari master
+        ->select('public.tblobalcorporateloan.*', 'master.*') // Memilih semua kolom dari tblobalcorporateloan dan kolom term dari master
         ->first();
 }
 

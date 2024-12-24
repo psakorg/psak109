@@ -37,7 +37,7 @@
                                     <td>{{ number_format($loan->rate * 100, 5) }}%</td>
                                     <td>{{ number_format($loan->pmtamt ?? 0, 2) }}</td>
                                     <td>{{ number_format($loan->org_bal ?? 0, 2) }}</td>
-                                    <td>{{ number_format($loan->eircalc_conv * 100, 15) }}%</td>
+                                    <td>{{ number_format($loan->eircalc_conv * 100, 14) }}%</td>
 
                                         <td>
                                             <a href="{{ route('report-acc-eff.view', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt]) }}" class="btn btn-sm btn-info">

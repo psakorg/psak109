@@ -9,7 +9,7 @@
                 <!-- Loan Details Form -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="card-title"style="font-size: 16px;">REPORT EXPECTIVE CASH FLOW - SIMPLE INTEREST</h5>
+                        <h5 class="card-title"style="font-size: 16px;">REPORT EXPECTED CASH FLOW - SIMPLE INTEREST</h5>
                     </div>
                     <div class="card-body">
                         <form>
@@ -63,7 +63,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Interest Rate</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ $loan->interest }}" readonly>
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format($loan->interest * 100, 14) }}%" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -92,23 +92,23 @@
                                 <tr>
                                     <td>{{ $report->bulanke }}</td>
                                     <td class="text-center">{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
-                                    <td>{{ $report->haribunga }}</td>
-                                    <td>{{ number_format($report->pmtamt, 2) }}</td>
-                                    <td>{{ number_format($report->penarikan, 2) }}</td>
-                                    <td>{{ number_format($report->pengembalian, 2) }}</td>
-                                    <td>{{ number_format($report->bunga, 2) }}</td>
-                                    <td>{{ number_format($report->balance, 2) }}</td>
+                                    <td class="text-end">{{ $report->haribunga }}</td>
+                                    <td class="text-end">{{ number_format($report->pmtamt, 2) }}</td>
+                                    <td class="text-end">{{ number_format($report->penarikan, 2) }}</td>
+                                    <td class="text-end">{{ number_format($report->pengembalian, 2) }}</td>
+                                    <td class="text-end">{{ number_format($report->bunga, 5) }}</td>
+                                    <td class="text-end">{{ number_format($report->balance, 2) }}</td>
                                 </tr>
                             @endforeach
                             <!-- Row Total / Average -->
-                            <tr class="font-weight-bold">
+                            <tr class="font-weight-normal">
                                 <td class="text-center" colspan="2">TOTAL / AVERAGE</td>
-                                <td>{{ number_format($reports->sum('haribunga') / $reports->count(), 2) }}</td>
-                                <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('penarikan'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('pengembalian'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('bunga'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('balance'), 2) }}</td>
+                                <td class="text-end">{{ number_format(array_sum(array_column($reports, 'haribunga')) / count($reports), 2) }}</td>
+                                <td class="text-end">{{ number_format(array_sum(array_column($reports, 'pmtamt')), 2) }}</td>
+                                <td class="text-end">{{ number_format(array_sum(array_column($reports, 'penarikan')), 2) }}</td>
+                                <td class="text-end">{{ number_format(array_sum(array_column($reports, 'pengembalian')), 2) }}</td>
+                                <td class="text-end">{{ number_format(array_sum(array_column($reports, 'bunga')), 5) }}</td>
+                                <td class="text-end">{{ number_format(array_sum(array_column($reports, 'balance')), 2) }}</td>
                             </tr>
                         </tbody>
                     </table>

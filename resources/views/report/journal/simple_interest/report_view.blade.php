@@ -82,7 +82,7 @@
                             @endforeach
                             @endif
                             <!-- Row Total / Average -->
-                            <tr class="font-weight-bold">
+                            <tr class="font-weight-normal">
                                 <td class="text-center" colspan="3">TOTAL / AVERAGE</td>
                                 <td>{{ number_format($reports->sum('valuta'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('post') / $reports->count(), 2) }}</td>

@@ -85,7 +85,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end" style="font-size: 12px;">Interest Rate</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->interest * 100, 2) }}%" readonly style="font-size: 12px;">
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->rate * 100, 5) }}%" readonly style="font-size: 12px;">
                                     </div>
                                 </div>
                             </div>
@@ -122,8 +122,8 @@
                                     <td>{{ number_format($report->pmtamt, 2) }}</td>
                                     <td>{{ number_format($report->penarikan, 2) }}</td>
                                     <td>{{ number_format($report->pengembalian, 2) }}</td>
-                                    <td>{{ number_format(0, 2) }}</td>
-                                    <td>{{ number_format(0, 2) }}</td>
+                                    <td>{{ number_format($report->effective_interest_uf_tc, 5) }}</td>
+                                    <td>{{ number_format($report->effective_interest_uf, 5) }}</td>
                                     <td>{{ number_format($report->amortisecost, 2) }}</td>
                                     <td>{{ number_format($report->outsamtconv, 2) }}</td>
                                     <td>{{ number_format(0, 2) }}</td>
@@ -131,13 +131,13 @@
                                 </tr>
                             @endforeach
                             <!-- Row Total / Average -->
-                            <tr class="text-right font-weight-bold">
+                            <tr class="text-right font-weight-normal">
                                 <td class="text-center" colspan="3">TOTAL</td>
                                 <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('penarikan'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('pengembalian'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('effective_interest_uf_tc'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('effective_interest_uf'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('effective_interest_uf_tc'), 5) }}</td>
+                                <td>{{ number_format($reports->sum('effective_interest_uf'), 5) }}</td>
                                 <td>{{ number_format($reports->sum('amortisecost'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('outsamtconv'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('cumm_amortized_cost'), 2) }}</td>

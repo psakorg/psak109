@@ -172,7 +172,7 @@
                                     </tr>
                                 @endforeach
                                 <!-- Row Total -->
-                                <tr class="font-weight-bold">
+                                <tr class="font-weight-normal">
                                     <td class="text-center" colspan="3">TOTAL</td>
                                     <td>{{ number_format($totalValuta, 2) }}</td>
                                     <td>{{ number_format($totalPost / $reports->count(), 2) }}</td>
@@ -827,7 +827,7 @@ function updateReport() {
     }
 
     .font-weight-bold {
-        font-weight: bold;
+        font-weight: normal;
     }
 
     .text-end {
@@ -977,7 +977,7 @@ function updateReport() {
 
     /* Style untuk label */
     .form-label {
-        font-weight: bold;
+        font-weight: normal;
         color: #495057;
         font-size: 14px;
         margin-bottom: 0.5rem;

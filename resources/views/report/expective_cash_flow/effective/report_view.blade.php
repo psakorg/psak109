@@ -9,7 +9,7 @@
                 <!-- Loan Details Form -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="card-title"style="font-size: 16px;">REPORT EXPECTIVE CASH FLOW - EFFECTIVE</h5>
+                        <h5 class="card-title"style="font-size: 16px;">REPORT EXPECTED CASH FLOW - EFFECTIVE</h5>
                     </div>
                     <div class="card-body">
                         <form>
@@ -80,7 +80,7 @@
                 <!-- Report Table -->
                 <h2 style="font-size: 16px;">Report Details</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover" style="font-size: 12px;text-align: right; font-weight:bold;">
+                    <table class="table table-striped table-bordered table-hover" style="font-size: 12px;text-align: right; font-weight:normal;">
                         <thead class="thead-light text-center">
                             <tr>
                                 <th>Month</th>
@@ -118,20 +118,20 @@
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y ', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
                                         <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->bunga ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->bunga ?? 0, 5) }}</td>
                                         <td>{{ number_format($report->pokok ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->balance ?? 0, 2) }}</td>
-                                        <td>{{ number_format($cumulativebunga ?? 0, 2) }}</td>
+                                        <td>{{ number_format($cumulativebunga ?? 0, 5) }}</td>
                                     </tr>
                                 @endforeach
                                 <!-- Row Total -->
-                                <tr style="font-weight:bold;">
+                                <tr style="font-weight:normal;">
                                     <td colspan="2" class="text-center">TOTAL</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
-                                    <td>{{ number_format($totalInterestPayment, 2) }}</td>
+                                    <td>{{ number_format($totalInterestPayment, 5) }}</td>
                                     <td>{{ number_format($totalPrincipalPayment, 2) }}</td>
                                     <td>{{ number_format($totalBalanceContractual, 2) }}</td>
-                                    <td>{{ number_format($cumulativebunga, 2) }}</td>
+                                    <td>{{ number_format($cumulativebunga, 5) }}</td>
                                 </tr>
                             @endif
                         </tbody>

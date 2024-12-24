@@ -180,10 +180,10 @@
                                 </tr>
                             @endforeach
                             <!-- Row Total / Average -->
-                            <tr class="font-weight-bold">
+                            <tr class="font-weight-normal">
                                 <td colspan="10" class="text-center">TOTAL / AVERAGE</td>
                                 <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td>
-                                <td>{{ number_format($reports->avg('interest_rate'), 2) }}%</td>
+                                <td>{{ number_format($reports->avg('interest_rate'), 5) }}%</td>
                                 <td>{{ number_format($reports->sum('original_balance'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('current_balance'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('carrying_amount'), 2) }}</td>
@@ -844,7 +844,7 @@ function updateReport() {
     }
 
     .font-weight-bold {
-        font-weight: bold;
+        font-weight: normal;
     }
 
     .text-end {
@@ -994,7 +994,7 @@ function updateReport() {
 
     /* Style untuk label */
     .form-label {
-        font-weight: bold;
+        font-weight: normal;
         color: #495057;
         font-size: 14px;
         margin-bottom: 0.5rem;

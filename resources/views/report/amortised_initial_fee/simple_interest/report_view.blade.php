@@ -24,7 +24,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end">Up Front Fee</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format($loan->prov, 2) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="-{{ number_format($loan->prov, 2) }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +84,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end">Interest Rate</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format($loan->interest * 100, 2) }}%" readonly>
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format($loan->rate * 100, 5) }}%" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -121,8 +121,8 @@
                                     <td>{{ number_format($report->pmtamt, 2) }}</td>
                                     <td>{{ number_format($report->penarikan, 2) }}</td>
                                     <td>{{ number_format($report->pengembalian, 2) }}</td>
-                                    <td>{{ number_format($report->bunga, 2) }}</td>
-                                    <td>{{ number_format($report->balance, 2) }}</td>
+                                    <td>{{ number_format($report->bunga, 5) }}</td>
+                                    <td>{{ number_format($report->balance, 5) }}</td>
                                     <td>{{ number_format($report->timegap, 2) }}</td>
                                     <td>{{ number_format($report->outsamtconv, 2) }}</td>
                                     <td>{{ number_format(0, 2) }}</td>
@@ -130,13 +130,13 @@
                                 </tr>
                             @endforeach
                             <!-- Row Total / Average -->
-                            <tr class="text-right font-weight-bold">
+                            <tr class="text-right font-weight-normal">
                                 <td class="text-center" colspan="3">TOTAL</td>
                                 <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('penarikan'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('pengembalian'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('bunga'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('balance'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('bunga'), 5) }}</td>
+                                <td>{{ number_format($reports->sum('balance'), 5) }}</td>
                                 <td>{{ number_format($reports->sum('timegap'), 2) }}</td>
                                 <td>{{ number_format($reports->sum('outsamtconv'), 2) }}</td>
                                 <td></td>

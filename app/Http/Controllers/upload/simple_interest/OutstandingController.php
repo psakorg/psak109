@@ -110,6 +110,8 @@ class OutstandingController extends Controller
             $errors = [];
 
             foreach ($rows as $index => $row) {
+                if ($index === 0) continue;
+                
                 DB::beginTransaction();
 
                 $convertDate = function($date) {
@@ -117,7 +119,7 @@ class OutstandingController extends Controller
                     return date('Y-m-d H:i:s', strtotime($date));
                 };
 
-                // dd($row[25]);
+                // dd($row);
 
                 try {
                         $data = [
@@ -126,49 +128,39 @@ class OutstandingController extends Controller
                         'tahun' => (int)$tahun,
                         'bulan' => (int)$bulan,
                         'deb_name' => trim((string)$row[2]),
-                        'status' => substr(trim((string)$row[3]), 0, 1),
-                        'ln_type' => substr(trim((string)$row[4]), 0, 2),
+                        'status' => substr(trim((string)$row[3]), 0, 10),
+                        'ln_type' => substr(trim((string)$row[4]), 0, 10),
                         'org_date' => (int)$row[5],
                         'org_date_dt' => $convertDate($row[6]),
                         'term' => (int)$row[7],
                         'mtr_date' => (int)$row[8],
                         'mtr_date_dt' => $convertDate($row[9]),
-                        'org_bal' => (float)str_replace(['$', ','], '', $row[10]),
-                        'rate' => (float)str_replace(['$', ','], '', $row[11]),
-                        'cbal' => (float)str_replace(['$', ','], '', $row[12]),
-                        'prebal' => (float)str_replace(['$', ','], '', $row[13]),
-                        'bilprn' => (float)str_replace(['$', ','], '', $row[14]),
-                        'pmtamt' => (float)str_replace(['$', ','], '', $row[15]),
-                        'lrebd' => (int)$row[16],
+                        'org_bal' => number_format((float)str_replace(['$', ','], '', $row[10]), 2, '.', ''),
+                        'rate' => number_format((float)str_replace(['$', ','], '', $row[11]), 2, '.', ''),
+                        'cbal' => number_format((float)str_replace(['$', ','], '', $row[12]), 2, '.', ''),
+                        'prebal' => number_format((float)str_replace(['$', ','], '', $row[13]), 2, '.', ''),
+                        'bilprn' => number_format((float)str_replace(['$', ','], '', $row[14]), 2, '.', ''),
+                        'pmtamt' => number_format((float)str_replace(['$', ','], '', $row[15]), 2, '.', ''),
+                        'lrebd' => number_format((float)str_replace(['$', ','], '', $row[16]), 2, '.', ''),
                         'lrebd_dt' => $convertDate($row[17]),
                         'nrebd' => (int)$row[18],
                         'nrebd_dt' => $convertDate($row[19]),
                         'ln_grp' => (int)$row[20],
-                        'GROUP' => trim($row[21]),
-                        'bilint' => (float)str_replace(['$', ','], '', $row[22]),
-                        'bisifa' => (float)str_replace(['$', ','], '', $row[23]),
-                        'birest' => substr(trim((string)$row[24]), 0, 2),
+                        'GROUP' => substr(trim((string)$row[21]), 0, 50),
+                        'bilint' => number_format((float)str_replace(['$', ','], '', $row[22]), 2, '.', ''),
+                        'bisifa' => number_format((float)str_replace(['$', ','], '', $row[23]), 2, '.', ''),
+                        'birest' => substr(trim((string)$row[24]), 0, 10),
                         'freldt' => (int)$row[25],
                         'freldt_dt' => $convertDate($row[26]),
                         'resdt' => (int)$row[27],
                         'resdt_dt' => $convertDate($row[28]),
                         'restdt' => (int)$row[29],
                         'restdt_dt' => $convertDate($row[30]),
-                        'prov' => (float)str_replace(['$', ','], '', $row[31]),
-                        'trxcost' => (float)str_replace(['$', ','], '', $row[32]),
+                        'prov' => number_format((float)str_replace(['$', ','], '', $row[31]), 2, '.', ''),
+                        'trxcost' => number_format((float)str_replace(['$', ','], '', $row[32]), 2, '.', ''),
                         'gol' => (int)$row[33],
                         'id_pt' => $id_pt
                     ];
-
-                    // Bersihkan format angka
-                    $numericFields = [ 'cbal', 'bilprn', 'bilint', 
-                                    'prov', 'trxcost', 'rate'];
-                    
-                    foreach ($numericFields as $field) {
-                        if (isset($data[$field])) {
-                            $data[$field] = $this->cleanNumericValue($data[$field]);
-                        }
-                    }
 
                     DB::table('tblmaster_outstanding_corporateloan')->insert($data);
                     DB::commit();

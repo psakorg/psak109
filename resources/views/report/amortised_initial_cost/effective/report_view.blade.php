@@ -101,7 +101,7 @@
                 </div>
                 <!-- Report Table -->
                 <h2 style="font-size: 16px;">Report Details</h2>
-                <div class="table-responsive" style="font-size: 12px; text-align: right; font-weight:bold;">
+                <div class="table-responsive" style="font-size: 12px; text-align: right; font-weight:normal;">
                     <table class="table table-striped table-bordered table-hover">
                         <thead class="thead-light text-center">
                             <tr>
@@ -157,8 +157,8 @@
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
                                         <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->bunga ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->bunga ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->bunga ?? 0, 5) }}</td>
+                                        <td>{{ number_format($report->bunga ?? 0, 5) }}</td>
                                         <td>{{ number_format($report->amortisecost ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->outsamtcost ?? 0, 2) }}</td>
                                         <td>{{ number_format($cumulativeAmortized ?? 0, 2) }}</td>
@@ -166,11 +166,11 @@
                                     </tr>
                                 @endforeach
                                 <!-- Row Total / Average -->
-                                <tr style="font-weight:bold;">
+                                <tr style="font-weight:normal;">
                                     <td class="text-center" colspan="2">TOTAL</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
-                                    <td>{{ number_format($totalEffectiveInterestUF_TC, 2) }}</td>
-                                    <td>{{ number_format($totalEffectiveInterestUF, 2) }}</td>
+                                    <td>{{ number_format($totalEffectiveInterestUF_TC, 5) }}</td>
+                                    <td>{{ number_format($totalEffectiveInterestUF, 5) }}</td>
                                     <td></td>
                                     <td>{{ number_format($totalOutstandingAmountInitialTransactionCost, 2) }}</td>
                                     <td></td>

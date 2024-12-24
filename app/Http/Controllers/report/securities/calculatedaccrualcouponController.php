@@ -64,6 +64,8 @@ class calculatedaccrualcouponController extends Controller
         return response()->json(['error' => 'Data laporan tidak ditemukan'], 404);
     }
 
+    // dd($reports, $loan, $master);
+
     return view('report.securities.report_calculated_accrual_coupon.view', compact('loan', 'reports', 'master'));
 }
 

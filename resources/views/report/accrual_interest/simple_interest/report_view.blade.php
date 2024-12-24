@@ -91,7 +91,7 @@
                 <h2 style="font-size: 16px;">Report Details</h2>
                 <div class="table-responsive">
                     {{-- <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px;"> --}}
-                    <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px; text-align: right;font-weight: bold;">
+                    <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px; text-align: right;font-weight: normal;">
                         <thead class="thead-dark" style="text-align: center">
                             <tr>
                                 <th>Month</th>
@@ -125,7 +125,7 @@
                                     $totalTimeGap += ($report->timegap);
                                     $totalPaymentAmount += $report->pmtamt;
                                     $totalAccruedInterest += $report->bunga;
-                                    $totalInterestPayment += $report->balance;
+                                    $totalInterestPayment += $report->bunga;
                                     $totalOutstandingAmount += $report->outsamtconv;
                                     $totalWithdrawal += $report->penarikan;
                                     $totalReimbursement += $report->pengembalian;
@@ -137,19 +137,19 @@
                                     <td class="text-right"  >{{ number_format($report->pmtamt, 2) }}</td>
                                     <td>{{ number_format($report->penarikan, 2) }}</td>
                                     <td>{{ number_format($report->pengembalian, 2) }}</td>
-                                    <td>{{ number_format($report->bunga, 2) }}</td>
-                                    <td>{{ number_format($report->balance, 2) }}</td>
+                                    <td>{{ number_format($report->bunga, 5) }}</td>
+                                    <td>{{ number_format($report->bunga, 5) }}</td>
                                     <td>{{ number_format($report->timegap, 2) }}</td>
                                     <td>{{ number_format($report->outsamtconv, 2) }}</td>
                                 </tr>
                             @endforeach
-                            <tr style="font-weight:bold">
+                            <tr style="font-weight:normal">
                                 <td colspan="3" class="text-center">TOTAL / AVERAGE</td>
                                 <td class="text-right">{{ number_format($totalPaymentAmount, 2) }}</td>
                                 <td>{{ number_format($totalWithdrawal / $reportCount, 2) }}</td>
                                 <td>{{ number_format($totalReimbursement / $reportCount, 2) }}</td>
-                                <td>{{ number_format($totalAccruedInterest, 2) }}</td>
-                                <td>{{ number_format($totalInterestPayment / $reportCount, 2) }}</td>
+                                <td>{{ number_format($totalAccruedInterest, 5) }}</td>
+                                <td>{{ number_format($totalInterestPayment / $reportCount, 5) }}</td>
                                 <td>{{ number_format($totalTimeGap / $reportCount, 2) }}</td>
                                 <td>{{ number_format($totalOutstandingAmount, 2) }}</td>
                             </tr>

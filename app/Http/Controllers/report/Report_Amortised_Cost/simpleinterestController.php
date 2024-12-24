@@ -33,17 +33,18 @@ class simpleinterestController extends Controller
         return view('report.amortised_cost.simple_interest.master', compact('loans'));
     }
 
-    // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
+    // Method untuk menampilkan detail pinjaman berdasarkan nomor akunn
     public function view($no_acc,$id_pt)
     {
         $no_acc = trim($no_acc);
         $loan = report_simpleinterest::getLoanDetails($no_acc,$id_pt);
         $reports = report_simpleinterest::getReportsByNoAcc($no_acc,$id_pt);
 
+        // dd($loan);
+
         if (!$loan) {
             abort(404, 'Loan not found');
         }
-
 
         return view('report.amortised_cost.simple_interest.view', compact('loan', 'reports'));
     }

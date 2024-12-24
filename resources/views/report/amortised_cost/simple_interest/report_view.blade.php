@@ -70,7 +70,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end">Interest Rate</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->interest*100, 2) }}%" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->rate*100, 5) }}%" readonly>
                                     </div>
                                     {{-- <label class="col-sm-4 col-form-label d-flex justify-content-end">Carrying Amount</label>
                                     <div class="col-sm-8">
@@ -124,7 +124,7 @@
                 <!-- Report Table -->
                 <h2 style="font-size: 16px;">Report Details</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px; text-align:right; font-weight: bold;">
+                    <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px; text-align:right; font-weight: normal;">
                         <thead class="thead-dark" style="text-align: center">
                             <tr>
                                 <th>Month</th>
@@ -162,12 +162,12 @@
                                 @foreach ($reports as $report)
                                 @php
                                     $totalAmortised += $report->amortized ?? 0;
-                                    $totalDaysInterest += $report->days_interest ?? 0;
-                                    $totalWithdrawal += $report->withdrawal ?? 0;
-                                    $totalReimbursement += $report->reimbursement ?? 0;
-                                    $totalInterestPayment += $report->bunga ?? 0;
+                                    $totalDaysInterest += $report->haribunga ?? 0;
+                                    $totalWithdrawal += $report->penarikan ?? 0;
+                                    $totalReimbursement += $report->pengembalian ?? 0;
+                                    $totalInterestPayment += $report->bungaeir ?? 0;
                                     $totalPaymentAmount += $report->pmtamt ?? 0;
-                                    $totalInterestRecognition += $report->bunga ?? 0; // Assuming interest recognition is bunga
+                                    $totalInterestRecognition += $report->bungaeir ?? 0; // Assuming interest recognition is bunga
                                     $totalCarryingAmount += $report->baleir ?? 0;
                                     $totalCummulativeAmortized += $report->outsamtconv ?? 0;
                                     $totalUnamortized += $report->amortized + $report->outsamtconv ?? 0;
@@ -175,12 +175,12 @@
                                     <tr style="font-weight:normal">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
-                                        <td>{{ number_format($report->days_interest ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->haribunga ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->withdrawal ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->reimbursement ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->bunga ?? 0, 2) }}</td>
-                                        <td>{{ number_format(0, 2) }}</td>
+                                        <td>{{ number_format($report->penarikan ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->pengembalian ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->bungaeir ?? 0, 5) }}</td>
+                                        <td>{{ number_format($report->bunga ?? 0, 5) }}</td>
                                         <td>{{ number_format($report->amortized ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->baleir ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->outsamtconv ?? 0, 2) }}</td>
@@ -188,14 +188,14 @@
                                     </tr>
                                 @endforeach
                                 <!-- Row Total -->
-                                <tr style="font-weight:bold;">
+                                <tr style="font-weight:normal;">
                                     <td class="text-center" colspan="2">TOTAL</td>
                                     <td>{{ number_format($totalDaysInterest, 2) }}</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalWithdrawal, 2) }}</td>
                                     <td>{{ number_format($totalReimbursement, 2) }}</td>
-                                    <td>{{ number_format($totalInterestRecognition, 2) }}</td>
-                                    <td>{{ number_format($totalInterestPayment, 2) }}</td>
+                                    <td>{{ number_format($totalInterestRecognition, 5) }}</td>
+                                    <td>{{ number_format($totalInterestPayment, 5) }}</td>
                                     <td>{{ number_format($totalAmortised, 2) }}</td>
                                     <td></td>
                                     <td></td>

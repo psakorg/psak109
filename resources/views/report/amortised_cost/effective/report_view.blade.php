@@ -143,7 +143,7 @@
                 <!-- Report Table -->
                 <h2 style="font-size: 16px;">Report Details</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px; text-align: right; font-weight:bold;">
+                    <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px; text-align: right; font-weight:normal;">
                         <thead class="thead-light text-center">
                             <tr>
                                 <th>Month</th>
@@ -199,8 +199,8 @@
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
                                         <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->bungaeir ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->bunga ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->bungaeir ?? 0, 5) }}</td>
+                                        <td>{{ number_format($report->bunga ?? 0, 5) }}</td>
                                         <td>{{ number_format($report->amortized ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->baleir ?? 0, 2) }}</td>
                                         <td>{{ number_format($cumulativeAmortized ?? 0, 2) }}</td>
@@ -208,11 +208,11 @@
                                     </tr>
                                 @endforeach
                                 <!-- Row Total -->
-                                <tr style="font-weight:bold;">
+                                <tr style="font-weight:normal;">
                                     <td class="text-center" colspan="2">TOTAL</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
-                                    <td>{{ number_format($totalInterestRecognition, 2) }}</td>
-                                    <td>{{ number_format($totalInterestPayment, 2) }}</td>
+                                    <td>{{ number_format($totalInterestRecognition, 5) }}</td>
+                                    <td>{{ number_format($totalInterestPayment, 5) }}</td>
                                     <td>{{ number_format($totalAmortised, 2) }}</td>
                                     <td></td>
                                     <td></td>
