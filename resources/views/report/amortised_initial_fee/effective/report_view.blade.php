@@ -183,8 +183,8 @@
                                     <td>{{ number_format($totalEffectiveInterest, 5) }}</td>
                                     <td>{{ number_format($totalAccruedInterest, 5) }}</td>
                                     <td>{{ number_format($totalAmortisedUpFrontFee, 2) }}</td>
-                                    <td>{{ number_format($totalOutstandingAmountInitialUpFrontFee, 2) }}</td>
-                                    <td>{{ number_format($totalCumulativeAmortizedUpFrontFee, 2) }}</td>
+                                    <td></td>
+                                    <td></td>
                                     <td></td>
                                 </tr>
                             @endif

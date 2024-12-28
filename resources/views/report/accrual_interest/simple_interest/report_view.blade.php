@@ -104,7 +104,6 @@
                                 <th>Interest Payment</th>
                                 <th>Time Gap</th>
                                 <th>Outstanding Amount</th>
-                                <!-- <th>Cumulative Time Gap</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -151,7 +150,7 @@
                                 <td>{{ number_format($totalAccruedInterest, 5) }}</td>
                                 <td>{{ number_format($totalInterestPayment / $reportCount, 5) }}</td>
                                 <td>{{ number_format($totalTimeGap / $reportCount, 2) }}</td>
-                                <td>{{ number_format($totalOutstandingAmount, 2) }}</td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>

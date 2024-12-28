@@ -42,7 +42,7 @@ class effectiveController extends Controller
             return response()->json(['error' => 'Data laporan tidak ditemukan'], 404);
         }
 
-        // dd($loan , $reports , $master);
+        // dd($reports);
 
         return view('report.accrual_interest.effective.view', compact('loan', 'reports', 'master'));
     }

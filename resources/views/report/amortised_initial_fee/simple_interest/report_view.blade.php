@@ -138,7 +138,7 @@
                                 <td>{{ number_format($reports->sum('bunga'), 5) }}</td>
                                 <td>{{ number_format($reports->sum('balance'), 5) }}</td>
                                 <td>{{ number_format($reports->sum('timegap'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('outsamtconv'), 2) }}</td>
+                                <td></td>
                                 <td></td>
                                 <td>{{ number_format($reports->sum('unamortized'), 2) }}</td>
                             </tr>

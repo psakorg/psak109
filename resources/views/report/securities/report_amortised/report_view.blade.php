@@ -160,7 +160,7 @@
                 <!-- Report Table -->
                 <h2 style="font-size: 16px;">Report Details</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px; text-align: right;font-weight: bold;">
+                    <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px; text-align: right;font-weight: normal;">
                         <thead class="thead-light text-center">
                             <tr>
                                 <th>Month</th>
@@ -216,6 +216,18 @@
                                 <td>{{ $unamort }}</td>
                             </tr>
                             @endforeach
+                            <!-- Row Total -->
+                            <tr class="font-weight-normal">
+                                <td colspan="3" class="text-center">TOTAL</td>
+                                <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('principal_in'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('interest_eir'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('interest'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('amortized'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('fair_value'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('cumulativeAmortized'), 2) }}</td>
+                                <td>{{ number_format($reports->sum('unamort'), 2) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

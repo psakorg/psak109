@@ -95,7 +95,7 @@
 
 
 
-                <!-- Report Table -->
+                <!-- Report Tablee -->
                 <h2 style="font-size: 16px;">Report Details</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px; text-align: right;">
@@ -147,8 +147,8 @@
                                 <td>{{ number_format($totalAccruedInterest, 2) }}</td>
                                 <td>{{ number_format($totalInterestPayment, 2) }}</td>
                                 <td>{{ number_format($totalTimeGap / $reportCount, 2) }}</td>
-                                <td>{{ number_format($totalOutstandingAmount, 2) }}</td>
-                                <td>{{ number_format($cumulativeTimeGap / $reportCount, 2) }}</td>
+                                <td></td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>

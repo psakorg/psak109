@@ -38,7 +38,6 @@ class calculatedaccrualcouponController extends Controller
         // Ambil data pinjaman hanya untuk id_pt yang sesuai, dengan pagination
         $loans = report_securities::fetchAll($id_pt, $perPage);
 
-    // dd($loans);
         return view('report.securities.report_calculated_accrual_coupon.master', compact('loans'));
     }
 
@@ -64,7 +63,7 @@ class calculatedaccrualcouponController extends Controller
         return response()->json(['error' => 'Data laporan tidak ditemukan'], 404);
     }
 
-    // dd($reports, $loan, $master);
+    // dd($reports);
 
     return view('report.securities.report_calculated_accrual_coupon.view', compact('loan', 'reports', 'master'));
 }

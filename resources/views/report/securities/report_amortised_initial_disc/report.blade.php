@@ -43,16 +43,16 @@
                                     <td>{{ number_format($loan->price*100,5)}}</td>
                                     <td>{{ number_format((float) str_replace(['$', ','], '', $loan->fair_value)) }}</td>
                                     <td>{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount),2) }}</td>
-                                    <td></td>
+                                    <td>{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount),2) }}</td>
                                     <td>{{ number_format($loan->eircalc_conv * 100, 15) }}%</td>
-                                    <td></td>
+                                    <td>{{ number_format($loan->eircalc_disc * 100, 15) }}%</td>
                                         <td>
                                             <a href="{{ route('report-amortised-initial-disc.view', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt]) }}" class="btn btn-sm btn-info">
                                                 <i class="fas fa-eye" style="margin-right: 5px;"></i> View
                                             </a>
                                             {{-- <a href="{{route('under')}}" class="btn btn-sm btn-info">
                                                 <i class="fas fa-eye" style="margin-right: 5px;"></i> View
-                                            </a> --}}
+                                            </a> ---}}
                                     </td>
                                 </tr>
                             @endforeach

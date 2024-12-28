@@ -105,30 +105,34 @@
                     <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px;">
                         <thead class="thead-dark">
                             <tr>
-                                <th>Month</th>
-                                <th>Transaction Date</th>
-                                <th>Days Interest</th>
-                                <th>Payment Amount</th>
-                                <th>Principal Payment</th>
-                                <th>Coupon Payment</th>
-                                <th>Balance Contractual</th>
+                                <th class="text-center">Month</th>
+                                <th class="text-center">Transaction Date</th>
+                                <th class="text-center">Days Interest</th>
+                                <th class="text-right">Payment Amount</th>
+                                <th class="text-right">Principal Payment</th>
+                                <th class="text-right">Coupon Payment</th>
+                                <th class="text-right">Balance Contractual</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($reports as $report)
                                 <tr>
-                                    <td>{{ $report->month_to }}</td>
-                                    <td>{{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
-                                    <td>{{ $report->interest }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-
-
+                                    <td class="text-center">{{ $report->month_to }}</td>
+                                    <td class="text-center">{{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
+                                    <td class="text-center">{{ $report->haribunga }}</td>
+                                    <td class="text-right">{{ number_format($report->pmtamt, 2) }}</td>
+                                    <td class="text-right">{{ number_format($report->principal_in, 2) }}</td>
+                                    <td class="text-right">{{ number_format($report->interest, 2) }}</td>
+                                    <td class="text-right">{{ number_format($report->principal_out, 2) }}</td>
                                 </tr>
                             @endforeach
+                            <tr class="font-weight-normal">
+                                <td colspan="3" class="text-center">TOTAL</td>
+                                <td class="text-right">{{ number_format($reports->sum('pmtamt'), 2) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('principal_in'), 2) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('interest'), 2) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('principal_out'), 2) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

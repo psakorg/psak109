@@ -130,8 +130,8 @@
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalInterestPayment, 5) }}</td>
                                     <td>{{ number_format($totalPrincipalPayment, 2) }}</td>
-                                    <td>{{ number_format($totalBalanceContractual, 2) }}</td>
-                                    <td>{{ number_format($cumulativebunga, 5) }}</td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                             @endif
                         </tbody>

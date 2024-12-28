@@ -127,6 +127,7 @@
                                 $totalPaymentAmount = 0;
                                 $totalEffectiveInterestUF_TC = 0;
                                 $totalEffectiveInterestUF = 0;
+                                $totalAmortisedTransactionCost = 0;
                                 $totalOutstandingAmountInitialTransactionCost = 0;
                                 $totalUnamortizedTransactionCost = 0;
                                 $reportCount = count($reports);
@@ -150,6 +151,7 @@
                                     $totalPaymentAmount += $report->pmtamt ?? 0;
                                     $totalEffectiveInterestUF_TC += $report->bunga ?? 0;
                                     $totalEffectiveInterestUF += $report->bunga ?? 0;
+                                    $totalAmortised += $amortized;
                                     $totalOutstandingAmountInitialTransactionCost += $report->outsamtcost ?? 0;
                                     $totalUnamortizedTransactionCost += $unamort;
                                 @endphp
@@ -171,7 +173,7 @@
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalEffectiveInterestUF_TC, 5) }}</td>
                                     <td>{{ number_format($totalEffectiveInterestUF, 5) }}</td>
-                                    <td></td>
+                                    <td>{{ number_format($totalAmortised, 2) }}</td>
                                     <td>{{ number_format($totalOutstandingAmountInitialTransactionCost, 2) }}</td>
                                     <td></td>
                                     <td></td>

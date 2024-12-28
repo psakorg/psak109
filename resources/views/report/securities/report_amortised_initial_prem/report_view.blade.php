@@ -137,35 +137,68 @@
                     <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px;">
                         <thead class="thead-dark">
                             <tr>
-                                <th>Month</th>
-                                <th>Transaction Date</th>
-                                <th>Days Interest</th>
-                                <th>Payment Amount</th>
-                                <th>Effective Interest Base On Effective Yield </th>
-                                <th>Reimbursement</th>
-                                <th>Accrual Coupon</th>
-                                <th>Amortised At Premium</th>
-                                <th>Outstanding Amount Initial At Premium</th>
-                                <th>Cummulative Amortized At Premium</th>
-                                <th>Unamortized  At Premium</th>
+                                <th class="text-center">Month</th>
+                                <th class="text-center">Transaction Date</th>
+                                <th class="text-center">Days Interest</th>
+                                <th class="text-right">Payment Amount</th>
+                                <th class="text-right">Effective Interest Base On Effective Yield </th>
+                                <th class="text-right">Reimbursement</th>
+                                <th class="text-right">Accrual Coupon</th>
+                                <th class="text-right">Amortised At Premium</th>
+                                <th class="text-right">Outstanding Amount Initial At Premium</th>
+                                <th class="text-right">Cummulative Amortized At Premium</th>
+                                <th class="text-right">Unamortized  At Premium</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $cummulativeAmortizedPrem = 0;
+                                $totalPaymentAmount = 0;
+                                $totalEffectiveInterest = 0;
+                                $totalReimbursement = 0;
+                                $totalAccrualCoupon = 0;
+                                $totalAmortisedPrem = 0;
+                                $totalOutstandingAmount = 0;
+                                $totalUnamortized = 0;
+                            @endphp
                             @foreach ($reports as $report)
+                                @php
+                                    $cummulativeAmortizedPrem += floatval($report->amortise_prem);
+                                    $totalPaymentAmount += $report->pmtamt;
+                                    $totalEffectiveInterest += $report->interest;
+                                    $totalReimbursement += $report->principal_out;
+                                    $totalAccrualCoupon += $report->principal_in;
+                                    $totalAmortisedPrem += $report->amortise_prem;
+                                    $totalOutstandingAmount += $report->outsamt_prem;
+                                    $totalUnamortized += ($report->amortise_prem + $report->outsamt_prem);
+                                @endphp
                                 <tr>
-                                    <td>{{ $report->month_to }}</td>
-                                    <td> {{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
-                                    <td>{{ $report->interest }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td class="text-center">{{ $report->month_to }}</td>
+                                    <td class="text-center"> {{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
+                                    <td class="text-center">{{ $report->haribunga }}</td>
+                                    <td class="text-right">{{ number_format($report->pmtamt, 2) }}</td>
+                                    <td class="text-right">{{ number_format($report->interest ?? 0, 5) }}</td>
+                                    <td class="text-right">{{ number_format($report->principal_out, 2) }}</td>
+                                    <td class="text-right">{{ number_format($report->principal_in, 2) }}</td>
+                                    <td class="text-right">{{ number_format($report->amortise_prem, 2) }}</td>
+                                    <td class="text-right">{{ number_format($report->outsamt_prem, 2) }}</td>
+                                    <td class="text-right">{{ number_format($cummulativeAmortizedPrem, 2) }}</td>
+                                    <td class="text-right">{{ number_format($report->amortise_prem + $report->outsamt_prem ?? 0, 2) }}</td>
                                 </tr>
                             @endforeach
+                            
+                            <!-- Row Total -->
+                            <tr class="table-secondary font-weight-normal">
+                                <td colspan="3" class="text-center">TOTAL</td>
+                                <td class="text-right">{{ number_format($totalPaymentAmount, 2) }}</td>
+                                <td class="text-right">{{ number_format($totalEffectiveInterest, 5) }}</td>
+                                <td class="text-right">{{ number_format($totalReimbursement, 2) }}</td>
+                                <td class="text-right">{{ number_format($totalAccrualCoupon, 2) }}</td>
+                                <td class="text-right">{{ number_format($totalAmortisedPrem, 2) }}</td>
+                                <td class="text-right">{{ number_format($totalOutstandingAmount, 2) }}</td>
+                                <td class="text-right">{{ number_format($cummulativeAmortizedPrem, 2) }}</td>
+                                <td class="text-right">{{ number_format($totalUnamortized, 2) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

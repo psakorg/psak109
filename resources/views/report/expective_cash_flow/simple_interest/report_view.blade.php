@@ -108,7 +108,7 @@
                                 <td class="text-end">{{ number_format(array_sum(array_column($reports, 'penarikan')), 2) }}</td>
                                 <td class="text-end">{{ number_format(array_sum(array_column($reports, 'pengembalian')), 2) }}</td>
                                 <td class="text-end">{{ number_format(array_sum(array_column($reports, 'bunga')), 5) }}</td>
-                                <td class="text-end">{{ number_format(array_sum(array_column($reports, 'balance')), 2) }}</td>
+                                <td class="text-end"></td>
                             </tr>
                         </tbody>
                     </table>

@@ -22,7 +22,6 @@
                                 <th style="width: 15%; white-space: nowrap;">Coupon Rate</th>
                                 <th style="width: 15%; white-space: nowrap;">Price</th>
                                 <th style="width: 15%; white-space: nowrap;">Fair Value</th>
-                                <th style="width: 15%; white-space: nowrap;">Outstanding Amount</th>
                                 <th style="width: 15%; white-space: nowrap;">EIR Calculated Convertion</th>
                                 <th style="width: 10%; white-space: nowrap;">Action</th>
                             </tr>
@@ -40,7 +39,6 @@
                                     <td>{{ number_format($loan->coupon_rate*100,5) }}%</td>
                                     <td>{{ number_format($loan->price*100,5)}}</td>
                                     <td>{{ number_format((float) str_replace(['$', ','], '', $loan->fair_value)) }}</td>
-                                    <td></td>
                                     <td>{{ number_format($loan->eircalc_conv*100,14)}}%</td>
                                     <td>
                                         <a href="{{ route('report-calculated-accrual-coupon.view', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])  }}" class="btn btn-sm btn-info">

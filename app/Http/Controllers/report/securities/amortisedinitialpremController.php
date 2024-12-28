@@ -64,6 +64,8 @@ class amortisedinitialpremController extends Controller
         return response()->json(['error' => 'Data laporan tidak ditemukan'], 404);
     }
 
+    // dd($reports);
+
     return view('report.securities.report_amortised_initial_prem.view', compact('loan', 'reports', 'master'));
 }
 

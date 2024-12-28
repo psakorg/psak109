@@ -115,37 +115,66 @@
 
 
 
-                <!-- Report Table -->
+                <!-- Report Tablee -->
                 <h2 style="font-size: 16px;">Report Details</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px;">
                         <thead class="thead-dark">
                             <tr>
-                                <th>Month</th>
-                                <th>Transaction Date</th>
-                                <th>Days Interest</th>
-                                <th>Payment Amount</th>
-                                <th>Accrual Coupon</th>
-                                <th>Coupon Payment</th>
-                                <th>Time Gap</th>
-                                <th>Outstanding Amount</th>
-                                <th>Cummulative Time Gap</th>
+                                <th class="text-center">Month</th>
+                                <th class="text-center">Transaction Date</th>
+                                <th class="text-center">Days Interest</th>
+                                <th class="text-right">Payment Amount</th>
+                                <th class="text-right">Accrual Coupon</th>
+                                <th class="text-right">Coupon Payment</th>
+                                <th class="text-right">Time Gap</th>
+                                <th class="text-right">Outstanding Amount</th>
+                                <th class="text-right">Cummulative Time Gap</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $cumulativeTimeGap = 0;
+                                $totalPaymentAmount = 0;
+                                $totalAccrualCoupon = 0; 
+                                $totalCouponPayment = 0;
+                                $totalTimeGap = 0;
+                                $totalOutstandingAmount = 0;
+                                $totalCumulativeTimeGap = 0;
+                            @endphp
                             @foreach ($reports as $report)
+                                @php
+                                    $cumulativeTimeGap += floatval($report->timegap);
+                                    
+                                    // Menghitung total
+                                    $totalPaymentAmount += $report->pmtamt;
+                                    $totalAccrualCoupon += $report->principal_in;
+                                    $totalCouponPayment += $report->interest;
+                                    $totalTimeGap += $report->timegap;
+                                    $totalOutstandingAmount += $report->outsamt_conv;
+                                    $totalCumulativeTimeGap = $cumulativeTimeGap;
+                                @endphp
                                 <tr>
-                                    <td>{{ $report->month_to }}</td>
-                                    <td>{{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
-                                    <td>{{ $report->interest }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td class="text-center">{{ $report->month_to }}</td>
+                                    <td class="text-center">{{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
+                                    <td class="text-center">{{ $report->haribunga }}</td>
+                                    <td class="text-right">{{ number_format($report->pmtamt) }}</td>
+                                    <td class="text-right">{{ $report->principal_in}}</td>
+                                    <td class="text-right">{{number_format($report->interest)}}</td>
+                                    <td class="text-right">{{number_format($report->timegap, 2)}}</td>
+                                    <td class="text-right">{{ number_format($report->outsamt_conv, 2) }}</td>
+                                    <td class="text-right">{{ number_format($cumulativeTimeGap, 2) }}</td>
                                 </tr>
                             @endforeach
+                            <tr style="font-weight:normal">
+                                <td colspan="3" class="text-center">TOTAL</td>
+                                <td class="text-right">{{ number_format($totalPaymentAmount) }}</td>
+                                <td class="text-right">{{ number_format($totalAccrualCoupon) }}</td>
+                                <td class="text-right">{{ number_format($totalCouponPayment) }}</td>
+                                <td class="text-right">{{ number_format($totalTimeGap / count($reports), 2) }}</td>
+                                <td class="text-right">{{ number_format($totalOutstandingAmount, 2) }}</td>
+                                <td class="text-right">{{ number_format($totalCumulativeTimeGap / count($reports), 2) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

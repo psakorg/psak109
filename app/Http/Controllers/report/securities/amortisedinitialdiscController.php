@@ -38,6 +38,7 @@ class amortisedinitialdiscController extends Controller
         $perPage = $request->input('per_page', 10);
         // Ambil data pinjaman hanya untuk id_pt yang sesuai, dengan pagination
         $loans = report_securities::fetchAll($id_pt, $perPage);
+
     // dd($loans);
         return view('report.securities.report_amortised_initial_disc.master', compact('loans'));
     }
@@ -63,6 +64,8 @@ class amortisedinitialdiscController extends Controller
     if ($reports->isEmpty()) {
         return response()->json(['error' => 'Data laporan tidak ditemukan'], 404);
     }
+
+    // dd($reports);
 
     return view('report.securities.report_amortised_initial_disc.view', compact('loan', 'reports', 'master'));
 }

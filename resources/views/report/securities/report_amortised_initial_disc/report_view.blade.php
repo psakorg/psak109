@@ -144,12 +144,12 @@
                 <!-- Report Table -->
                 <h2 style="font-size: 16px;">Report Details</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px; text-align: right;font-weight: bold;">
+                    <table class="table table-striped table-bordered table-hover table-sm" style="font-size: 12px; text-align: right;font-weight: normal;">
                         <thead class="thead-light text-center">
                             <tr>
                                 <th>Month</th>
                                 <th>Transaction Date </th>
-                                <th>Days Interst</th>
+                                <th>Days Interest</th>
                                 <th>Payment Amount</th>
                                 <th>Effective Interest Base On Effective Yield</th>
                                 <th>Accrual Coupon</th>
@@ -163,25 +163,37 @@
                             @php
                                 $cumulativeTimeGap = 0;
                                 $totalTimeGap = 0;
+                                $cummulativeAmortizedDisc = 0;
                             @endphp
                             @foreach ($reports as $report)
                             @php
                                 $cumulativeTimeGap += floatval($report->timegap);
                                 $totalTimeGap += ($report->timegap);
+                                $cummulativeAmortizedDisc += floatval($report->amortise_disc);
                             @endphp
                             <tr>
                                 <td>{{ $report->month_to }}</td>
                                 <td>{{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>{{ $report->haribunga }}</td>
+                                <td>{{ number_format($report->pmtamt, 2) }}</td>
+                                <td>{{ number_format($report->bunga ?? 0, 5) }}</td>
+                                <td>{{ $report->principal_in}}</td>
+                                <td>{{ number_format($report->amortise_disc, 2) }}</td>
+                                <td>{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount),2) }}</td>
+                                <td>{{ number_format($cummulativeAmortizedDisc, 2) }}</td>
+                                <td>{{ number_format($report->amortise_disc + $report->outsamt_disc ?? 0, 2) }}</td>
                             </tr>
                             @endforeach
+                            <tr class="font-weight-normal">
+                                <td colspan="3" class="text-center">TOTAL</td>
+                                <td class="text-right">{{ number_format($reports->sum('pmtamt'), 2) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('bunga'), 5) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('principal_in'), 2) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('amortise_disc'), 2) }}</td>
+                                <td class="text-right">{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount), 2) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('amortise_disc'), 2) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('amortise_disc') + $reports->sum('outsamt_disc'), 2) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

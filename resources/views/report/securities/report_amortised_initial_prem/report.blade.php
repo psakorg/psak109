@@ -23,7 +23,6 @@
                                 <th style="width: 15%; white-space: nowrap;">Price </th>
                                 <th style="width: 15%; white-space: nowrap;">Fair Value</th>
                                 <th style="width: 15%; white-space: nowrap;">At Premium</th>
-                                <th style="width: 15%; white-space: nowrap;">Outstanding Amount Initial At Premium</th>
                                 <th style="width: 15%; white-space: nowrap;">EIR Calculated Convertion</th>
                                 <th style="width: 15%; white-space: nowrap;">EIR Calculated At Prmium</th>
                                 <th style="width: 10%; white-space: nowrap;">Action</th>
@@ -43,7 +42,6 @@
                                     <td>{{ number_format($loan->price*100,5)}}</td>
                                     <td>{{ number_format((float) str_replace(['$', ','], '', $loan->fair_value)) }}</td>
                                     <td>{{$loan->atpremium}}</td>
-                                    <td>{{'null' }}</td>
                                     <td>{{ number_format($loan->eircalc_conv * 100, 15) }}%</td>
                                     <td>{{ number_format($loan->eircalc_prem * 100, 15) }}%</td>
                                     <td>
@@ -52,7 +50,7 @@
                                         </a>
                                         {{-- <a href="{{route('under')}}" class="btn btn-sm btn-info">
                                             <i class="fas fa-eye" style="margin-right: 5px;"></i> View
-                                        </a> --}}
+                                        </a> ---}}
                                     </td>
                                 </tr>
                             @endforeach
