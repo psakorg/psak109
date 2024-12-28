@@ -38,9 +38,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label text-right" style="white-space: nowrap;">EIR Conversion Calculated</label>
+                                    <label class="col-sm-3 col-form-label text-right">EIR Conversion Calculated</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->eircalc_conv * 100, 15) . '%' }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->eircalc_conv * 100, 14) . '%' }}" readonly>
                                     </div>
                                 </div>
                             </div>

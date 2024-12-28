@@ -13,7 +13,7 @@ use App\Http\Controllers\upload\simple_interest\tblcorporateController;
 use App\Http\Controllers\upload\simple_interest\tblmasterController as tblmaster_SI;
 use App\Http\Controllers\upload\effective\tblmasterController as tblmaster_EFF;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\upload\Effective\OutstandingController;
+use App\Http\Controllers\upload\effective\OutstandingController;
 use App\Http\Controllers\upload\simple_interest\OutstandingController as Outstanding_SI;
 
 

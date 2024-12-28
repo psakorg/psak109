@@ -271,7 +271,7 @@ class tblcorporateController extends Controller
         $request->validate([
             'bulan' => 'required|integer',
             'tahun' => 'required|integer',
-            'no_acc' => 'required|string',
+            // 'no_acc' => 'required|string',
             'pilihan' => 'required|integer'
         ]);
 
@@ -281,9 +281,12 @@ class tblcorporateController extends Controller
         $no_acc = $request->no_acc;
         $pilihan = $request->pilihan;
 
+        $user = Auth::user();
+        $id_pt = $user->id_pt;
+
         try {
             // Eksekusi stored procedure
-            DB::statement('CALL public.ndcashflowcorporateloan(?, ?, ?, ?)', [$bulan, $tahun, $no_acc, $pilihan]);
+            DB::statement('CALL public.ndcashflowcorporateloan_simpleinterest_final(?, ?, ?, ?)', [$bulan, $tahun, $pilihan, $id_pt]);
 
             return redirect()->back()->with('success', 'Stored procedure executed successfully.');
         } catch (QueryException $e) {

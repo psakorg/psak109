@@ -29,7 +29,7 @@ class simpleInterestController extends Controller
 
         $loans = InitialRecognitionSimpleInterest::getInitialRecognition($branch, $tahun, $bulan);
 
-        // dd($loans);
+        //dd($loans);
         
         return view('report.initial_recognition.simple_interest.master', compact('loans', 'bulan', 'tahun', 'user', 'isSuperAdmin'));
     }

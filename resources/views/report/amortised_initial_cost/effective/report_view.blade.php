@@ -45,7 +45,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label d-flex justify-content-end white-space: nowrap;">Outstanding Initial Cost</label>
+                                    <label class="col-sm-3 col-form-label d-flex justify-content-end" style="white-space: nowrap;">Outstanding Initial Cost</label>
                                     <div class="col-sm-8">
                                         <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format($loan->org_bal, 2) }}" readonly>
                                     </div>
@@ -62,7 +62,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label d-flex justify-content-end">EIR Cost Calculated</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{  $loan->eircalc_cost* 100, 15 }}%" readonly>
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{  $loan->eircalc_cost* 100, 14 }}%" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -127,7 +127,7 @@
                                 $totalPaymentAmount = 0;
                                 $totalEffectiveInterestUF_TC = 0;
                                 $totalEffectiveInterestUF = 0;
-                                $totalAmortisedTransactionCost = 0;
+                                $totalAmortised = 0;
                                 $totalOutstandingAmountInitialTransactionCost = 0;
                                 $totalUnamortizedTransactionCost = 0;
                                 $reportCount = count($reports);

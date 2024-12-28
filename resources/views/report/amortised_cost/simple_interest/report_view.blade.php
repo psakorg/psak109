@@ -25,7 +25,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end">Outstanding Interest</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->bilint, 2) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->bilint, 5) }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -175,7 +175,7 @@
                                     <tr style="font-weight:normal">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
-                                        <td>{{ number_format($report->haribunga ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->haribunga ?? 0, 5) }}</td>
                                         <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->penarikan ?? 0, 2) }}</td>
                                         <td>{{ number_format($report->pengembalian ?? 0, 2) }}</td>
@@ -190,7 +190,7 @@
                                 <!-- Row Total -->
                                 <tr style="font-weight:normal;">
                                     <td class="text-center" colspan="2">TOTAL</td>
-                                    <td>{{ number_format($totalDaysInterest, 2) }}</td>
+                                    <td>{{ number_format($totalDaysInterest, 5) }}</td>
                                     <td>{{ number_format($totalPaymentAmount, 2) }}</td>
                                     <td>{{ number_format($totalWithdrawal, 2) }}</td>
                                     <td>{{ number_format($totalReimbursement, 2) }}</td>

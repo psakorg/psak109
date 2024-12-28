@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 
-                <div class="table-responsive" style="overflow: visible !important;">
+                <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
                     @if($tblmaster->count() > 0)
                     <table class="table table-striped table-bordered custom-table">
                         <thead>

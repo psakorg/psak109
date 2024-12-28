@@ -272,7 +272,7 @@
                                 <label for="tahun" class="form-label">Tahun:</label>
                                 <input type="number" name="tahun" id="tahun" class="form-control" required min="2000">
                             </div>
-                            <div class="mb-3">
+                            <!-- <div class="mb-3">
                                 <label for="no_acc" class="form-label">Nomor Akun:</label>
                                 <select name="no_acc" id="no_acc" class="form-select" required>
                                     <option value="">Pilih Nomor Akun</option>
@@ -280,7 +280,7 @@
                                         <option value="{{ $item->no_acc }}">{{ $item->no_acc }} - {{ $item->deb_name }}</option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> -->
                             <div class="mb-3">
                                 <label for="pilihan" class="form-label">Pilihan (365/360):</label>
                                 <select name="pilihan" id="pilihan" class="form-select" required>

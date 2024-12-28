@@ -108,10 +108,10 @@
                                 <th class="text-center">Month</th>
                                 <th class="text-center">Transaction Date</th>
                                 <th class="text-center">Days Interest</th>
-                                <th class="text-right">Payment Amount</th>
-                                <th class="text-right">Principal Payment</th>
-                                <th class="text-right">Coupon Payment</th>
-                                <th class="text-right">Balance Contractual</th>
+                                <th class="text-center">Payment Amount</th>
+                                <th class="text-center">Principal Payment</th>
+                                <th class="text-center">Coupon Payment</th>
+                                <th class="text-center">Balance Contractual</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -119,7 +119,7 @@
                                 <tr>
                                     <td class="text-center">{{ $report->month_to }}</td>
                                     <td class="text-center">{{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
-                                    <td class="text-center">{{ $report->haribunga }}</td>
+                                    <td class="text-right">{{ $report->haribunga }}</td>
                                     <td class="text-right">{{ number_format($report->pmtamt, 2) }}</td>
                                     <td class="text-right">{{ number_format($report->principal_in, 2) }}</td>
                                     <td class="text-right">{{ number_format($report->interest, 2) }}</td>

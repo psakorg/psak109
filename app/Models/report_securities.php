@@ -49,7 +49,7 @@ class report_securities extends Model
 //     }
 public static function getLoanDetails($no_acc,$id_pt)
     {
-        return self::join('securities.tblmaster_tmpbid as master as master', 'securities.tblobalsecurities.no_acc', '=', DB::raw("master.no_acc")) // Join ke tblmaster_tmpcorporate dengan alias 'master'
+        return self::join('securities.tblmaster_tmpbid as master', 'securities.tblobalsecurities.no_acc', '=', DB::raw("master.no_acc")) // Join ke tblmaster_tmpcorporate dengan alias 'master'
         ->where('securities.tblobalsecurities.no_acc', $no_acc)
         ->where('securities.tblobalsecurities.id_pt', $id_pt)
         ->select('securities.tblobalsecurities.*', 'master.price') // Memilih semua kolom dari tblobalcorporateloan dan kolom term dari master

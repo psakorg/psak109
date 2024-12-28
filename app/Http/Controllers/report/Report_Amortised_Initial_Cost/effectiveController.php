@@ -45,6 +45,7 @@ class effectiveController extends Controller
             abort(404, 'Loan not found');
         }
 
+        //dd($reports, $master);
 
         return view('report.amortised_initial_cost.effective.view', compact('loan', 'reports','master'));
     }

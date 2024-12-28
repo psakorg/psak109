@@ -160,10 +160,13 @@ class tblmasterController extends Controller
     {
         try {
             $request->validate([
-                'tahun' => 'required|integer|min:2000',
-                'no_acc' => 'required|string',
+                'tahun' => 'required|integer',
+                'bulan' => 'required|integer|min:1|max:12',
                 'pilihan' => 'required|in:365,360',
             ]);
+
+            $user = Auth::user();
+            $id_pt = $user->id_pt;
 
             $bulan = date('n'); // Mengambil bulan saat ini
             $tahun = $request->tahun;
@@ -178,11 +181,11 @@ class tblmasterController extends Controller
             ]);
 
             // Eksekusi stored procedure menggunakan DB::statement
-            DB::statement("CALL ndcashflowcorporateloan(?, ?, ?, ?)", [
+            DB::statement("CALL public.ndcashflowcorporateloan_simpleinterest_final(?, ?, ?, ?)", [
                 $bulan,
                 $tahun, 
-                $noAcc,
-                $period
+                $period,
+                $id_pt
             ]);
 
             return redirect()->back()->with('success', 'Stored procedure berhasil dieksekusi');

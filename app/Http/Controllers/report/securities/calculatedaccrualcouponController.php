@@ -67,8 +67,8 @@ class calculatedaccrualcouponController extends Controller
 
     return view('report.securities.report_calculated_accrual_coupon.view', compact('loan', 'reports', 'master'));
 }
-
-    public function exportExcel($no_acc,$id_pt)
+ // Method untuk mengekspor data ke Excel
+    public function exportExcel($no_acc, $id_pt)
     {
         // Ambil data loan dan reports
 
@@ -236,7 +236,13 @@ class calculatedaccrualcouponController extends Controller
     // Buat spreadsheet baru
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
-    $sheet->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
+
+    $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+    $sheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+    $sheet->getPageMargins()->setTop(0.5);
+    $sheet->getPageMargins()->setRight(0.5);
+    $sheet->getPageMargins()->setLeft(0.5);
+    $sheet->getPageMargins()->setBottom(0.5);
 
 
     // Set informasi pinjaman

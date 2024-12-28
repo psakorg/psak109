@@ -1,4 +1,4 @@
-<div class="content-wrapper" style="font-size: 12px;">
+<div class="content-wrapper" style="font-size: 12px; ">
     <div class="main-content" style="padding-top: 10px;">
         <div class="container mt-5">
             <section class="section">
@@ -39,7 +39,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-4 col-form-label text-right" style="white-space: nowrap;">Outstanding Amount Initial Discount</label>
+                                    <label class="col-sm-4 col-form-label text-right">Outstanding Amount Initial Discount</label>
                                     <div class="col-sm-8">
                                         <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->eircalc_conv * 100, 15) . '%' }}" readonly>
                                     </div>

@@ -215,10 +215,6 @@
                                         <input type="number" name="tahun" id="tahun" class="form-control" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="no_acc" class="form-label">Nomor Akun:</label>
-                                        <input type="text" name="no_acc" id="no_acc" class="form-control" required>
-                                    </div>
-                                    <div class="mb-3">
                                         <label for="pilihan" class="form-label">Pilihan (365/360):</label>
                                         <select name="pilihan" id="pilihan" class="form-select" required>
                                             <option value="365">365</option>

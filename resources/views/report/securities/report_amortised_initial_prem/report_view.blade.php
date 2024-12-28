@@ -57,7 +57,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">EIR Calculated Convertion</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->eircalc_conv * 100, 15) }}%" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->eircalc_conv * 100, 14) }}%" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +73,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">EIR Calculated At Premium</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->eircalc_prem * 100, 15) }}%" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->eircalc_prem * 100, 14) }}%" readonly>
                                     </div>
                                 </div>
                             </div>

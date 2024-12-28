@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Upload\simple_interest;
+namespace App\Http\Controllers\upload\simple_interest;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

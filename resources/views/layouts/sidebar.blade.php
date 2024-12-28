@@ -50,9 +50,9 @@
 
                 <!-- Report Dropdown -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link d-flex align-items-center ">
+                    <a href="#" class="nav-link d-flex align-items-center">
                         <i class="fas fa-file"></i>
-                        <p class="ms-2 mb-0 text-start" style="font-size: 14px;">Report</p>
+                        <p class="ms-2 mb-0 text-start" style="font-size: 14px;">Loan Report</p>
                         <i class="nav-arrow bi bi-chevron-right"></i>
                     </a>
                     <ul class="nav nav-treeview">
@@ -66,7 +66,6 @@
                                 <div class="sidebar-dropdown-menu">
                                     <a href="{{ route('report-initial-recognition.index') }}" class="dropdown-link">Effective</a>
                                     <a href="{{ route('report-initial-recognition.simple-interest') }}" class="dropdown-link">Simple Interest</a>
-                                    <a href="#" class="dropdown-link">Securities</a>
                                 </div>
                             </div>
                         </li>
@@ -81,7 +80,6 @@
                                 <div class="sidebar-dropdown-menu">
                                     <a href="{{ route('report-outstanding-eff.view', ['id_pt' => Auth::user()->id_pt]) }}" class="dropdown-link">Effective</a>
                                     <a href="{{ route('report-outstanding-si.index') }}" class="dropdown-link">Simple Interest</a>
-                                    <a href="#" class="dropdown-link">Securities</a>
                                 </div>
                             </div>
                         </li>
@@ -96,13 +94,12 @@
                                 <div class="sidebar-dropdown-menu">
                                     <a href="{{ route('report-journal-eff.index') }}" class="dropdown-link">Effective</a>
                                     <a href="{{ route('report-outstanding-si.index') }}" class="dropdown-link">Simple Interest</a>
-                                    <a href="#" class="dropdown-link">Securities</a>
                                 </div>
                             </div>
                         </li>
 
                         <!-- Detail Report -->
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a href="#" class="nav-link d-flex align-items-center">
                                 <p class="ms-2 mb-0 text-start" style="white-space: nowrap; font-size: 14px;">Detail Report</p>
                                 <i class="nav-arrow bi bi-chevron-right"></i>
@@ -166,7 +163,7 @@
                                     </div>
                                 </li>
                             </ul>
-                        </li>
+                        </li>-->
 
                         <!-- Effective -->
                         <!-- <li class="nav-item">
@@ -269,7 +266,9 @@
                                 </li>
                             </ul>
                         </li> -->
-
+                        </ul>
+                </li>
+                        
                         <!-- Securities -->
                         <li class="nav-item">
                             <a href="#" class="nav-link d-flex align-items-center">
@@ -297,8 +296,6 @@
                                 </li>
                             </ul>
                         </li>
-                    </ul>
-                </li>
 
                 <!-- Upload Data Files -->
                 <li class="nav-item">

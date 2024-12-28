@@ -6,7 +6,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
-
 <div class="content-wrapper">
     <div class="main-content" style="padding-top: 20px;">
         <div class="container mt-5" style="padding-right: 50px; overflow: visible;">
@@ -122,7 +121,7 @@
                     </div>
                 </div>
                 
-                <div class="table-responsive" style="overflow: visible !important;">
+                <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
                     <table class="table table-striped table-bordered custom-table">
                         <thead>
                             <tr>
@@ -174,6 +173,7 @@
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $loan->no_branch }}</td>
                                         <td>
+                                            <div class="absolute">
                                             <div class="dropdown">
                                                 <span class="clickable-account" data-bs-toggle="dropdown" aria-expanded="false">
                                                     {{ $loan->no_acc }}
@@ -245,6 +245,7 @@
                                                     </li>
                                                 </ul>
                                             </div>
+                            </div>
                                         </td>
                                         <td>{{ $loan->deb_name }}</td>
                                         <td>{{ $loan->coa }}</td>
@@ -305,7 +306,7 @@
                                 </tr>
                             @else
                                 <tr>
-                                    <td colspan="23" class="text-center py-4">
+                                    <td colspan="23" class="text-left py-4">
                                         <div class="no-data-message">
                                             <h5>No Data Found For Year {{ $tahun }} Month {{ $bulan }}</h5>
                                         </div>
@@ -319,6 +320,7 @@
         </div>
     </div>
 </div>
+
 
 <style>
     /* Gunakan style yang sama dengan accrual interest */
@@ -520,6 +522,7 @@
 
     .container {
         overflow: visible !important;
+
     }
 
     .section {

@@ -50,6 +50,8 @@ class simpleinterestController extends Controller
             abort(404, 'Loan not found');
         }
 
+        //dd($loan, $report);
+
         $isSuperAdmin = $user->role === 'superadmin';
         return view('report.outstanding.simple_interest.view', compact('loan', 'reports', 'isSuperAdmin', 'user'));
     }

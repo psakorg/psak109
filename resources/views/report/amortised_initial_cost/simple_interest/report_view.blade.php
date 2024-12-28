@@ -122,12 +122,13 @@
                                     <td>{{ number_format($report->pmtamt, 2) }}</td>
                                     <td>{{ number_format($report->penarikan, 2) }}</td>
                                     <td>{{ number_format($report->pengembalian, 2) }}</td>
-                                    <td>{{ number_format($report->effective_interest_uf_tc, 5) }}</td>
-                                    <td>{{ number_format($report->effective_interest_uf, 5) }}</td>
+                                    <td>{{ number_format($report->effective_interest_uf_tc ?? 0, 5) }}</td> <!--error di effective_interest -->
+                                    <td>{{ number_format($report->effective_interest_uf ?? 0, 5) }}</td> <!--error di effective_interest -->
                                     <td>{{ number_format($report->amortisecost, 2) }}</td>
                                     <td>{{ number_format($report->outsamtconv, 2) }}</td>
                                     <td>{{ number_format(0, 2) }}</td>
                                     <td>{{ number_format(0, 2) }}</td>
+                                    
                                 </tr>
                             @endforeach
                             <!-- Row Total / Average -->
