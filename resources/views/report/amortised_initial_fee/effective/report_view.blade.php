@@ -23,7 +23,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label" style="font-size: 12px;">Up Front Fee</label>
+                                    <label class="col-sm-3 col-form-label" style="font-size: 12px;">UpFront Fee</label>
                                     <div class="col-sm-8">
                                         @php
                                             // Misalkan trxcost adalah string dengan simbol mata uang
@@ -48,7 +48,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label" style="font-size: 12px;">Outstanding Amount Initial Fee</label>
+                                    <label class="col-sm-3 col-form-label" style="font-size: 12px;">Outstanding Initial Fee</label>
                                     <div class="col-sm-8">
                                         <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format( $outinitfee ?? 0, 2)  }}" readonly>
                                     </div>
@@ -165,24 +165,24 @@
                                         $totalOutstandingAmountInitialUpFrontFee += $report->outsamtfee ?? 0;
                                         $totalCumulativeAmortizedUpFrontFee += $cumulativeAmortized;
                                     @endphp
-                                    <tr style="font-weight:normal;">
+                                    <tr style="font-weight:normal;" class="text-right">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
-                                        <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->bunga ?? 0, 5) }}</td>
-                                        <td>{{ number_format($report->accrfee ?? 0, 5) }}</td>
-                                        <td>{{ number_format($amortisefee ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->outsamtfee ?? 0, 2) }}</td>
-                                        <td>{{ number_format($cumulativeAmortized ?? 0, 2) }}</td>
-                                        <td>{{ number_format($unamort ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->pmtamt ?? 0) }}</td>
+                                        <td>{{ number_format($report->bunga ?? 0) }}</td>
+                                        <td>{{ number_format($report->accrfee ?? 0) }}</td>
+                                        <td>{{ number_format($amortisefee ?? 0) }}</td>
+                                        <td>{{ number_format($report->outsamtfee ?? 0) }}</td>
+                                        <td>{{ number_format($cumulativeAmortized ?? 0) }}</td>
+                                        <td>{{ number_format($unamort ?? 0) }}</td>
                                     </tr>
                                 @endforeach
-                                <tr style="font-weight:normal;">
+                                <tr style="font-weight:normal;" class="text-right">
                                     <td class="text-center" colspan="2">TOTAL</td>
-                                    <td>{{ number_format($totalPaymentAmount, 2) }}</td>
-                                    <td>{{ number_format($totalEffectiveInterest, 5) }}</td>
-                                    <td>{{ number_format($totalAccruedInterest, 5) }}</td>
-                                    <td>{{ number_format($totalAmortisedUpFrontFee, 2) }}</td>
+                                    <td>{{ number_format($totalPaymentAmount ?? 0) }}</td>
+                                    <td>{{ number_format($totalEffectiveInterest ?? 0) }}</td>
+                                    <td>{{ number_format($totalAccruedInterest ?? 0) }}</td>
+                                    <td>{{ number_format($totalAmortisedUpFrontFee ?? 0) }}</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>

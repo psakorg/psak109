@@ -89,7 +89,6 @@
                                 <th>Interest Payment</th>
                                 <th>Principal Payment</th>
                                 <th>Balance Contractual</th>
-                                <th>Cummulative Interest</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -117,20 +116,18 @@
                                     <tr style="font-weight:normal;">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y ', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
-                                        <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->bunga ?? 0, 5) }}</td>
-                                        <td>{{ number_format($report->pokok ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->balance ?? 0, 2) }}</td>
-                                        <td>{{ number_format($cumulativebunga ?? 0, 5) }}</td>
+                                        <td>{{ number_format($report->pmtamt ?? 0) }}</td>
+                                        <td>{{ number_format($report->bunga ?? 0) }}</td>
+                                        <td>{{ number_format($report->pokok ?? 0) }}</td>
+                                        <td>{{ number_format($report->balance ?? 0) }}</td>
                                     </tr>
                                 @endforeach
                                 <!-- Row Total -->
-                                <tr style="font-weight:normal;">
+                                <tr style="font-weight:normal;" class="text-right">
                                     <td colspan="2" class="text-center">TOTAL</td>
-                                    <td>{{ number_format($totalPaymentAmount, 2) }}</td>
-                                    <td>{{ number_format($totalInterestPayment, 5) }}</td>
-                                    <td>{{ number_format($totalPrincipalPayment, 2) }}</td>
-                                    <td></td>
+                                    <td>{{ number_format($totalPaymentAmount ?? 0) }}</td>
+                                    <td>{{ number_format($totalInterestPayment ?? 0) }}</td>
+                                    <td>{{ number_format($totalPrincipalPayment ?? 0) }}</td>
                                     <td></td>
                                 </tr>
                             @endif

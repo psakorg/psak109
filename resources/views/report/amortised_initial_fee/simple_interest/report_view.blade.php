@@ -24,7 +24,17 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end">Up Front Fee</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="-{{ number_format($loan->prov, 2) }}" readonly>
+                                    @php
+                                            // Misalkan trxcost adalah string dengan simbol mata uang
+                                            $prov = $loan->prov; // Ambil nilai dari database
+                                            // Hapus simbol mata uang dan pemisah ribuan
+                                            $prov = preg_replace('/[^\d.]/', '', $prov);
+                                            // Konversi ke float
+                                            $provFloat = (float)$prov* -1;
+                                            $org_bal = $loan->org_bal;
+                                            $outinitfee = $org_bal+$provFloat;
+                                        @endphp
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format($provFloat ?? 0, 2)}}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -37,9 +47,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-4 col-form-label d-flex justify-content-end white-space: nowrap;">Outstanding Amount Initial Fee</label>
+                                    <label class="col-sm-4 col-form-label d-flex justify-content-end">Outstanding Amount Initial Fee</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format(0, 2) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format( $outinitfee ?? 0, 2)  }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -69,7 +79,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end">Term</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ $loan->term }}" readonly>
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ $loan->term }} Month" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -113,34 +123,51 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php 
+                            $cumulativeAmortized = 0;
+                            $totalCumulativeAmortizedUpFrontFee = 0;
+                            @endphp
                             @foreach ($reports as $report)
+                            @php 
+                            $amortisefee = $report->amortisefee;
+                            $cumulativeAmortized += $amortisefee;
+                            $unamortprovFloat = $provFloat;
+
+                                        // Hitung nilai unamortized
+                                        if ($loop->first) {
+                                            $unamort = $unamortprovFloat;
+                                        } else {
+                                            $unamort = $unamort + $amortisefee;
+                                        }
+                            @endphp
                                 <tr class="text-right" style="font-weight:normal">
                                     <td class="text-center">{{ $report->bulanke }}</td>
                                     <td class="text-center">{{ date('d-m-Y ', strtotime($report->tglangsuran)) }}</td>
-                                    <td class="text-center">{{ $report->haribunga }}</td>
-                                    <td>{{ number_format($report->pmtamt, 2) }}</td>
-                                    <td>{{ number_format($report->penarikan, 2) }}</td>
-                                    <td>{{ number_format($report->pengembalian, 2) }}</td>
-                                    <td>{{ number_format($report->bunga, 5) }}</td>
-                                    <td>{{ number_format($report->balance, 5) }}</td>
-                                    <td>{{ number_format($report->timegap, 2) }}</td>
-                                    <td>{{ number_format($report->outsamtconv, 2) }}</td>
-                                    <td>{{ number_format(0, 2) }}</td>
-                                    <td>{{ number_format(0, 2) }}</td>
+                                    <td>{{ $report->haribunga ?? 0}}</td>
+                                    <td>{{ number_format($report->pmtamt ?? 0) }}</td>
+                                    <td>{{ number_format($report->penarikan ?? 0) }}</td>
+                                    <td>{{ number_format($report->pengembalian ?? 0) }}</td>
+                                    <td>{{ number_format($report->bunga ?? 0) }}</td>
+                                    <td>{{ number_format($report->accrfee ?? 0) }}</td>
+                                    <td>{{ number_format($report->amortisefee ?? 0) }}</td>
+                                    <td>{{ number_format($report->outsamtfee ?? 0) }}</td>
+                                    <td>{{ number_format($cumulativeAmortized ?? 0) }}</td>
+                                    <td>{{ number_format($unamort ?? 0) }}</td>
                                 </tr>
                             @endforeach
                             <!-- Row Total / Average -->
                             <tr class="text-right font-weight-normal">
-                                <td class="text-center" colspan="3">TOTAL</td>
-                                <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('penarikan'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('pengembalian'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('bunga'), 5) }}</td>
-                                <td>{{ number_format($reports->sum('balance'), 5) }}</td>
-                                <td>{{ number_format($reports->sum('timegap'), 2) }}</td>
+                                <td class="text-center" colspan="2">TOTAL</td>
+                                <td>{{ number_format($reports->sum('haribunga') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('pmtamt') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('penarikan') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('pengembalian') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('bunga') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('accrfee') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('outsamtfee') ?? 0) }}</td>
                                 <td></td>
                                 <td></td>
-                                <td>{{ number_format($reports->sum('unamortized'), 2) }}</td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>

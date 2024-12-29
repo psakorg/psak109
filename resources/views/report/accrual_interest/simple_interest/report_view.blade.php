@@ -10,7 +10,7 @@
                 <!-- Loan Details Form -->
                 <div class="card mb-4" style="font-size: 12px;">
                     <div class="card-header">
-                        <h5 class="card-title" style="font-size: 16px;">REPORT ACCRUAL INTERST - SIMPLE INTEREST</h5>
+                        <h5 class="card-title" style="font-size: 16px;">REPORT ACCRUAL INTEREST - SIMPLE INTEREST</h5>
                     </div>
                     <div class="card-body">
                         <form>
@@ -64,7 +64,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Term</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $loan->term }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $loan->term }} Month" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
@@ -104,6 +104,7 @@
                                 <th>Interest Payment</th>
                                 <th>Time Gap</th>
                                 <th>Outstanding Amount</th>
+                                <th>Cummulative Time Gap</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -132,24 +133,26 @@
                                 <tr style="font-weight:normal">
                                     <td class="text-center" >{{ $report->bulanke }}</td>
                                     <td class="text-center" >{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
-                                    <td class="text-center" >{{ $report->haribunga }}</td>
-                                    <td class="text-right"  >{{ number_format($report->pmtamt, 2) }}</td>
-                                    <td>{{ number_format($report->penarikan, 2) }}</td>
-                                    <td>{{ number_format($report->pengembalian, 2) }}</td>
-                                    <td>{{ number_format($report->bunga, 5) }}</td>
-                                    <td>{{ number_format($report->bunga, 5) }}</td>
-                                    <td>{{ number_format($report->timegap, 2) }}</td>
-                                    <td>{{ number_format($report->outsamtconv, 2) }}</td>
+                                    <td class="text-right" >{{ $report->haribunga }}</td>
+                                    <td class="text-right"  >{{ number_format($report->pmtamt ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($report->penarikan ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($report->pengembalian ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($report->bunga ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($report->bunga ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($report->timegap ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($report->outsamtconv ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($totalTimeGap ?? 0) }}</td>
                                 </tr>
                             @endforeach
                             <tr style="font-weight:normal">
-                                <td colspan="3" class="text-center">TOTAL / AVERAGE</td>
-                                <td class="text-right">{{ number_format($totalPaymentAmount, 2) }}</td>
-                                <td>{{ number_format($totalWithdrawal / $reportCount, 2) }}</td>
-                                <td>{{ number_format($totalReimbursement / $reportCount, 2) }}</td>
-                                <td>{{ number_format($totalAccruedInterest, 5) }}</td>
-                                <td>{{ number_format($totalInterestPayment / $reportCount, 5) }}</td>
-                                <td>{{ number_format($totalTimeGap / $reportCount, 2) }}</td>
+                                <td colspan="3" class="text-center">TOTAL</td>
+                                <td class="text-right">{{ number_format($totalPaymentAmount) ?? 0 }}</td>
+                                <td class="text-right">{{ number_format($totalWithdrawal / $reportCount ?? 0) }}</td>
+                                <td class="text-right">{{ number_format($totalReimbursement / $reportCount ?? 0) }}</td>
+                                <td class="text-right">{{ number_format($totalAccruedInterest ?? 0) }}</td>
+                                <td class="text-right">{{ number_format($totalInterestPayment / $reportCount ?? 0) }}</td>
+                                <td class="text-right">{{ number_format($totalTimeGap / $reportCount ?? 0) }}</td>
+                                <td></td>
                                 <td></td>
                             </tr>
                         </tbody>

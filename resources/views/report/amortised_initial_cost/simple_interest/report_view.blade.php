@@ -25,7 +25,15 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end" style="font-size: 12px;">Transaction Cost</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->trxcost*100, 2) }}" readonly style="font-size: 12px;">
+                                    @php
+                                            // Misalkan trxcost adalah string dengan simbol mata uang
+                                            $trxcost = $loan->trxcost; // Ambil nilai dari database
+                                            // Hapus simbol mata uang dan pemisah ribuan
+                                            $trxcost = preg_replace('/[^\d.]/', '', $trxcost);
+                                            // Konversi ke float
+                                            $trxcostFloat = (float)$trxcost;
+                                        @endphp
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($trxcostFloat, 2)}}" readonly style="font-size: 12px;">
                                     </div>
                                 </div>
                             </div>
@@ -70,7 +78,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end" style="font-size: 12px;">Term</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $loan->term }}" readonly style="font-size: 12px;">
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $loan->term }} Month" readonly style="font-size: 12px;">
                                     </div>
                                 </div>
                             </div>
@@ -114,34 +122,52 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $cumulativeAmortized = 0; // Inisialisasi variabel kumulatif
+                                $totalharibunga = 0;
+                            @endphp
                             @foreach ($reports as $report)
+                            @php
+                                    $amortized = $report->amortisecost; // Ambil nilai amortized dari laporan
+                                    $cumulativeAmortized += $amortized; // Tambahkan amortized ke total kumulatif
+                                    $unamortrxcost = $trxcostFloat;
+                                    // Hitung nilai unamortized
+                                    if ($loop->first) {
+                                        // Untuk baris pertama, gunakan nilai trxcost
+                                        $unamort = $unamortrxcost;
+                                    } else {
+                                        // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
+                                        $unamort = $unamort + $amortized;
+                                    }
+                                $totalharibunga += $report->haribunga ?? 0;
+                            @endphp
                                 <tr class="text-right" style="font-weight:normal">
                                     <td class="text-center">{{ $report->bulanke }}</td>
                                     <td class="text-center">{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
                                     <td class="text-center">{{ $report->haribunga }}</td>
-                                    <td>{{ number_format($report->pmtamt, 2) }}</td>
-                                    <td>{{ number_format($report->penarikan, 2) }}</td>
-                                    <td>{{ number_format($report->pengembalian, 2) }}</td>
-                                    <td>{{ number_format($report->effective_interest_uf_tc ?? 0, 5) }}</td> <!--error di effective_interest -->
-                                    <td>{{ number_format($report->effective_interest_uf ?? 0, 5) }}</td> <!--error di effective_interest -->
-                                    <td>{{ number_format($report->amortisecost, 2) }}</td>
-                                    <td>{{ number_format($report->outsamtconv, 2) }}</td>
-                                    <td>{{ number_format(0, 2) }}</td>
-                                    <td>{{ number_format(0, 2) }}</td>
-                                    
+                                    <td>{{ number_format($report->pmtamt ?? 0) }}</td>
+                                    <td>{{ number_format($report->penarikan ?? 0) }}</td>
+                                    <td>{{ number_format($report->pengembalian ?? 0) }}</td>
+                                    <td>{{ number_format($report->effective_interest_uf_tc ?? 0) }}</td> <!--error di effective_interest -->
+                                    <td>{{ number_format($report->effective_interest_uf ?? 0) }}</td> <!--error di effective_interest -->
+                                    <td>{{ number_format($report->amortisecost ?? 0) }}</td>
+                                    <td>{{ number_format($report->outsamtcost ?? 0) }}</td>
+                                    <td>{{ number_format($cumulativeAmortized ?? 0) }}</td>
+                                    <td>{{ number_format($unamort ?? 0) }}</td>
                                 </tr>
                             @endforeach
                             <!-- Row Total / Average -->
-                            <tr class="text-right font-weight-normal">
-                                <td class="text-center" colspan="3">TOTAL</td>
-                                <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('penarikan'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('pengembalian'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('effective_interest_uf_tc'), 5) }}</td>
-                                <td>{{ number_format($reports->sum('effective_interest_uf'), 5) }}</td>
-                                <td>{{ number_format($reports->sum('amortisecost'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('outsamtconv'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('cumm_amortized_cost'), 2) }}</td>
+                            <tr class="text-right font-weight-normal" class="text-right">
+                                <td class="text-center" colspan="2">TOTAL</td>
+                                <td>{{ number_format($reports->sum('haribunga') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('pmtamt') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('penarikan') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('pengembalian') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('effective_interest_uf_tc') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('effective_interest_uf') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('amortisecost') ?? 0) }}</td>
+                                <td></td>
+                                <td></td>
                                 <td></td>
                             </tr>
                         </tbody>

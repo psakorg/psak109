@@ -25,7 +25,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end">Outstanding Interest</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->bilint, 5) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->bilint) }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -40,7 +40,11 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end">Up Front Fee</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->prov, 2) }}" readonly>
+                                    @php
+                                        // Menghitung nilai org amount
+                                            $upfrontFee = round(-($loan->org_bal * 0.01), 0);
+                                        @endphp
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($upfrontFee, 2) }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -68,14 +72,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-4 col-form-label d-flex justify-content-end">Interest Rate</label>
+                                    <label class="col-sm-4 col-form-label d-flex justify-content-end">Carrying Amount</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->rate*100, 5) }}%" readonly>
+                                        @php
+                                        // Menghitung nilai org amount
+                                            $CarryingAmount=$loan->org_bal+$upfrontFee
+                                        @endphp
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($CarryingAmount?? 0, 2) }}" readonly>
                                     </div>
-                                    {{-- <label class="col-sm-4 col-form-label d-flex justify-content-end">Carrying Amount</label>
-                                    <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ date('Y-m-d', strtotime($loan->mtr_date)) }}" readonly>
-                                    </div> --}}
                                 </div>
                             </div>
                             <!-- Row 5 -->
@@ -83,7 +87,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Term</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $loan->term }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $loan->term }} Month" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
@@ -109,14 +113,14 @@
                                 </div>
                             </div>
                             <!-- Row 7 -->
-                            {{-- <div class="form-row">
+                             <div class="form-row">
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Interest Rate</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ date('d-m-Y', strtotime($loan->mtr_date)) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->rate*100, 5) }}%" readonly>
                                     </div>
                                 </div>
-                            </div> --}}
+                            </div> 
                         </form>
                     </div>
                 </div>
@@ -158,48 +162,63 @@
                                 $totalCarryingAmount = 0;
                                 $totalCummulativeAmortized = 0;
                                 $totalUnamortized = 0;
+                                $cumulativeAmortized = 0;
                             @endphp
                                 @foreach ($reports as $report)
                                 @php
+                                
+                                $amortized = $report->amortized;
+                                $cumulativeAmortized += $amortized;
+
+                                // Hitung nilai unamortized
+                                    if ($loop->first) {
+                                        // Untuk baris pertama, gunakan nilai upfrontFee
+                                        $unamortized = $upfrontFee;
+                                    } else {
+                                        // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
+                                        $unamortized = $unamortized + $amortized;
+                                    }
+
                                     $totalAmortised += $report->amortized ?? 0;
                                     $totalDaysInterest += $report->haribunga ?? 0;
                                     $totalWithdrawal += $report->penarikan ?? 0;
                                     $totalReimbursement += $report->pengembalian ?? 0;
-                                    $totalInterestPayment += $report->bungaeir ?? 0;
+                                    $totalInterestPayment += $report->bunga ?? 0;
                                     $totalPaymentAmount += $report->pmtamt ?? 0;
                                     $totalInterestRecognition += $report->bungaeir ?? 0; // Assuming interest recognition is bunga
                                     $totalCarryingAmount += $report->baleir ?? 0;
-                                    $totalCummulativeAmortized += $report->outsamtconv ?? 0;
+                                    $totalCummulativeAmortized += $cumulativeAmortized ?? 0;
                                     $totalUnamortized += $report->amortized + $report->outsamtconv ?? 0;
                                 @endphp
-                                    <tr style="font-weight:normal">
+                                    <tr style="font-weight:normal" class="text-right">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
-                                        <td>{{ number_format($report->haribunga ?? 0, 5) }}</td>
-                                        <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->penarikan ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->pengembalian ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->bungaeir ?? 0, 5) }}</td>
-                                        <td>{{ number_format($report->bunga ?? 0, 5) }}</td>
-                                        <td>{{ number_format($report->amortized ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->baleir ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->outsamtconv ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->amortized + $report->outsamtconv ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->haribunga ?? 0) }}</td>
+                                        <td>{{ number_format($report->pmtamt ?? 0) }}</td>
+                                        <td>{{ number_format($report->penarikan ?? 0) }}</td>
+                                        <td>{{ number_format($report->pengembalian ?? 0) }}</td>
+                                        <td>{{ number_format($report->bungaeir ?? 0) }}</td>
+                                        <td>{{ number_format($report->bunga ?? 0) }}</td>
+                                        <td>{{ number_format($report->amortized ?? 0) }}</td>
+                                        <td>{{ number_format($report->baleir ?? 0) }}</td>
+                                        <td>{{ number_format($cumulativeAmortized ?? 0) }}</td>
+                                        <td>{{ number_format($report->baleir - $loan->nbal + $report->pengembalian - $report->penarikan ?? 0) }}</td>
+                                        <!-- <td>{{ number_format($report->amortized + $report->outsamtconv ?? 0) }}</td> -->
                                     </tr>
                                 @endforeach
                                 <!-- Row Total -->
-                                <tr style="font-weight:normal;">
+                                <tr style="font-weight:normal;" class="text-right">
                                     <td class="text-center" colspan="2">TOTAL</td>
-                                    <td>{{ number_format($totalDaysInterest, 5) }}</td>
-                                    <td>{{ number_format($totalPaymentAmount, 2) }}</td>
-                                    <td>{{ number_format($totalWithdrawal, 2) }}</td>
-                                    <td>{{ number_format($totalReimbursement, 2) }}</td>
-                                    <td>{{ number_format($totalInterestRecognition, 5) }}</td>
-                                    <td>{{ number_format($totalInterestPayment, 5) }}</td>
-                                    <td>{{ number_format($totalAmortised, 2) }}</td>
+                                    <td>{{ number_format($totalDaysInterest ?? 0) }}</td>
+                                    <td>{{ number_format($totalPaymentAmount ?? 0) }}</td>
+                                    <td>{{ number_format($totalWithdrawal ?? 0) }}</td>
+                                    <td>{{ number_format($totalReimbursement ?? 0) }}</td>
+                                    <td>{{ number_format($totalInterestRecognition ?? 0) }}</td>
+                                    <td>{{ number_format($totalInterestPayment ?? 0) }}</td>
+                                    <td>{{ number_format($totalAmortised ?? 0) }}</td>
                                     <td></td>
                                     <td></td>
-                                    <td>{{ number_format($totalUnamortized, 2) }}</td>
+                                    <td></td>
                                 </tr>
                             @endif
                         </tbody>

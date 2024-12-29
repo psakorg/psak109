@@ -172,7 +172,7 @@
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $loan->no_branch }}</td>
                                         <td>
-                                            <div class="absolute">
+                                            <div class="relative">
                                             <div class="dropdown">
                                                 <span class="clickable-account" data-bs-toggle="dropdown" aria-expanded="false">
                                                     {{ $loan->no_acc }}

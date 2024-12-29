@@ -131,22 +131,22 @@
                                 $totalOutstandingAmount += $report->outsamtconv;
                             @endphp
                             <tr>
-                                <td>{{ $report->bulanke }}</td>
+                                <td class="text-center">{{ $report->bulanke }}</td>
                                 <td class="text-center" >{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
-                                <td>{{ number_format($report->pmtamt, 2) }}</td>
-                                <td>{{ number_format($report->accrconv, 2) }}</td>
-                                <td>{{ number_format($report->bunga, 2) }}</td>
-                                <td>{{ number_format($report->timegap, 2) }}</td>
-                                <td>{{ number_format($report->outsamtconv, 2) }}</td>
-                                <td>{{ number_format($totalTimeGap, 2) }}</td>
+                                <td>{{ number_format($report->pmtamt ?? 0) }}</td>
+                                <td>{{ number_format($report->accrconv ?? 0) }}</td>
+                                <td>{{ number_format($report->bunga ?? 0) }}</td>
+                                <td>{{ number_format($report->timegap ?? 0) }}</td>
+                                <td>{{ number_format($report->outsamtconv ?? 0) }}</td>
+                                <td>{{ number_format($totalTimeGap ?? 0) }}</td>
                             </tr>
                             @endforeach
                             <tr>
                                 <td colspan="2" class="text-center"><strong>TOTAL</strong></td>
-                                <td>{{ number_format($totalPaymentAmount, 2) }}</td>
-                                <td>{{ number_format($totalAccruedInterest, 2) }}</td>
-                                <td>{{ number_format($totalInterestPayment, 2) }}</td>
-                                <td>{{ number_format($totalTimeGap / $reportCount, 2) }}</td>
+                                <td>{{ number_format($totalPaymentAmount ?? 0) }}</td>
+                                <td>{{ number_format($totalAccruedInterest ?? 0) }}</td>
+                                <td>{{ number_format($totalInterestPayment ?? 0) }}</td>
+                                <td>{{ number_format($totalTimeGap / $reportCount ?? 0) }}</td>
                                 <td></td>
                                 <td></td>
                             </tr>

@@ -198,22 +198,22 @@
                                     <tr style="font-weight:normal;">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
-                                        <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->bungaeir ?? 0, 5) }}</td>
-                                        <td>{{ number_format($report->bunga ?? 0, 5) }}</td>
-                                        <td>{{ number_format($report->amortized ?? 0, 2) }}</td>
-                                        <td>{{ number_format($report->baleir ?? 0, 2) }}</td>
-                                        <td>{{ number_format($cumulativeAmortized ?? 0, 2) }}</td>
-                                        <td>{{ number_format( $unamortized ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($report->pmtamt ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($report->bungaeir ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($report->bunga ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($report->amortized ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($report->baleir ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($cumulativeAmortized ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($unamortized ?? 0) }}</td>
                                     </tr>
                                 @endforeach
                                 <!-- Row Total -->
                                 <tr style="font-weight:normal;">
                                     <td class="text-center" colspan="2">TOTAL</td>
-                                    <td>{{ number_format($totalPaymentAmount, 2) }}</td>
-                                    <td>{{ number_format($totalInterestRecognition, 5) }}</td>
-                                    <td>{{ number_format($totalInterestPayment, 5) }}</td>
-                                    <td>{{ number_format($totalAmortised, 2) }}</td>
+                                    <td class="text-right">{{ number_format($totalPaymentAmount ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($totalInterestRecognition ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($totalInterestPayment ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($totalAmortised ?? 0) }}</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
