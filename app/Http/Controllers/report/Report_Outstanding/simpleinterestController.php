@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use Illuminate\Support\Facades\DB;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -34,11 +35,15 @@ class simpleinterestController extends Controller
     }
 
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
-    public function view($no_acc,$id_pt)
+    public function view($no_acc, $id_pt)
     {
-        $no_acc = trim($no_acc);
-        $loan = report_simpleinterest::getLoanDetails($no_acc,$id_pt);
-        $reports = report_simpleinterest::getReportsByNoAcc($no_acc,$id_pt);
+        $loan = report_simpleinterest::getLoanDetails($no_acc, $id_pt);
+        $reports = report_simpleinterest::getReportsByNoAcc($no_acc, $id_pt);
+        // $loan= report_simpleinterest::getLoanDetailsbyidpt($id_pt);
+        //$loanjoin = report_simpleinterest::getLoanjoinByIdPt($id_pt);
+        //$loanfirst =$loan->first();
+        //$master = report_simpleinterest::getMasterByIdPt($id_pt);
+        
 
         $user = Auth::user();
 
@@ -50,23 +55,19 @@ class simpleinterestController extends Controller
             abort(404, 'Loan not found');
         }
 
-        // $bulan = $request->input('bulan', date('n'));
-        // $tahun = $request->input('tahun', date('Y'));
+        //dd($loan, $reports,$user);
+        $bulan = $request->input('bulan', date('n'));
+        $tahun = $request->input('tahun', date('Y'));
 
-        // $isSuperAdmin = $user->role === 'superadmin';
 
-        // $master = DB::table('public.tblpsaklbucorporateloan')
-        // ->where('no_branch', $id_pt)
-        // ->where('bulan', $bulan)
-        // ->where('tahun', $tahun)
-        // ->get();
-
-        // dd($master);
-
-        //dd($loan, $report);
+        $master = DB::table('public.tblpsaklbucorporateloan')
+        ->where('no_branch', $id_pt)
+        ->where('bulan', $bulan)
+        ->where('tahun', $tahun)
+        ->get();
 
         $isSuperAdmin = $user->role === 'superadmin';
-        return view('report.outstanding.simple_interest.view', compact('loan', 'reports', 'isSuperAdmin', 'user'));
+        return view('report.outstanding.simple_interest.view', compact('master', 'bulan', 'tahun' , 'isSuperAdmin', 'user'));
     }
 
     public function exportExcel($no_acc, $id_pt)

@@ -37,8 +37,8 @@ class simpleinterestController extends Controller
     public function view($no_acc,$id_pt)
     {
         $no_acc = trim($no_acc);
-        $loan = report_simpleinterest::getLoanDetails($no_acc,$id_pt);
-        $reports = report_simpleinterest::getReportsByNoAcc($no_acc,$id_pt);
+        $loan = report_simpleinterest::getLoanDetails($no_acc, $id_pt);
+        $reports = report_simpleinterest::getReportsByNoAcc($no_acc, $id_pt);
 
         // dd($loan);
 
@@ -342,6 +342,8 @@ public function checkData($no_acc, $id_pt)
         
         // Ambil data reports
         $reports = report_simpleinterest::getReportsByNoAcc(trim($no_acc), trim($id_pt));
+
+        // dd($loan, $reports);
 
         // Cek keberadaan data
         if (!$loan || $reports->isEmpty()) {

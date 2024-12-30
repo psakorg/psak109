@@ -123,19 +123,35 @@
                                 </div>
                             </div>
                             <!-- Row 8 -->
-                            <div class="form-row">
+                             <div class="form-row">
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Interest Rate</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($master->rate  * 100, 5) }} %" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($master->rate  * 100, 5) }}" readonly>
                                     </div>
                                 </div>
-
+                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-3 col-form-label d-flex justify-content-end" style="white-space: nowrap;">Outstanding Principal</label>
+                                    <div class="col-sm-8">
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format(0) }}" readonly>
+                                    </div>
+                                </div>
                             </div>
                             <!-- Row 9 -->
                             <div class="form-row">
-
-
+                            <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-3 col-form-label" style="white-space: nowrap;">Outstanding Interest</label>
+                                    <div class="col-sm-8">
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->bilint + $loan->bilprn ?? 0, 5) }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-3 col-form-label d-flex justify-content-end" style="white-space: nowrap;">Outstanding Receivable</label>
+                                    <div class="col-sm-8">
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->bilprn + $loan->bilint ?? 0, 2) }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -210,10 +226,10 @@
                                 <!-- Row Total -->
                                 <tr style="font-weight:normal;">
                                     <td class="text-center" colspan="2">TOTAL</td>
-                                    <td class="text-right">{{ number_format($totalPaymentAmount ?? 0) }}</td>
-                                    <td class="text-right">{{ number_format($totalInterestRecognition ?? 0) }}</td>
-                                    <td class="text-right">{{ number_format($totalInterestPayment ?? 0) }}</td>
-                                    <td class="text-right">{{ number_format($totalAmortised ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($reports->sum('pmtamt') ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($reports->sum('bungaeir') ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($reports->sum('bunga') ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($reports->sum('amortized') ?? 0) }}</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>

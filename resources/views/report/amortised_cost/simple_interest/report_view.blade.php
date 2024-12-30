@@ -209,13 +209,13 @@
                                 <!-- Row Total -->
                                 <tr style="font-weight:normal;" class="text-right">
                                     <td class="text-center" colspan="2">TOTAL</td>
-                                    <td>{{ number_format($totalDaysInterest ?? 0) }}</td>
-                                    <td>{{ number_format($totalPaymentAmount ?? 0) }}</td>
-                                    <td>{{ number_format($totalWithdrawal ?? 0) }}</td>
-                                    <td>{{ number_format($totalReimbursement ?? 0) }}</td>
-                                    <td>{{ number_format($totalInterestRecognition ?? 0) }}</td>
-                                    <td>{{ number_format($totalInterestPayment ?? 0) }}</td>
-                                    <td>{{ number_format($totalAmortised ?? 0) }}</td>
+                                    <td>{{ number_format($reports->sum('haribunga') ?? 0) }}</td>
+                                    <td>{{ number_format($reports->sum('pmtamt') ?? 0) }}</td>
+                                    <td>{{ number_format($reports->sum('penarikan') ?? 0) }}</td>
+                                    <td>{{ number_format($reports->sum('pengembalian') ?? 0) }}</td>
+                                    <td>{{ number_format($reports->sum('bungaeir') ?? 0) }}</td>
+                                    <td>{{ number_format($reports->sum('bunga') ?? 0) }}</td>
+                                    <td>{{ number_format($reports->sum('amortized') ?? 0) }}</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>

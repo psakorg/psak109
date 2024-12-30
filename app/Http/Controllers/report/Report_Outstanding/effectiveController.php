@@ -39,9 +39,9 @@ class effectiveController extends Controller
     {
         $id_pt = Auth::user()->id_pt;
 
-        // $loan= report_effective::getLoanDetailsbyidpt($id_pt);
-        // $loanjoin = report_effective::getLoanjoinByIdPt($id_pt);
-        // $loanfirst =$loan->first();
+        $loan= report_effective::getLoanDetailsbyidpt($id_pt);
+        $loanjoin = report_effective::getLoanjoinByIdPt($id_pt);
+        $loanfirst =$loan->first();
         // $master = report_effective::getMasterByIdPt($id_pt);
         // if (!$loan) {
         //     abort(404, 'Loan not found');

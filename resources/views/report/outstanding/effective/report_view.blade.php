@@ -302,7 +302,7 @@
                                 <!-- Row Total / Average -->
                                 <tr class="table-secondary font-weight-normal">
                                     <td colspan="10" class="text-center"><strong>TOTAL:</strong></td>
-                                    <td class="text-right"><strong>{{ number_format(($master->avg('rate') * 100) ?? 0, 5) }}%</strong></td>
+                                    <td class="text-right"><strong></strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('pmtamt') ?? 0, 2) }}</strong></td>
                                     <td class="text-right"><strong>{{ number_format(($master->avg('eirex') * 100) ?? 0, 14) }}%</strong></td>
                                     <td class="text-right"><strong>{{ number_format(($master->avg('eircalc') * 100) ?? 0, 14) }}%</strong></td>
@@ -310,7 +310,7 @@
                                     <td class="text-end"></td>
                                     <td class="text-end"></td>
                                     <td class="text-end"></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_timegap') ?? 0, 2) }}</strong></td>
+                                    <td class="text-end"><strong></strong></td>
                                     <td class="text-end"></td>
                                     <td class="text-end"></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('cum_bunga') ?? 0, 2) }}</strong></td>
@@ -598,7 +598,7 @@ function viewReport() {
         return;
     }
 
-    // Tentukan URL pengecekan berdasarkan jenis report
+    // Tentukan URL pengecekan berdasarkan jenis reportt
     let checkUrl;
     switch(reportType) {
         case 'accrual_interest_effective':

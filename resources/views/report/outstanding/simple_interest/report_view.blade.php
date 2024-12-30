@@ -18,42 +18,7 @@
                     <div class="card-header">
                         <h5 class="card-title"style="font-size: 16px;">REPORT OUTSTANDING - SIMPLE INTEREST</h5>
                     </div>
-                    <!-- <div class="card-body">
-                        <form>
-                            <div class="form-row">
-                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label">Branch Number</label>
-                                    <div class="col-sm-6">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ $loan->no_branch }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label">Branch Name</label>
-                                    <div class="col-sm-6">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label">GL Group</label>
-                                    <div class="col-sm-6">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label">Date Of Report</label>
-                                    <div class="col-sm-6">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div> -->
+                    
                 </div>
 
                 <div class="mb-3 d-flex justify-content-start align-items-center gap-2">
@@ -129,9 +94,9 @@
                         </ul>
                     </div>
 
-                    <a href="{{ route('report-acc-si.exportPdf',  ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt]) }}" class="btn btn-danger">Export to PDF</a>
-                    <a href="{{ route('report-acc-si.exportExcel',  ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])}}" class="btn btn-success">Export to Excel</a>
-                    <a href="{{ route('report-acc-si.exportCsv',  ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])}}" class="btn btn-warning text-white">Export to CSV</a>
+                    <a href="{{ route('report-acc-si.exportPdf',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch]) }}" class="btn btn-danger">Export to PDF</a>
+                    <a href="{{ route('report-acc-si.exportExcel',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-success">Export to Excel</a>
+                    <a href="{{ route('report-acc-si.exportCsv',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-warning text-white">Export to CSV</a>
                 </div>
 
                 <!-- Report Table -->
@@ -165,28 +130,28 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($reports as $report)
+                            @foreach ($master as $index => $loan)
                                 <tr>
-                                        <td class="text-center">{{ $report->bulanke }}</td>
+                                        <td class="text-center">{{ $loan->bulan }}</td>
                                         <td class="text-center">{{ $loan->no_branch }}</td>
                                         <td class="text-center">{{ $loan->no_acc }}</td>
                                         <td class="text-center">{{ $loan->deb_name }}</td>
                                         <td class="text-center">{{ $loan->coa }}</td>
                                         <td class="text-center">{{ $loan->ln_type }}</td>
-                                        <td class="text-center">{{ $loan->group }}</td>
-                                        <td class="text-center">{{ date('d/m/Y', strtotime($loan->org_date)) }}</td>
+                                        <td class="text-center">{{ $loan->GROUP }}</td>
+                                        <td class="text-center">{{ date('d/m/Y', strtotime($loan->org_date_dt)) }}</td>
                                         <td class="text-center">{{ $loan->term }}</td>
                                         <td class="text-right">{{ number_format($loan->rate*100, 5) }}%</td>
-                                        <td class="text-center">{{ date('d/m/Y', strtotime($loan->mtr_date)) }}</td>
-                                        <td class="text-right">{{ number_format($loan->org_bal, 0) }}</td>
-                                        <td class="text-right">{{ number_format($loan->oldbal, 0) }}</td>
-                                        <td class="text-right">{{ number_format($loan->baleir, 0) }}</td>
+                                        <td class="text-center">{{ date('d/m/Y', strtotime($loan->mtr_date_dt)) }}</td>
+                                        <td class="text-right">{{ number_format(0, 0) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cbal, 0) }}</td>
+                                        <td class="text-right">{{ number_format($loan->carrying_amount, 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->eirex*100, 14) }}%</td>
                                         <td class="text-right">{{ number_format($loan->eircalc*100, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->eircalc_conv*100, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->eircalc_cost*100, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->eircalc_fee*100, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->nbal, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->eircalc_conv*100, 14, 14) }}%</td>
+                                        <td class="text-right">{{ number_format(0, 14) }}%</td>
+                                        <td class="text-right">{{ number_format(0, 14) }}%</td>
+                                        <td class="text-right">{{ number_format($loan->org_bal, 2) }}</td>
                                         <td class="text-right">{{ number_format($loan->outsamtcost, 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->outsamtfee, 0) }}</td>
                                 </tr>
@@ -195,19 +160,19 @@
                             <tr class="font-weight-normal text-right">
                                 <td colspan="9" class="text-center">TOTAL</td>
                             <!-- <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td> -->
-                                <td>{{ number_format($reports->avg('interest_rate'), 5) }}%</td>
+                                <td>{{ number_format($loan->avg('interest_rate'), 5) }}%</td>
                                 <td></td>
-                                <td>{{ number_format($reports->sum('original_balance'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('current_balance'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('carrying_amount'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('eir_amortised_cost_exposure'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('eir_amortised_cost_calculated'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('eir_calculated_conversion'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('eir_calculated_transaction_cost'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('eir_calculated_up_front_fee'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('outstanding_amount'), 2) }}</td>
-                                <td>{{ number_format($reports->sum ('outstanding_amount_initial_transaction_cost'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('outstanding_amount_initial_up_front_fee'), 2) }}</td>
+                                <td>{{ number_format($loan->sum('original_balance'), 2) }}</td>
+                                <td>{{ number_format($loan->sum('current_balance'), 2) }}</td>
+                                <td>{{ number_format($loan->sum('carrying_amount'), 2) }}</td>
+                                <td>{{ number_format($loan->sum('eir_amortised_cost_exposure'), 2) }}</td>
+                                <td>{{ number_format($loan->sum('eir_amortised_cost_calculated'), 2) }}</td>
+                                <td>{{ number_format($loan->sum('eir_calculated_conversion'), 2) }}</td>
+                                <td>{{ number_format($loan->sum('eir_calculated_transaction_cost'), 2) }}</td>
+                                <td>{{ number_format($loan->sum('eir_calculated_up_front_fee'), 2) }}</td>
+                                <td>{{ number_format($loan->sum('outstanding_amount'), 2) }}</td>
+                                <td>{{ number_format($loan->sum ('outstanding_amount_initial_transaction_cost'), 2) }}</td>
+                                <td>{{ number_format($loan->sum('outstanding_amount_initial_up_front_fee'), 2) }}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -164,7 +164,7 @@
                                 <td>{{ number_format($reports->sum('pengembalian') ?? 0) }}</td>
                                 <td>{{ number_format($reports->sum('bunga') ?? 0) }}</td>
                                 <td>{{ number_format($reports->sum('accrfee') ?? 0) }}</td>
-                                <td>{{ number_format($reports->sum('outsamtfee') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('amortisefee') ?? 0) }}</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>

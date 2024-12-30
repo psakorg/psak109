@@ -29,7 +29,7 @@ class report_simpleinterest extends Model
 // Method untuk mendapatkan detail pinjaman berdasarkan nomor akun
 public static function getLoanDetails($no_acc, $id_pt)
 {
-    return self::join('public.tblmaster_tmpcorporate as master', 'public.tblobalcorporateloan.no_acc', '=', DB::raw("master.no_acc::varchar")) // Join ke tblmaster_tmpcorporate dengan alias 'master'
+    return self::join('public.tblmaster_tmpcorporate as master', 'public.tblobalcorporateloan.no_acc','=', DB::raw("master.no_acc::varchar")) // Join ke tblmaster_tmpcorporate dengan alias 'master'
         ->where('public.tblobalcorporateloan.no_acc', $no_acc)
         ->where('public.tblobalcorporateloan.id_pt', $id_pt)
         ->select('public.tblobalcorporateloan.*', 'master.*') // Memilih semua kolom dari tblobalcorporateloan dan kolom term dari master
@@ -47,7 +47,7 @@ public static function getLoanDetails($no_acc, $id_pt)
             ->orderBy('bulanke')
             ->get();
     }
-    public static function getMasterDataByNoAcc($no_acc,$id_pt)
+    public static function getMasterDataByNoAcc($no_acc, $id_pt)
     {
         return DB::table('public.tblmaster_tmpcorporate')
             ->where('no_acc', $no_acc)
@@ -107,5 +107,50 @@ public static function getLoanDetails($no_acc, $id_pt)
     // Log::info('Data fetched from tblobalcorporateloan and tblmaster_tmpcorporate', ['data' => $result]);
 
     }
+
+    public static function getLoanDetailsbyidpt($id_pt)
+    {
+        return self::where('id_pt', $id_pt)
+            ->get();
+    }
+
+    public static function getLoanjoinByIdPt($id_pt)
+{
+    return DB::table('public.tblmaster_tmpcorporate as master')
+        ->join('public.tblobaleffective as simpleinterest',  DB::raw("master.no_acc::varchar"), '=', 'simpleinterest.no_acc')
+        ->join('public.tblpsaklbucorporateloan as corporateloan', 'master.no_acc', '=', 'corporateloan.no_acc')
+        ->where('master.id_pt', $id_pt)
+        ->select(
+           'master.no_branch',
+            'simpleinterest.no_acc',
+            'master.deb_name',
+            'simpleinterest.deb_name as effective_deb_name', // Mengambil deb_name dari effective
+            'master.ln_type',
+            'master.org_bal',
+            'simpleinterest.org_bal as effective_org_bal', // Mengambil org_bal dari effective
+            'master.org_date_dt',
+            'master.term as master_term',
+            'simpleinterest.term as effective_term',
+            'simpleinterest.mtr_date',
+            'simpleinterest.eirex',
+            'simpleinterest.eircalc',
+            'simpleinterest.nbal',
+            'simpleinterest.oldbal',
+            'simpleinterest.principal',
+            'simpleinterest.interest',
+            'simpleinterest.adjsmnt',
+            'simpleinterest.eircalc_conv',
+            'simpleinterest.eircalc_cost',
+            'simpleinterest.eircalc_fee',
+            'master.id_pt',
+            'master.GROUP',
+            'master.rate',
+            'master.pmtamt',
+            'corporateloan.eircalc_conv',
+            'corporateloan.eircalc_cost',
+            'corporateloan.eircalc_fee'
+        )
+        ->get();
+}
 }
 
