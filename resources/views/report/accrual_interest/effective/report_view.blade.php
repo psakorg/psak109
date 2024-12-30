@@ -146,7 +146,7 @@
                                 <td>{{ number_format($totalPaymentAmount ?? 0) }}</td>
                                 <td>{{ number_format($totalAccruedInterest ?? 0) }}</td>
                                 <td>{{ number_format($totalInterestPayment ?? 0) }}</td>
-                                <td>{{ number_format($totalTimeGap / $reportCount ?? 0) }}</td>
+                                <td>{{ number_format($totalTimeGap ?? 0) }}</td>
                                 <td></td>
                                 <td></td>
                             </tr>

@@ -133,7 +133,7 @@
                                 <tr style="font-weight:normal">
                                     <td class="text-center" >{{ $report->bulanke }}</td>
                                     <td class="text-center" >{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
-                                    <td class="text-right" >{{ $report->haribunga }}</td>
+                                    <td class="text-right" >{{  number_format($report->haribunga) ?? 0 }}</td>
                                     <td class="text-right"  >{{ number_format($report->pmtamt ?? 0) }}</td>
                                     <td class="text-right">{{ number_format($report->penarikan ?? 0) }}</td>
                                     <td class="text-right">{{ number_format($report->pengembalian ?? 0) }}</td>
@@ -145,13 +145,14 @@
                                 </tr>
                             @endforeach
                             <tr style="font-weight:normal">
-                                <td colspan="3" class="text-center">TOTAL</td>
-                                <td class="text-right">{{ number_format($totalPaymentAmount) ?? 0 }}</td>
-                                <td class="text-right">{{ number_format($totalWithdrawal / $reportCount ?? 0) }}</td>
-                                <td class="text-right">{{ number_format($totalReimbursement / $reportCount ?? 0) }}</td>
+                                <td colspan="2" class="text-center">TOTAL</td>
+                                <td class="text-right">{{ number_format($reports->sum('haribunga') ?? 0) }}<td>
+                                <td class="text-right">{{ number_format($reports->sum('pmtamt') ?? 0) }}</td>
+                                <td class="text-right">{{ number_format($totalWithdrawal ?? 0) }}</td>
+                                <td class="text-right">{{ number_format($totalReimbursement  ?? 0) }}</td>
                                 <td class="text-right">{{ number_format($totalAccruedInterest ?? 0) }}</td>
-                                <td class="text-right">{{ number_format($totalInterestPayment / $reportCount ?? 0) }}</td>
-                                <td class="text-right">{{ number_format($totalTimeGap / $reportCount ?? 0) }}</td>
+                                <td class="text-right">{{ number_format($totalInterestPayment ?? 0) }}</td>
+                                <td class="text-right">{{ number_format($totalTimeGap ?? 0) }}</td>
                                 <td></td>
                                 <td></td>
                             </tr>

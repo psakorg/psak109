@@ -50,6 +50,19 @@ class simpleinterestController extends Controller
             abort(404, 'Loan not found');
         }
 
+        // $bulan = $request->input('bulan', date('n'));
+        // $tahun = $request->input('tahun', date('Y'));
+
+        // $isSuperAdmin = $user->role === 'superadmin';
+
+        // $master = DB::table('public.tblpsaklbucorporateloan')
+        // ->where('no_branch', $id_pt)
+        // ->where('bulan', $bulan)
+        // ->where('tahun', $tahun)
+        // ->get();
+
+        // dd($master);
+
         //dd($loan, $report);
 
         $isSuperAdmin = $user->role === 'superadmin';
