@@ -79,7 +79,7 @@
                                 </a>
                                 <div class="sidebar-dropdown-menu">
                                     <a href="{{ route('report-outstanding-eff.view', ['id_pt' => Auth::user()->id_pt]) }}" class="dropdown-link">Effective</a>
-                                    <a href="{{ route('report-outstanding-si.view', ['id_pt' => Auth::user()->id_pt]) }}" class="dropdown-link">Simple Interest</a>
+                                    <a href="{{ route('report-outstanding-si.view', ['id_pt' => Auth::user()->id_pt])}}" class="dropdown-link">Simple Interest</a>
                                 </div>
                             </div>
                         </li>

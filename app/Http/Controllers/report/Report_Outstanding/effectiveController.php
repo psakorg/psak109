@@ -39,10 +39,10 @@ class effectiveController extends Controller
     {
         $id_pt = Auth::user()->id_pt;
 
-        $loan= report_effective::getLoanDetailsbyidpt($id_pt);
+        $loan= report_effective::getLoanDetailsbyidpt(trim($id_pt));
         $loanjoin = report_effective::getLoanjoinByIdPt($id_pt);
         $loanfirst =$loan->first();
-        // $master = report_effective::getMasterByIdPt($id_pt);
+        $master = report_effective::getMasterByIdPt($id_pt);
         // if (!$loan) {
         //     abort(404, 'Loan not found');
         // }
@@ -70,7 +70,7 @@ class effectiveController extends Controller
         return view('report.outstanding.effective.view', compact('master', 'bulan', 'tahun' ,'isSuperAdmin', "user"));
     }
 
-    public function exportExcel($no_acc,$id_pt)
+    public function exportExcel($no_acc, $id_pt)
     {
         // Ambil data loan dan reports
         $loan = report_effective::getLoanDetails(trim($no_acc), trim($id_pt));

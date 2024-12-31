@@ -96,7 +96,7 @@ class Report_effective extends Model
     }
 
     // Method untuk mengambil data lengkap berdasarkan no_acc
-    public static function getobalDataByNoAcc($no_acc,$id_pt)
+    public static function getobalDataByNoAcc($no_acc, $id_pt)
     {
         return self::where('no_acc', $no_acc)
             ->where('id_pt', $id_pt)
@@ -158,7 +158,7 @@ class Report_effective extends Model
     }
 
     //pemanggilan untuk id pt nya saja
-    public static function getMasterByIdPt( $id_pt)
+    public static function getMasterByIdPt($id_pt)
     {
         return DB::table('public.tblmaster_tmp')
             ->where('id_pt', $id_pt)

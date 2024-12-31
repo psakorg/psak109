@@ -370,54 +370,34 @@ class tblcorporateController extends Controller
     }
 
     private function cleanValue($value) {
-        if ($value === null || $value === '' || $value === "''" || $value === '""') {
+        if (empty($value) || $value == 'NULL') {
             return null;
         }
-        // Hapus kutip dan spasi di awal/akhir
-        $value = trim($value, "' ");
-        // Hapus karakter non-printable
-        $value = preg_replace('/[\x00-\x1F\x7F]/', '', $value);
-        return $value;
+        return trim($value);
     }
 
-    private function formatDate($date) {
+    private function formatDate($value) {
+        if (empty($value) || $value == 'NULL') {
+            return null;
+        }
+
         try {
-            $cleanDate = $this->cleanValue($date);
+            // Coba parse tanggal dengan format yang diharapkan
+            $date = \DateTime::createFromFormat('Y-m-d', $value);
+            if ($date) {
+                return $date->format('Y-m-d H:i:s');
+            }
             
-            // Log input date untuk debugging
-            \Log::info('Format date input:', ['raw' => $date, 'cleaned' => $cleanDate]);
-            
-            // Jika tanggal benar-benar kosong
-            if (empty($cleanDate)) {
-                return null;
+            // Jika format pertama gagal, coba format lain
+            $date = \DateTime::createFromFormat('d/m/Y', $value);
+            if ($date) {
+                return $date->format('Y-m-d H:i:s');
             }
 
-            // Hapus kutip dan spasi
-            $cleanDate = trim($cleanDate, "' ");
-
-            // Coba parse tanggal ke format ISO
-            if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $cleanDate)) {
-                return $cleanDate . ' 00:00:00';  // Tambahkan timestamp untuk PostgreSQL
-            }
-
-            // Jika format dd/mm/yyyy
-            if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $cleanDate, $matches)) {
-                return "{$matches[3]}-{$matches[2]}-{$matches[1]} 00:00:00";
-            }
-
-            // Jika format dd-mm-yyyy
-            if (preg_match('/^(\d{2})-(\d{2})-(\d{4})$/', $cleanDate, $matches)) {
-                return "{$matches[3]}-{$matches[2]}-{$matches[1]} 00:00:00";
-            }
-
-            // Coba parse dengan DateTime
-            $dateTime = new DateTime($cleanDate);
-            return $dateTime->format('Y-m-d H:i:s');
-
+            return null;
         } catch (\Exception $e) {
-            \Log::error('Date formatting error:', [
-                'input' => $date,
-                'error' => $e->getMessage()
+            \Log::error('Error format tanggal: ' . $e->getMessage(), [
+                'input' => $value
             ]);
             return null;
         }
@@ -425,66 +405,56 @@ class tblcorporateController extends Controller
 
     private function prepareData($row)
     {
+        $user = Auth::user();
+        $id_pt = $user->id_pt;
+
         try {
-            \Log::info('Raw CSV row:', $row);
-
-            $id_pt = Auth::user()->id_pt ?? 'pt001';
-
-            // Sesuaikan indeks array dengan posisi kolom di CSV
             $data = [
-                //'idtrx' => $this->cleanValue($row[0]), // Hapus substr untuk debugging
-                'id_ktr_cabang' => $this->cleanValue($row[0]), // Gunakan kolom yang benar
-                'cif_bank' => $this->cleanValue($row[1]),
-                'no_rekening' => $this->cleanValue($row[2]),
-                'status' => intval($this->cleanValue($row[3]) ?? 1),
-                'nama_debitur' => $this->cleanValue($row[4]),
-                'maksimal_kredit' => $this->cleanNumber($row[5]) ?? 0,
-                'tanggal_realisasi' => $this->formatDate($row[6]),
-                'suku_bunga' => $this->cleanNumber($row[7]) ?? 0,
-                'jangka_waktu' => intval($this->cleanValue($row[8]) ?? 0),
-                'tgl_jatuh_tempo' => $this->formatDate($row[9]),
-                'sifat_kredit' => $this->cleanValue($row[10]) ?: '0',
-                'jenis_kredit' => $this->cleanValue($row[11]) ?: '0',
-                'jns_transaksi' => intval($this->cleanValue($row[12]) ?? 0),
-                'tgl_transaksi' => $this->formatDate($row[13]),
-                'nilai_penarikan' => $this->cleanNumber($row[14]) ?? 0,
-                'nilai_pengembalian' => $this->cleanNumber($row[15]) ?? 0,
-                'cbal' => $this->cleanNumber($row[16]) ?? 0,
-                'cutoff_date' => $this->formatDate($row[17]),
-                'kelonggaran_tarik' => $this->cleanNumber($row[18]) ?? 0,
-                'tgl_restruct' => $this->formatDate($row[19]),
-                'tgl_restruct_review' => $this->formatDate($row[20]),
-                'ket_restruct' => $this->cleanValue($row[21]),
-                'nominal_angsuran' => $this->cleanNumber($row[22]) ?? 0,
-                'status_psak' => intval($this->cleanValue($row[23]) ?? 1),
-                'trial014' => '1',
-                'id_pt' => $id_pt,
+                'id_ktr_cabang' => strval($this->cleanValue($row[1])), // pastikan string
+                'cif_bank' => strval($this->cleanValue($row[2])),
+                'no_rekening' => strval($this->cleanValue($row[3])),
+                'status' => intval($this->cleanValue($row[4])), // pastikan integer
+                'nama_debitur' => strval($this->cleanValue($row[5])),
+                'maksimal_kredit' => floatval($this->cleanNumber($row[6]) ?? 0),
+                'tanggal_realisasi' => $this->formatDate($row[7]),
+                'suku_bunga' => floatval($this->cleanNumber($row[8]) ?? 0),
+                'jangka_waktu' => intval($this->cleanValue($row[9]) ?? 0),
+                'tgl_jatuh_tempo' => $this->formatDate($row[10]),
+                'sifat_kredit' => strval($this->cleanValue($row[11])),
+                'jenis_kredit' => strval($this->cleanValue($row[12])),
+                'jns_transaksi' => intval($this->cleanValue($row[13]) ?? 0),
+                'tgl_transaksi' => $this->formatDate($row[14]),
+                'nilai_penarikan' => floatval($this->cleanNumber($row[15]) ?? 0),
+                'nilai_pengembalian' => floatval($this->cleanNumber($row[16]) ?? 0),
+                'cbal' => floatval($this->cleanNumber($row[17]) ?? 0),
+                'cutoff_date' => $this->formatDate($row[18]),
+                'kelonggaran_tarik' => floatval($this->cleanNumber($row[19]) ?? 0),
+                'tgl_restruct' => $this->formatDate($row[20]),
+                'tgl_restruct_review' => $this->formatDate($row[21]),
+                'ket_restruct' => strval($this->cleanValue($row[22])),
+                'nominal_angsuran' => floatval($this->cleanNumber($row[23]) ?? 0),
+                'status_psak' => intval($this->cleanValue($row[24]) ?? 0),
+                'trial014' => null, // set null sesuai permintaan
+                'id_pt' => $id_pt, // gunakan id_pt dari user yang login
             ];
 
-            \Log::info('Prepared data:', $data);
             return $data;
-
         } catch (\Exception $e) {
-            \Log::error('Error in prepareData:', [
-                'message' => $e->getMessage(),
-                'row' => $row
+            \Log::error('Error dalam prepareData: ' . $e->getMessage(), [
+                'row' => $row,
+                'trace' => $e->getTraceAsString()
             ]);
             throw $e;
         }
     }
 
     private function cleanNumber($value) {
-        if ($value === null || $value === '' || $value === "''" || $value === '""') {
-            return null;
+        if (empty($value) || $value == 'NULL') {
+            return 0;
         }
         
-        // Hapus karakter khusus dan spasi
-        $value = trim($value);
-        $value = str_replace([',', ' '], ['', ''], $value);
-        
-        // Pastikan hanya angka, titik desimal dan minus yang tersisa
-        $value = preg_replace('/[^0-9.\-]/', '', $value);
-        
-        return is_numeric($value) ? floatval($value) : null;
+        // Hapus karakter non-numerik kecuali titik dan minus
+        $cleaned = preg_replace('/[^0-9.-]/', '', $value);
+        return is_numeric($cleaned) ? $cleaned : 0;
     }
 }

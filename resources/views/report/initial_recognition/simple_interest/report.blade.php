@@ -580,8 +580,6 @@ function showModal(type) {
     const reportTypeSelect = document.getElementById('reportType');
     reportTypeSelect.innerHTML = ''; 
     
-    console.log("Type:", type); // Untuk debugging
-    
     let options;
     switch(type) {
         case 'accrual_interest_effective':
@@ -649,7 +647,6 @@ function showModal(type) {
             break;
             
         default:
-            console.error('Tipe report tidak valid:', type);
             options = '<option value="">Pilih tipe report</option>';
             break;
     }
@@ -661,14 +658,11 @@ function showModal(type) {
 }
 
 function showModalWithAccount(accountNumber, type) {
-    console.log('Account Number:', accountNumber);
-    console.log('Type:', type);
     
     // Bersihkan whitespace dan pastikan tipe data string
     const cleanAccountNumber = accountNumber.toString().trim();
     
     const accountNumberInput = document.getElementById('accountNumber');
-    console.log('Account Input Element:', accountNumberInput);
     
     // Set nilai dengan timeout untuk memastikan DOM sudah siap
     setTimeout(() => {
@@ -677,9 +671,6 @@ function showModalWithAccount(accountNumber, type) {
         // Set juga menggunakan property value
         accountNumberInput.value = cleanAccountNumber;
         
-        console.log('Value after set:', accountNumberInput.value);
-        
-        // Trigger change event
         const event = new Event('change', { bubbles: true });
         accountNumberInput.dispatchEvent(event);
         
@@ -810,7 +801,7 @@ function viewReport() {
     const entityNumber = document.getElementById('entityNumber').value;
     const accountNumber = document.getElementById('accountNumber').value;
 
-    // Tentukan URL pengecekan berdasarkan jenis report
+    // Tentukan URL pengecekan berdasarkan jenis reportt
     let checkUrl;
     switch(reportType) {
         case 'accrual_interest_effective':
@@ -865,7 +856,10 @@ function viewReport() {
 
     // Cek ketersediaan data
     fetch(checkUrl)
-        .then(response => response.json())
+        .then(response => {
+            console.log(response);
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 // Tutup modal
@@ -911,10 +905,10 @@ function viewReport() {
                     //     url = `/report-initial-recognition-simple/view/${accountNumber}/${entityNumber}`;
                     //     break;
                     case 'outstanding_effective':
-                        url = `/report-outstanding-effective/view/${accountNumber}/${entityNumber}`;
+                        url = `/report-outstanding-effective/view/${entityNumber}`;
                         break;
                     case 'outstanding_simple':
-                        url = `/report-outstanding-simple-interest/view/${accountNumber}/${entityNumber}`;
+                        url = `/report-outstanding-simple-interest/view/${entityNumber}`;
                         break;
                     case 'journal_effective':
                         url = `/report-journal-effective/view/${accountNumber}/${entityNumber}`;
@@ -1133,10 +1127,17 @@ document.getElementById('accountNumber').addEventListener('blur', function() {
     const accountLabel = document.getElementById('accountLabel');
     const accountError = document.getElementById('accountError');
     const entityNumber = document.getElementById('entityNumber').value;
+    const reportType = document.getElementById('reportType').value;
     
     if (accountNumber) {
-        fetch(`/check-account/${accountNumber}?entity_number=${entityNumber}`)
+        const accountCheckUrl = reportType.includes('simple') 
+            ? `/check-account-corporate/${accountNumber}?entity_number=${entityNumber}` 
+            : `/check-account/${accountNumber}?entity_number=${entityNumber}`;
+
+
+        fetch(accountCheckUrl)
             .then(response => {
+                console.log(response);
                 return response.json();
             })
             .then(data => {

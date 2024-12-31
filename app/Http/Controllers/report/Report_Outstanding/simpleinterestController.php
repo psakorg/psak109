@@ -37,14 +37,19 @@ class simpleinterestController extends Controller
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
     public function view(Request $request, $id_pt)
     {
-        $no_acc = $request->input(trim($no_acc));
-        $loan = report_simpleinterest::getLoanDetails(trim($no_acc), trim($id_pt));
-        $reports = report_simpleinterest::getReportsByNoAcc($no_acc, $id_pt));
-        // $loan= report_simpleinterest::getLoanDetailsbyidpt($id_pt);
-        //$loanjoin = report_simpleinterest::getLoanjoinByIdPt($id_pt);
-        //$loanfirst =$loan->first();
-        //$master = report_simpleinterest::getMasterByIdPt($id_pt);
-        
+        if (!$id_pt) {
+            abort(404, 'Invalid ID');
+        }
+    
+        // Validate if the authenticated user has access to this `id_pt`
+        if ($id_pt != Auth::user()->id_pt) {
+            abort(403, 'Unauthorized');
+        }
+        $loan = report_simpleinterest::getLoanDetailsbyidpt(trim($id_pt));
+        // $corporateLoans = report_simpleinterest::getCorporateLoans($id_pt);
+        // $reports = report_simpleinterest::getReportsByNoAcc(trim($id_pt));
+        $reports = report_simpleinterest::getLoanDetailsbyidpt(trim($id_pt));
+
 
         $user = Auth::user();
 
@@ -52,23 +57,24 @@ class simpleinterestController extends Controller
             return redirect('https://psak.pramatech.id');
         }
 
-        if (!$loan) {
-            abort(404, 'Loan not found');
-        }
+        // if (!$loan) {
+        //     abort(404, 'Loan not found');
+        // }
 
         //dd($loan, $reports,$user);
-        $bulan = $request->input('bulan', date('n'));
-        $tahun = $request->input('tahun', date('Y'));
+        // $bulan = $request->input('bulan', date('n'));
+        // $tahun = $request->input('tahun', date('Y'));
 
 
         $master = DB::table('public.tblpsaklbucorporateloan')
-        ->where('no_branch', $id_pt)
-        ->where('bulan', $bulan)
-        ->where('tahun', $tahun)
-        ->get();
-
+    ->join('public.tblobalcorporateloan', 'tblpsaklbucorporateloan.no_acc', '=', 'tblobalcorporateloan.no_acc')
+    ->where('tblpsaklbucorporateloan.no_branch', $id_pt)
+    ->get();
+     //dd(route('report-outstanding-si.view', ['id_pt' => Auth::user()->id_pt]));
         $isSuperAdmin = $user->role === 'superadmin';
-        return view('report.outstanding.simple_interest.view', compact('master', 'bulan', 'tahun' , 'isSuperAdmin', 'user'));
+        return view('report.outstanding.simple_interest.view', compact('loan', 'isSuperAdmin', 'user', 'master',  'reports'));
+        //dd($master);
+        //dd(compact('loan', 'no_acc', 'id_pt', 'user'));
     }
 
     public function exportExcel($no_acc, $id_pt)

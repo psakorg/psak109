@@ -189,7 +189,7 @@ public function importExcel(Request $request)
         $errors = [];
 
         foreach ($rows as $index => $row) {
-            if ($index === 0) continue;
+            // if ($index === 0) continue;
 
             DB::beginTransaction();
             try {

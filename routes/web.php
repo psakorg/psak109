@@ -439,4 +439,5 @@ Route::prefix('report-initial-recognition')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/check-entity/{entity_number}', [ReportController::class, 'checkEntity'])->name('check.entity');
     Route::get('/check-account/{account_number}', [ReportController::class, 'checkAccount'])->name('check.account');
+    Route::get('/check-account-corporate/{account_number}', [ReportController::class, 'checkAccountCorporate'])->name('check.account.corporate');
 });

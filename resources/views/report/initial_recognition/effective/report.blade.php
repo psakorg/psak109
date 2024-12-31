@@ -747,9 +747,13 @@ function viewReport() {
             break;
     }
 
+    
     // Cek ketersediaan data
     fetch(checkUrl)
-        .then(response => response.json())
+        .then(response => {
+            console.log(response);
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 // Tutup modal
@@ -1019,9 +1023,15 @@ document.getElementById('accountNumber').addEventListener('blur', function() {
     const accountLabel = document.getElementById('accountLabel');
     const accountError = document.getElementById('accountError');
     const entityNumber = document.getElementById('entityNumber').value;
+    const reportType = document.getElementById('reportType').value;
     
     if (accountNumber) {
-        fetch(`/check-account/${accountNumber}?entity_number=${entityNumber}`)
+        // Tentukan URL berdasarkan tipe report
+        const accountCheckUrl = reportType.includes('simple') 
+            ? `/check-account-corporate/${accountNumber}?entity_number=${entityNumber}` 
+            : `/check-account/${accountNumber}?entity_number=${entityNumber}`;
+        
+        fetch(accountCheckUrl)
             .then(response => {
                 return response.json();
             })

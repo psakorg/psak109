@@ -37,14 +37,16 @@ public static function getLoanDetails($no_acc, $id_pt)
 }
 
 
-    // Method untuk mendapatkan laporan berdasarkan nomor akun
+    // Method untuk mendapatkan laporan berdasarkan nomor akunn
     // Mengubah dari tabel 'report' ke tabel 'tblCFOBALCorporateLoan'
-    public static function getReportsByNoAcc($no_acc,$id_pt)
+    public static function getReportsByNoAcc($no_acc, $id_pt)
     {
         return DB::table('public.tblcfobalcorporateloan')
             ->where('no_acc', $no_acc)
             ->where('id_pt', $id_pt)
-            ->orderBy('bulanke')
+            ->orderBy('bulanke', 'asc')
+            ->orderBy('haribunga', 'desc')
+            ->orderBy('tglangsuran', 'asc')
             ->get();
     }
     public static function getMasterDataByNoAcc($no_acc, $id_pt)

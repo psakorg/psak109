@@ -96,7 +96,7 @@
 
                     <a href="{{ route('report-acc-si.exportPdf',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch]) }}" class="btn btn-danger">Export to PDF</a>
                     <a href="{{ route('report-acc-si.exportExcel',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-success">Export to Excel</a>
-                    <a href="{{ route('report-acc-si.exportCsv',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-warning text-white">Export to CSV</a>
+                    <a href="{{ route('report-acc-si.exportCsv',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-warning text-white">Export to CSV</a> 
                 </div>
 
                 <!-- Report Table -->
@@ -132,7 +132,7 @@
                         <tbody>
                             @foreach ($master as $index => $loan)
                                 <tr>
-                                        <td class="text-center">{{ $loan->bulan }}</td>
+                                        <td class="text-center">{{ $index + 1 }}</td>
                                         <td class="text-center">{{ $loan->no_branch }}</td>
                                         <td class="text-center">{{ $loan->no_acc }}</td>
                                         <td class="text-center">{{ $loan->deb_name }}</td>
@@ -143,36 +143,33 @@
                                         <td class="text-center">{{ $loan->term }}</td>
                                         <td class="text-right">{{ number_format($loan->rate*100, 5) }}%</td>
                                         <td class="text-center">{{ date('d/m/Y', strtotime($loan->mtr_date_dt)) }}</td>
-                                        <td class="text-right">{{ number_format(0, 0) }}</td>
-                                        <td class="text-right">{{ number_format($loan->cbal, 0) }}</td>
-                                        <td class="text-right">{{ number_format($loan->carrying_amount, 0) }}</td>
+                                        <td class="text-right">{{ number_format($loan->org_bal ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cbal ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->carrying_amount ?? 0, 2) }}</td>
                                         <td class="text-right">{{ number_format($loan->eirex*100, 14) }}%</td>
                                         <td class="text-right">{{ number_format($loan->eircalc*100, 14) }}%</td>
                                         <td class="text-right">{{ number_format($loan->eircalc_conv*100, 14, 14) }}%</td>
-                                        <td class="text-right">{{ number_format(0, 14) }}%</td>
-                                        <td class="text-right">{{ number_format(0, 14) }}%</td>
+                                        <td class="text-right">{{ number_format($loan->eircalc_cost*100, 14) }}%</td>
+                                        <td class="text-right">{{ number_format($loan->eircalc_fee*100, 14) }}%</td>
                                         <td class="text-right">{{ number_format($loan->org_bal, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->outsamtcost, 0) }}</td>
-                                        <td class="text-right">{{ number_format($loan->outsamtfee, 0) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cum_outsamtcost, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cum_outsamtfee, 2) }}</td>
                                 </tr>
                             @endforeach
                             <!-- Row Total / Average -->
                             <tr class="font-weight-normal text-right">
-                                <td colspan="9" class="text-center">TOTAL</td>
-                            <!-- <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td> -->
-                                <td>{{ number_format($loan->avg('interest_rate'), 5) }}%</td>
+                                <td colspan="11" class="text-center">TOTAL</td>
+                                <td>{{ number_format($master->sum('org_bal'), 2) }}</td>
+                                <td>{{ number_format($master->sum('cbal'), 2) }}</td>
+                                <td>{{ number_format($master->sum('carrying_amount'), 2) }}</td>
+                                <td>{{ number_format($master->sum('eirex')*100, 14) }}%</td>
+                                <td>{{ number_format($master->sum('eircalc')*100, 14)}}%</td>
+                                <td>{{ number_format($master->sum('eircalc_conv')*100, 14)}}%</td>
+                                <td>{{ number_format($master->sum('eircalc_cost')*100, 14)}}%</td>
+                                <td>{{ number_format($master->sum('eircalc_fee')*100, 14)}}%</td>
                                 <td></td>
-                                <td>{{ number_format($loan->sum('original_balance'), 2) }}</td>
-                                <td>{{ number_format($loan->sum('current_balance'), 2) }}</td>
-                                <td>{{ number_format($loan->sum('carrying_amount'), 2) }}</td>
-                                <td>{{ number_format($loan->sum('eir_amortised_cost_exposure'), 2) }}</td>
-                                <td>{{ number_format($loan->sum('eir_amortised_cost_calculated'), 2) }}</td>
-                                <td>{{ number_format($loan->sum('eir_calculated_conversion'), 2) }}</td>
-                                <td>{{ number_format($loan->sum('eir_calculated_transaction_cost'), 2) }}</td>
-                                <td>{{ number_format($loan->sum('eir_calculated_up_front_fee'), 2) }}</td>
-                                <td>{{ number_format($loan->sum('outstanding_amount'), 2) }}</td>
-                                <td>{{ number_format($loan->sum ('outstanding_amount_initial_transaction_cost'), 2) }}</td>
-                                <td>{{ number_format($loan->sum('outstanding_amount_initial_up_front_fee'), 2) }}</td>
+                                <td></td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>
@@ -761,7 +758,7 @@ document.getElementById('accountNumber').addEventListener('blur', function() {
     const entityNumber = document.getElementById('entityNumber').value;
     
     if (accountNumber) {
-        fetch(`/check-account/${accountNumber}?entity_number=${entityNumber}`)
+        fetch(`/check-account-corporate/${accountNumber}?entity_number=${entityNumber}`)
             .then(response => {
                 return response.json();
             })

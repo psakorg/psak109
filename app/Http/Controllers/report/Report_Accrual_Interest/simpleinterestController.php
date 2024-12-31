@@ -45,6 +45,7 @@ class simpleinterestController extends Controller
             abort(404, 'Loan not found');
         }
         return view('report.accrual_interest.simple_interest.view', compact('loan', 'reports'));
+
     }
 
     public function exportExcel($no_acc, $id_pt)
@@ -300,6 +301,7 @@ class simpleinterestController extends Controller
             
             // Ambil data reports
             $reports = report_simpleinterest::getReportsByNoAcc(trim($no_acc), trim($id_pt));
+
 
             // Cek keberadaan data
             if (!$loan || $reports->isEmpty()) {
