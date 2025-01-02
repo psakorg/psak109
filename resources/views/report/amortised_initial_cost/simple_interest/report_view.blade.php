@@ -144,7 +144,7 @@
                                 <tr class="text-right" style="font-weight:normal">
                                     <td class="text-center">{{ $report->bulanke }}</td>
                                     <td class="text-center">{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
-                                    <td>{{ $report->haribunga }}</td>
+                                    <td>{{ number_format($report->haribunga) ?? 0 }}</td>
                                     <td>{{ number_format($report->pmtamt ?? 0) }}</td>
                                     <td>{{ number_format($report->penarikan ?? 0) }}</td>
                                     <td>{{ number_format($report->pengembalian ?? 0) }}</td>

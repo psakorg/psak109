@@ -203,7 +203,6 @@
                                         <td>{{ number_format($report->baleir ?? 0) }}</td>
                                         <td>{{ number_format($cumulativeAmortized ?? 0) }}</td>
                                         <td>{{ number_format($report->baleir - $loan->nbal + $report->pengembalian - $report->penarikan ?? 0) }}</td>
-                                        <!-- <td>{{ number_format($report->amortized + $report->outsamtconv ?? 0) }}</td> -->
                                     </tr>
                                 @endforeach
                                 <!-- Row Total -->

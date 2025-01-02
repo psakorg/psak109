@@ -45,6 +45,7 @@ class simpleinterestController extends Controller
         if (!$loan) {
             abort(404, 'Loan not found');
         }
+        //dd($reports);
 
         return view('report.amortised_cost.simple_interest.view', compact('loan', 'reports'));
     }
