@@ -124,20 +124,23 @@
                         </thead>
                         <tbody>
                             @php 
-                            $cumulativeAmortized = 0;
-                            $totalCumulativeAmortizedUpFrontFee = 0;
+                            $totalAmortizedUpFrontFee = 0;
+                            $cumulativeAmortizedUpFrontFee = 0;
                             @endphp
                             @foreach ($reports as $report)
                             @php 
-                            $amortisefee = $report->amortisefee;
-                            $cumulativeAmortized += $amortisefee;
+                            $accrfee = $report->accrfee;
+                            $accrconv = $report->accrconv;
+                            $amortizedUpFrontFee = $accrfee - $accrconv;
+                            $cumulativeAmortizedUpFrontFee += $amortizedUpFrontFee;
+                            $totalAmortizedUpFrontFee += $amortizedUpFrontFee;
                             $unamortprovFloat = $provFloat;
 
                                         // Hitung nilai unamortized
                                         if ($loop->first) {
                                             $unamort = $unamortprovFloat;
                                         } else {
-                                            $unamort = $unamort + $amortisefee;
+                                            $unamort = $unamort + $amortizedUpFrontFee;
                                         }
                             @endphp
                                 <tr class="text-right" style="font-weight:normal">
@@ -148,10 +151,10 @@
                                     <td>{{ number_format($report->penarikan ?? 0) }}</td>
                                     <td>{{ number_format($report->pengembalian ?? 0) }}</td>
                                     <td>{{ number_format($report->bunga ?? 0) }}</td>
-                                    <td>{{ number_format($report->accrfee ?? 0) }}</td>
-                                    <td>{{ number_format($report->amortisefee ?? 0) }}</td>
+                                    <td>{{ number_format($report->bungaeir ?? 0) }}</td>
+                                    <td>{{ number_format($amortizedUpFrontFee ?? 0) }}</td>
                                     <td>{{ number_format($report->outsamtfee ?? 0) }}</td>
-                                    <td>{{ number_format($cumulativeAmortized ?? 0) }}</td>
+                                    <td>{{ number_format($cumulativeAmortizedUpFrontFee ?? 0) }}</td>
                                     <td>{{ number_format($unamort ?? 0) }}</td>
                                 </tr>
                             @endforeach
@@ -163,8 +166,8 @@
                                 <td>{{ number_format($reports->sum('penarikan') ?? 0) }}</td>
                                 <td>{{ number_format($reports->sum('pengembalian') ?? 0) }}</td>
                                 <td>{{ number_format($reports->sum('bunga') ?? 0) }}</td>
-                                <td>{{ number_format($reports->sum('accrfee') ?? 0) }}</td>
-                                <td>{{ number_format($reports->sum('amortisefee') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('bungaeir') ?? 0) }}</td>
+                                <td>{{ number_format($totalAmortizedUpFrontFee ?? 0) }}</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>

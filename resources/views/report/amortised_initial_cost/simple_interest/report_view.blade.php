@@ -148,8 +148,8 @@
                                     <td>{{ number_format($report->pmtamt ?? 0) }}</td>
                                     <td>{{ number_format($report->penarikan ?? 0) }}</td>
                                     <td>{{ number_format($report->pengembalian ?? 0) }}</td>
-                                    <td>{{ number_format($report->effective_interest_uf_tc ?? 0) }}</td> <!--error di effective_interest -->
-                                    <td>{{ number_format($report->effective_interest_uf ?? 0) }}</td> <!--error di effective_interest -->
+                                    <td>{{ number_format($report->accrcost ?? 0) }}</td>
+                                    <td>{{ number_format($report->accrconv ?? 0) }}</td>
                                     <td>{{ number_format($report->amortisecost ?? 0) }}</td>
                                     <td>{{ number_format($report->outsamtcost ?? 0) }}</td>
                                     <td>{{ number_format($cumulativeAmortized ?? 0) }}</td>
@@ -163,8 +163,8 @@
                                 <td>{{ number_format($reports->sum('pmtamt') ?? 0) }}</td>
                                 <td>{{ number_format($reports->sum('penarikan') ?? 0) }}</td>
                                 <td>{{ number_format($reports->sum('pengembalian') ?? 0) }}</td>
-                                <td>{{ number_format($reports->sum('effective_interest_uf_tc') ?? 0) }}</td>
-                                <td>{{ number_format($reports->sum('effective_interest_uf') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('accrcost') ?? 0) }}</td>
+                                <td>{{ number_format($reports->sum('accrconv') ?? 0) }}</td>
                                 <td>{{ number_format($reports->sum('amortisecost') ?? 0) }}</td>
                                 <td></td>
                                 <td></td>

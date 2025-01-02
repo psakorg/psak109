@@ -34,11 +34,11 @@ class simpleinterestController extends Controller
     }
 
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
-    public function view($no_acc,$id_pt)
+    public function view($no_acc, $id_pt)
     {
         $no_acc = trim($no_acc);
-        $loan = report_simpleinterest::getLoanDetails($no_acc,$id_pt);
-        $reports = report_simpleinterest::getReportsByNoAcc($no_acc,$id_pt);
+        $loan = report_simpleinterest::getLoanDetails($no_acc, $id_pt);
+        $reports = report_simpleinterest::getReportsByNoAcc($no_acc, $id_pt);
 
         if (!$loan) {
             abort(404, 'Loan not found');

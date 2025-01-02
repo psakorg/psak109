@@ -56,7 +56,7 @@
                     </div> -->
                 </div>
                  <div class="d-flex justify-content-start mb-3 align-items-center">
-                    <div class="dropdown me-1">
+                    <!-- <div class="dropdown me-1">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-file-import"></i> Report
                         </button>
@@ -126,7 +126,7 @@
                                 </ul>
                             </li>
                         </ul>
-                    </div>
+                    </div> -->
 
                     <div class="d-flex align-items-center ">
                         <select class="form-select me-2" style="width: 120px;" id="monthSelect">
@@ -191,16 +191,70 @@
                                 <th style="white-space: nowrap;">Cummulative Time Gap</th>
                                 <th style="white-space: nowrap;">Unamortized Transaction Cost</th> 
                                 <th style="white-space: nowrap;">Unamortized UpFront Fee</th>
-                                <th style="white-space: nowrap;">Unamortized Interest Deferred</th>
+                                <th style="white-space: nowrap;">Unearned Interest Income</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if ($master->isEmpty())
                                 <tr>
-                                    <td colspan="10" class="text-center">Data tidak ditemukan atau belum di-generate</td>
+                                    <td colspan="22" class="text-left">Data tidak ditemukan atau belum di-generate</td>
                                 </tr>
                             @else
+                            @php
+
+                            $totalOutstandingReceivable = 0;
+                            $totalOutstandingInterest = 0;
+                            $outstandingReceivable = 0;
+                            $outstandingInterest = 0;
+                            $totalUnamortCost = 0;
+                            $totalUnamortFee = 0;
+                            $totalInterestIncome = 0;
+                            @endphp
                                 @foreach ($master as $index => $loan)
+                                @php
+                                $trxcost = $loan->trxcost; 
+                                $trxcost = preg_replace('/[^\d.]/', '', $trxcost);
+                                $trxcostFloat = (float)$trxcost;
+                                $outstandingReceivable = $loan->bilprn ?? 0;
+                                $outstandingInterest = $loan->bilint ?? 0;
+                                $totalOutstandingReceivable += $outstandingReceivable;
+                                $totalOutstandingInterest += $outstandingInterest;
+                                $amortized = $loan->cum_amortisecost; // Ambil nilai amortized dari laporan
+                                $unamortrxcost = $trxcostFloat;
+                                    // Hitung nilai unamortized
+                                    if ($loop->first) {
+                                        // Untuk baris pertama, gunakan nilai trxcost
+                                        $unamortCost = $unamortrxcost;
+                                    } else {
+                                        // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
+                                        $unamortCost = $unamortCost + $amortized;
+                                    }
+                                $totalUnamortCost += $unamortCost;
+                                $prov = $loan->prov; // Ambil nilai dari database
+                                // Hapus simbol mata uang dan pemisah ribuan
+                                $prov = preg_replace('/[^\d.]/', '', $prov);
+                                // Konversi ke float
+                                $provFloat = (float)$prov* -1;
+                                $amortizedUpFrontFee = $loan->cum_amortisefee;
+                                $unamortprovFloat = $provFloat;
+
+                                // Hitung nilai unamortized Fee
+                                if ($loop->first) {
+                                $unamortFee = $unamortprovFloat;
+                                } else {
+                                $unamortFee = $unamortFee + $amortizedUpFrontFee;
+                                }
+                                $totalUnamortFee += $unamortFee;
+                                
+                                $interestPayment = $loan->cum_bunga;
+                                // hitung nilai unaerned interest income
+                                if ($loop->first) {
+                                $interestIncome = $loan->cum_bunga;
+                                } else {
+                                $interestIncome = $interestIncome - $interestPayment;
+                                }
+                                $totalInterestIncome += $loan->cum_bunga;
+                                @endphp
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td class="text-center">{{ $loan->no_branch ?? 'Data tidak ditemukan' }}</td>
@@ -285,17 +339,17 @@
                                         <td class="text-center">{{ $loan->term ?? 0 }}</td>
                                         <td class="text-center">{{ isset($loan->mtr_date_dt) ? date('d/m/Y', strtotime($loan->mtr_date_dt)) : 'Belum di-generate' }}</td>
                                         <td class="text-right">{{ number_format($loan->rate * 100?? 0, 5) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->pmtamt ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->pmtamt ?? 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->eirex*100 ?? 0, 14) }}%</td>
                                         <td class="text-right">{{ number_format($loan->eircalc*100 ?? 0, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->cbal ?? 0,2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->carrying_amount ?? 0, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->bilprn + $loan->bilint ?? 0, 2) }}</td> 
-                                        <td class="text-right">{{ number_format($loan->bilint + $loan->bilprn ?? 0, 5) }}</td>
-                                        <td class="text-right">{{ number_format($loan->cum_timegap ?? 0, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->cum_amortisecost ?? 0, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->cum_amortisefee ?? 0, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->cum_bunga ?? 0, 5) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cbal ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($loan->carrying_amount ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($loan->bilprn ?? 0) }}</td> 
+                                        <td class="text-right">{{ number_format($loan->bilint ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cum_timegap ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($unamortCost ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($unamortFee ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($loan->cum_bunga ?? 0) }}</td>
                                     </tr>
                                 @endforeach
 
@@ -303,17 +357,17 @@
                                 <tr class="table-secondary font-weight-normal">
                                     <td colspan="10" class="text-center"><strong>TOTAL:</strong></td>
                                     <td class="text-right"><strong></strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('pmtamt') ?? 0, 2) }}</strong></td>
+                                    <td class="text-end"><strong></strong></td>
                                     <td class="text-right"><strong>{{ number_format(($master->avg('eirex') * 100) ?? 0, 14) }}%</strong></td>
                                     <td class="text-right"><strong>{{ number_format(($master->avg('eircalc') * 100) ?? 0, 14) }}%</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('cbal') ?? 0, 2) }}</strong></td>
-                                    <td class="text-end"></td>
-                                    <td class="text-end"></td>
-                                    <td class="text-end"></td>
-                                    <td class="text-end"><strong></strong></td>
-                                    <td class="text-end"></td>
-                                    <td class="text-end"></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_bunga') ?? 0, 2) }}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('cbal') ?? 0) }}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('carrying_amount') ?? 0) }}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($totalOutstandingReceivable ?? 0) }}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($totalOutstandingInterest ?? 0) }}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_timegap') ?? 0)}}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($unamortCost ?? 0)}}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($unamortFee ?? 0)}}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($totalInterestIncome ?? 0) }}</strong></td>
                                 </tr>
                             @endif
                         </tbody>

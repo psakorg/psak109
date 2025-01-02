@@ -77,20 +77,44 @@
                     <table class="table table-striped table-bordered table-hover" style="font-size: 12px;">
                         <thead class="thead-dark text-center">
                             <tr>
-                                <th>Month</th>
-                                <th>Transaction Date</th>
+                                <th style="width: 50px">Month</th>
+                                <th style="width: 10%">Transaction Date</th>
                                 <th>Days Interest</th>
                                 <th>Payment Amount</th>
                                 <th>Withdrawal</th>
                                 <th>Reimbursement</th>
                                 <th>Interest Payment</th>
                                 <th>Balance Contractual</th>
+                                <th>Unearned Interest Income</th>
                             </tr>
                         </thead>
                         <tbody>
+                        @php
+                                    $cumulativebunga = 0;
+                                    $totalPaymentAmount = 0;
+                                    $totalInterestPayment = 0;
+                                    $totalPrincipalPayment = 0;
+                                    $totalBalanceContractual = 0;
+                                    $sumBunga = 0;
+                                    $totalInterestIncome = 0;
+                                @endphp
                             @foreach ($reports as $report)
+                            @php
+                                        $bunga = $report->bunga;
+                                        $interestPayment = $report->bunga;
+                                        $sumBunga += $bunga;
+                                        $totalPaymentAmount += $report->pmtamt;
+                                        $totalInterestPayment += $report->bunga;
+                                        $totalBalanceContractual += $report->balance;
+                                        if ($loop->first) {
+                                        $interestIncome = $sumBunga;
+                                        } else {
+                                        $interestIncome = $sumBunga - $interestPayment;
+                                        }
+                                        $totalInterestIncome += $interestIncome;
+                                    @endphp
                                 <tr>
-                                    <td>{{ $report->bulanke }}</td>
+                                    <td class="text-center">{{ $report->bulanke }}</td>
                                     <td class="text-center">{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
                                     <td class="text-right">{{ number_format($report->haribunga ?? 0) }}</td>
                                     <td class="text-right">{{ number_format($report->pmtamt ?? 0) }}</td>
@@ -98,6 +122,7 @@
                                     <td class="text-right">{{ number_format($report->pengembalian ?? 0) }}</td>
                                     <td class="text-right">{{ number_format($report->bunga ?? 0) }}</td>
                                     <td class="text-right">{{ number_format($report->balance ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($interestIncome ?? 0) }}</td>
                                 </tr>
                             @endforeach
                             <!-- Row Total / Average -->
@@ -108,7 +133,9 @@
                                 <td class="text-right">{{ number_format(array_sum(array_column($reports, 'penarikan'))?? 0) }}</td>
                                 <td class="text-right">{{ number_format(array_sum(array_column($reports, 'pengembalian'))?? 0) }}</td>
                                 <td class="text-right">{{ number_format(array_sum(array_column($reports, 'bunga'))?? 0) }}</td>
-                                <td class="text-right"></td>
+                                <td></td>
+                                <td class="text-right">{{ number_format($totalInterestIncome ?? 0) }}</td>
+
                             </tr>
                         </tbody>
                     </table>

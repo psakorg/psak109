@@ -121,10 +121,13 @@
                             @endphp
                             @foreach ($reports as $report)
                                 @php
-                                    $cumulativeTimeGap += floatval($report->timegap);
-                                    $totalTimeGap += ($report->timegap);
+                                    $accruedInterest = $report->accrconv ?? 0;
+                                    $interestPayment = $report->bunga ?? 0;
+                                    $timegap = $accruedInterest - $interestPayment;
+                                    $cumulativeTimeGap += floatval($timegap);
+                                    $totalTimeGap += $timegap;
                                     $totalPaymentAmount += $report->pmtamt;
-                                    $totalAccruedInterest += $report->bunga;
+                                    $totalAccruedInterest += $report->accrconv;
                                     $totalInterestPayment += $report->bunga;
                                     $totalOutstandingAmount += $report->outsamtconv;
                                     $totalWithdrawal += $report->penarikan;
@@ -133,22 +136,22 @@
                                 <tr style="font-weight:normal">
                                     <td class="text-center" >{{ $report->bulanke }}</td>
                                     <td class="text-center" >{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
-                                    <td class="text-right" >{{ $report->haribunga }}</td>
+                                    <td class="text-right" >{{  number_format($report->haribunga) ?? 0 }}</td>
                                     <td class="text-right"  >{{ number_format($report->pmtamt ?? 0) }}</td>
                                     <td class="text-right">{{ number_format($report->penarikan ?? 0) }}</td>
                                     <td class="text-right">{{ number_format($report->pengembalian ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($report->accrconv ?? 0) }}</td>
                                     <td class="text-right">{{ number_format($report->bunga ?? 0) }}</td>
-                                    <td class="text-right">{{ number_format($report->bunga ?? 0) }}</td>
-                                    <td class="text-right">{{ number_format($report->timegap ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($timegap ?? 0) }}</td>
                                     <td class="text-right">{{ number_format($report->outsamtconv ?? 0) }}</td>
-                                    <td class="text-right">{{ number_format($totalTimeGap ?? 0) }}</td>
+                                    <td class="text-right">{{ number_format($cumulativeTimeGap ?? 0) }}</td>
                                 </tr>
                             @endforeach
                             <tr style="font-weight:normal">
                                 <td colspan="2" class="text-center">TOTAL</td>
                                 <td class="text-right">{{ number_format($reports->sum('haribunga') ?? 0) }}</td>
-                                <td class="text-right">{{ number_format($totalPaymentAmount) ?? 0 }}</td>
-                                <td class="text-right">{{ number_format($totalWithdrawal?? 0) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('pmtamt') ?? 0) }}</td>
+                                <td class="text-right">{{ number_format($totalWithdrawal ?? 0) }}</td>
                                 <td class="text-right">{{ number_format($totalReimbursement ?? 0) }}</td>
                                 <td class="text-right">{{ number_format($totalAccruedInterest ?? 0) }}</td>
                                 <td class="text-right">{{ number_format($totalInterestPayment ?? 0) }}</td>

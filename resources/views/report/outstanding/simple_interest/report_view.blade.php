@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="mb-3 d-flex justify-content-start align-items-center gap-2">
-                    <div class="dropdown me-1">
+                    <!-- <div class="dropdown me-1">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-file-import"></i> Report
                         </button>
@@ -92,6 +92,29 @@
                                 </ul>
                             </li>
                         </ul>
+                    </div> -->
+
+                    <div class="d-flex align-items-center ">
+                        <select class="form-select me-2" style="width: 120px;" id="monthSelect">
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+
+                        <input type="number" class="form-select" id="yearInput" 
+                               style="width: 100px;" 
+                               value="{{ date('Y') }}" 
+                               min="2000" 
+                               max="2099">
                     </div>
 
                     <a href="{{ route('report-acc-si.exportPdf',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch]) }}" class="btn btn-danger">Export to PDF</a>
@@ -102,12 +125,12 @@
                 <!-- Report Table -->
                 <h2 style="font-size: 16px;">Report Details</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover" style="font-size: 12px;">
+                    <table class="table table-striped table-bordered table-hover" style=" white-space: nowrap; font-size: 12px;">
                         <thead class="thead-dark text-center">
                             <tr>
                                 <th>No.</th>
                                 <th>Entity Number</th>
-                                <th>Account Number</th>
+                                <th style="white-space: nowrap; ">Account Number</th>
                                 <th>Debitor Name</th>
                                 <th>GL Account</th>
                                 <th>Loan Type</th>
@@ -117,6 +140,7 @@
                                 <th>Interest Rate</th>
                                 <th>Maturity Date</th>
                                 <th>Original Balance</th>
+                                <th>Interest Payment</th>
                                 <th>Current Balance</th>
                                 <th>Carrying Amount</th>
                                 <th>EIR Amortised Cost Exposure</th>
@@ -127,50 +151,139 @@
                                 <th>Outstanding Amount</th>
                                 <th>Outstanding Amount Initial Transaction Cost</th>
                                 <th>Outstanding Amount Initial Up Front Fee</th>
+                                <th>Unearned Interest Income</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($master as $index => $loan)
+                            @if($master->isEmpty())
                                 <tr>
-                                        <td class="text-center">{{ $index + 1 }}</td>
-                                        <td class="text-center">{{ $loan->no_branch }}</td>
-                                        <td class="text-center">{{ $loan->no_acc }}</td>
-                                        <td class="text-center">{{ $loan->deb_name }}</td>
-                                        <td class="text-center">{{ $loan->coa }}</td>
-                                        <td class="text-center">{{ $loan->ln_type }}</td>
-                                        <td class="text-center">{{ $loan->GROUP }}</td>
-                                        <td class="text-center">{{ date('d/m/Y', strtotime($loan->org_date_dt)) }}</td>
-                                        <td class="text-center">{{ $loan->term }}</td>
-                                        <td class="text-right">{{ number_format($loan->rate*100, 5) }}%</td>
-                                        <td class="text-center">{{ date('d/m/Y', strtotime($loan->mtr_date_dt)) }}</td>
-                                        <td class="text-right">{{ number_format($loan->org_bal ?? 0, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->cbal ?? 0, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->carrying_amount ?? 0, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->eirex*100, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->eircalc*100, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->eircalc_conv*100, 14, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->eircalc_cost*100, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->eircalc_fee*100, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->org_bal, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->cum_outsamtcost, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->cum_outsamtfee, 2) }}</td>
+                                    <td colspan="22" class="text-center">Data tidak ditemukan atau belum di-generate</td>
                                 </tr>
-                            @endforeach
-                            <!-- Row Total / Average -->
-                            <tr class="font-weight-normal text-right">
-                                <td colspan="11" class="text-center">TOTAL</td>
-                                <td>{{ number_format($master->sum('org_bal'), 2) }}</td>
-                                <td>{{ number_format($master->sum('cbal'), 2) }}</td>
-                                <td>{{ number_format($master->sum('carrying_amount'), 2) }}</td>
-                                <td>{{ number_format($master->sum('eirex')*100, 14) }}%</td>
-                                <td>{{ number_format($master->sum('eircalc')*100, 14)}}%</td>
-                                <td>{{ number_format($master->sum('eircalc_conv')*100, 14)}}%</td>
-                                <td>{{ number_format($master->sum('eircalc_cost')*100, 14)}}%</td>
-                                <td>{{ number_format($master->sum('eircalc_fee')*100, 14)}}%</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                            @else
+                            @php 
+                            $totalInterestIncome = 0;
+                            @endphp
+                                @foreach ($master as $index => $loan)
+                                @php 
+                                $totalInterestIncome += $loan->cum_bunga;
+                                @endphp
+                                    <tr>
+                                            <td class="text-center">{{ $index + 1 }}</td>
+                                            <td class="text-center">{{ $loan->no_branch }}</td>
+                                            <td class="text-center" style="width: 200px;">
+                                            <div class="dropdown">
+                                                <span class="clickable-account" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    {{ $loan->no_acc }}
+                                                </span>
+                                                
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Accrual Interest <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'accrual_interest_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'accrual_interest_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Amortised Cost <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_cost_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_cost_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Amortised Initial Cost <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_cost_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_cost_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Amortised Initial Fee <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_fee_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_fee_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Expected Cash Flow <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'expected_cashflow_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'expected_cashflow_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Outstanding <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'outstanding_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'outstanding_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                                            Journal <i class="fas fa-chevron-right float-end"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-submenu">
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'journal_effective')">Effective</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'journal_simple')">Simple Interest</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                            <td class="text-center">{{ $loan->deb_name }}</td>
+                                            <td class="text-center">{{ $loan->coa }}</td>
+                                            <td class="text-center">{{ $loan->ln_type }}</td>
+                                            <td class="text-center">{{ $loan->GROUP }}</td>
+                                            <td class="text-center">{{ date('d/m/Y', strtotime($loan->org_date_dt)) }}</td>
+                                            <td class="text-center">{{ $loan->term }}</td>
+                                            <td class="text-right">{{ number_format($loan->rate*100, 5) }}%</td>
+                                            <td class="text-center">{{ date('d/m/Y', strtotime($loan->mtr_date_dt)) }}</td>
+                                            <td class="text-right">{{ number_format($loan->org_bal ?? 0) }}</td>
+                                            <td class="text-right">{{ number_format($loan->cum_bunga ?? 0) }}</td>
+                                            <td class="text-right">{{ number_format($loan->cbal ?? 0) }}</td>
+                                            <td class="text-right">{{ number_format($loan->carrying_amount ?? 0) }}</td>
+                                            <td class="text-right">{{ number_format($loan->eirex*100, 14) }}%</td>
+                                            <td class="text-right">{{ number_format($loan->eircalc*100, 14) }}%</td>
+                                            <td class="text-right">{{ number_format($loan->eircalc_conv*100, 14, 14) }}%</td>
+                                            <td class="text-right">{{ number_format($loan->eircalc_cost*100, 14) }}%</td>
+                                            <td class="text-right">{{ number_format($loan->eircalc_fee*100, 14) }}%</td>
+                                            <td class="text-right">{{ number_format($loan->org_bal) }}</td>
+                                            <td class="text-right">{{ number_format($loan->cum_outsamtcost) }}</td>
+                                            <td class="text-right">{{ number_format($loan->cum_outsamtfee) }}</td>
+                                            <td class="text-right">{{ number_format($loan->cum_bunga ?? 0) }}</td>
+                                    </tr>
+                                @endforeach
+                                <!-- Row Total / Average -->
+                                <tr class="font-weight-normal text-right">
+                                    <td colspan="11" class="text-center">TOTAL</td>
+                                    <td>{{ number_format($master->sum('org_bal')) }}</td>
+                                    <td>{{ number_format($master->sum('cum_bunga')) }}</td>
+                                    <td>{{ number_format($master->sum('cbal')) }}</td>
+                                    <td>{{ number_format($master->sum('carrying_amount')) }}</td>
+                                    <td>{{ number_format($master->avg('eirex')*100, 14) }}%</td>
+                                    <td>{{ number_format($master->avg('eircalc')*100, 14)}}%</td>
+                                    <td>{{ number_format($master->avg('eircalc_conv')*100, 14)}}%</td>
+                                    <td>{{ number_format($master->avg('eircalc_cost')*100, 14)}}%</td>
+                                    <td>{{ number_format($master->avg('eircalc_fee')*100, 14)}}%</td>
+                                    <td>{{ number_format($master->sum('org_bal') ?? 0) }}</td>
+                                    <td>{{ number_format($master->sum('cum_outsamtcost') ?? 0) }}</td>
+                                    <td>{{ number_format($master->sum('cum_outsamtfee') ?? 0) }}</td>
+                                    <td>{{ number_format($totalInterestIncome ?? 0) }}</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -807,7 +920,7 @@ function updateReport() {
     const id_pt = "{{ Auth::user()->id_pt ?? '' }}";
     
     // Sesuaikan dengan route yang benar
-    window.location.href = `/report-outstanding-effective/view/${id_pt}?bulan=${month}&tahun=${year}`;
+    window.location.href = `/report-outstanding-simple-interest/view/${id_pt}?bulan=${month}&tahun=${year}`;
 }
 </script>
 

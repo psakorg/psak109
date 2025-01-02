@@ -65,14 +65,20 @@ class simpleinterestController extends Controller
         // $bulan = $request->input('bulan', date('n'));
         // $tahun = $request->input('tahun', date('Y'));
 
+        $bulan = $request->input('bulan', date('n'));
+        $tahun = $request->input('tahun', date('Y'));
 
         $master = DB::table('public.tblpsaklbucorporateloan')
-    ->join('public.tblobalcorporateloan', 'tblpsaklbucorporateloan.no_acc', '=', 'tblobalcorporateloan.no_acc')
-    ->where('tblpsaklbucorporateloan.no_branch', $id_pt)
-    ->get();
+        ->join('public.tblobalcorporateloan', 'tblpsaklbucorporateloan.no_acc', '=', 'tblobalcorporateloan.no_acc')
+        ->where('tblpsaklbucorporateloan.no_branch', $id_pt)
+        ->where('tblpsaklbucorporateloan.bulan', $bulan)
+        ->where('tblpsaklbucorporateloan.tahun', $tahun)
+        ->get();
+
+
      //dd(route('report-outstanding-si.view', ['id_pt' => Auth::user()->id_pt]));
         $isSuperAdmin = $user->role === 'superadmin';
-        return view('report.outstanding.simple_interest.view', compact('loan', 'isSuperAdmin', 'user', 'master',  'reports'));
+        return view('report.outstanding.simple_interest.view', compact('loan', 'isSuperAdmin', 'user', 'master',  'reports', 'bulan', 'tahun'));
         //dd($master);
         //dd(compact('loan', 'no_acc', 'id_pt', 'user'));
     }
