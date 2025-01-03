@@ -201,7 +201,7 @@
                                 {{-- <td>{{ $item->mtr_date }}</td> --}}
                                 <td>{{ $item->mtr_date_dt ? date('d/m/Y', strtotime($item->mtr_date_dt)) : '' }}</td>
                                 <td>{{ number_format($item->org_bal, 2) }}</td>
-                                <td>{{ number_format($item->rate*100, 2) }}%</td>
+                                <td>{{ number_format($item->rate*100, 5) }}%</td>
                                 <td>{{ number_format($item->cbal, 2) }}</td>
                                 <td>{{ number_format($item->prebal, 2) }}</td>
                                 <td>{{ number_format($item->bilprn, 2) }}</td>

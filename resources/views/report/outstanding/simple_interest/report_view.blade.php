@@ -7,7 +7,7 @@
 
 </head>
 
-<div class="content-wrapper" style="font-size: 12px; width: 100%;">
+<div class="content-wrapper" style="font-size: 12px;">
     <div class="main-content" style="padding-top: 20px;">
         <div class="container mt-5">
             <section class="section">
@@ -20,7 +20,7 @@
                     </div>
                     
                 </div>
-
+                
                 <div class="mb-3 d-flex justify-content-start align-items-center gap-2">
                     <!-- <div class="dropdown me-1">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -92,7 +92,7 @@
                                 </ul>
                             </li>
                         </ul>
-                    </div> -->
+                    </div>-->
 
                     <div class="d-flex align-items-center ">
                         <select class="form-select me-2" style="width: 120px;" id="monthSelect">
@@ -117,9 +117,9 @@
                                max="2099">
                     </div>
 
-                    <a href="{{ route('report-acc-si.exportPdf',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch]) }}" class="btn btn-danger">Export to PDF</a>
-                    <a href="{{ route('report-acc-si.exportExcel',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-success">Export to Excel</a>
-                    <a href="{{ route('report-acc-si.exportCsv',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-warning text-white">Export to CSV</a> 
+                    <a href="{{ route('report-acc-si.exportPdf',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch]) }}" class="btn btn-danger"><i class="fas fa-file-pdf"></i>Export to PDF</a>
+                    <a href="{{ route('report-acc-si.exportExcel',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-success"><i class="fas fa-file-excel"></i>Export to Excel</a>
+                    <a href="{{ route('report-acc-si.exportCsv',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-warning text-white"><i class="fas fa-file-csv"></i>Export to CSV</a> 
                 </div>
 
                 <!-- Report Table -->
@@ -165,14 +165,7 @@
                             @endphp
                                 @foreach ($master as $index => $loan)
                                 @php 
-                                $totalInterestIncome += $report->cum_bunga;
-                                // hitung nilai unaerned interest income
-                                    if ($loop->first) {
-                                            $interestIncome = $totalInterestIncome;
-                                        } else {
-                                            $totalInterestIncome -= $bunga;
-                                            $interestIncome = $totalInterestIncome;
-                                }
+                                
                                 @endphp
                                     <tr>
                                             <td class="text-center">{{ $index + 1 }}</td>
@@ -444,6 +437,27 @@ function showModal(type) {
 }
 
 function showModalWithAccount(accountNumber, type) {
+    
+    // Bersihkan whitespace dan pastikan tipe data string
+    const cleanAccountNumber = accountNumber.toString().trim();
+    
+    const accountNumberInput = document.getElementById('accountNumber');
+    
+    // Set nilai dengan timeout untuk memastikan DOM sudah siap
+    setTimeout(() => {
+        // Set nilai menggunakan setAttribute
+        accountNumberInput.setAttribute('value', cleanAccountNumber);
+        // Set juga menggunakan property value
+        accountNumberInput.value = cleanAccountNumber;
+        
+        const event = new Event('change', { bubbles: true });
+        accountNumberInput.dispatchEvent(event);
+        
+        // Trigger blur event
+        const blurEvent = new Event('blur', { bubbles: true });
+        accountNumberInput.dispatchEvent(blurEvent);
+    }, 100);
+
     const reportTypeSelect = document.getElementById('reportType');
     reportTypeSelect.innerHTML = ''; 
     
@@ -517,8 +531,6 @@ function showModalWithAccount(accountNumber, type) {
     reportTypeSelect.innerHTML = options;
     reportTypeSelect.value = type;
     
-    // Set nilai account dan entity
-    document.getElementById('accountNumber').value = accountNumber;
     
     if (!{{ $isSuperAdmin ? 'true' : 'false' }}) {
         const entityNumber = document.getElementById('entityNumber').value;
@@ -544,16 +556,17 @@ function showModalWithAccount(accountNumber, type) {
                 });
         }
     }
-
-    // Trigger blur events
-    const accountNumberInput = document.getElementById('accountNumber');
-    const entityNumberInput = document.getElementById('entityNumber');
-    const event = new Event('blur');
-    accountNumberInput.dispatchEvent(event);
-    entityNumberInput.dispatchEvent(event);
-
-    // Tampilkan modal
     $('#reportModal').modal('show');
+
+    setTimeout(() => {
+        const accountNumberInput = document.getElementById('accountNumber');
+        const entityNumberInput = document.getElementById('entityNumber');
+        const event = new Event('blur');
+        
+        accountNumberInput.dispatchEvent(event);
+        entityNumberInput.dispatchEvent(event);
+    }, 100);
+
 }
 
 
@@ -571,7 +584,7 @@ function viewReport() {
     // Jika tipe laporan adalah "Outstanding", langsung anggap data.success = true
     if (reportType.includes('outstanding')) {
         closeModal();
-        redirectToReport(reportType, accountNumber, entityNumber);
+        redirectToReport(reportType, null, entityNumber);
         return;
     }
 

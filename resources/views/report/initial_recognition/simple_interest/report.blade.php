@@ -565,6 +565,34 @@
                         </div>
                         <small id="accountError" class="text-danger" style="display: none;">Data tidak ditemukan</small>
                     </div>
+                         <!-- Tambahan input bulan dan tahun untuk outstanding -->
+                         <div class="mb-3" id="outstandingDateInputs" style="display: none;">
+                        <label class="form-label">Period</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <select class="form-select w-100" id="modalMonth">
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-select w-100" id="modalYear" 
+                                    value="{{ date('Y') }}" 
+                                    min="2000" 
+                                    max="2099">
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -800,6 +828,7 @@ function viewReport() {
     const reportType = document.getElementById('reportType').value;
     const entityNumber = document.getElementById('entityNumber').value;
     const accountNumber = document.getElementById('accountNumber').value;
+    
 
     // Tentukan URL pengecekan berdasarkan jenis reportt
     let checkUrl;
@@ -1163,7 +1192,4 @@ document.getElementById('accountNumber').addEventListener('blur', function() {
         accountError.style.display = 'none';
     }
 });
-
-
-
 </script>

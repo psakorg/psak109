@@ -35,7 +35,7 @@ class Report_effective extends Model
     // Method untuk mendapatkan detail pinjaman berdasarkan nomor akun
     public static function getLoanDetails($no_acc, $id_pt)
     {
-        return self::where('no_acc', $no_acc)
+        return self::where('no_acc', $user->id)
             ->where('id_pt', $id_pt)
             ->first();
     }

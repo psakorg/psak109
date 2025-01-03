@@ -570,6 +570,34 @@
                         </div>
                         <small id="accountError" class="text-danger" style="display: none;">Data tidak ditemukan</small>
                     </div>
+                        <!-- Tambahan input bulan dan tahun untuk outstanding -->
+                        <div class="mb-3" id="outstandingDateInputs" style="display: none;">
+                        <label class="form-label">Period</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <select class="form-select w-100" id="modalMonth">
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-select w-100" id="modalYear" 
+                                    value="{{ date('Y') }}" 
+                                    min="2000" 
+                                    max="2099">
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -585,17 +613,32 @@ function showModal(type) {
     const reportTypeSelect = document.getElementById('reportType');
     const accountNumberInput = document.getElementById('accountNumber');
     const accountNumberLabel = document.getElementById('accountNumberLabel');
+    const accountLabel = document.getElementById('accountLabel');
+    const outstandingDateInputs = document.getElementById('outstandingDateInputs');
     reportTypeSelect.innerHTML = ''; 
     
-    // Sembunyikan atau tampilkan input "Account Number" berdasarkan tipe laporan
+    // Show/hide input fields based on report type
     if (type.includes('outstanding')) {
+        // Hide account number input and all related elements
         accountNumberInput.style.display = 'none';
         accountNumberLabel.style.display = 'none';
+        accountLabel.style.display = 'none';
         accountNumberInput.removeAttribute('required');
+        outstandingDateInputs.style.display = 'block';
+        
+        // Clear any existing account number value
+        accountNumberInput.value = '';
+        accountLabel.textContent = '';
+        
+        // Set default values for month and year
+        document.getElementById('modalMonth').value = document.getElementById('monthSelect').value;
+        document.getElementById('modalYear').value = document.getElementById('yearInput').value;
     } else {
         accountNumberInput.style.display = 'block';
         accountNumberLabel.style.display = 'block';
+        accountLabel.style.display = 'block';
         accountNumberInput.setAttribute('required', 'required');
+        outstandingDateInputs.style.display = 'none';
     }
     
     let options;
@@ -687,10 +730,11 @@ function viewReport() {
     const entityNumber = document.getElementById('entityNumber').value;
     const accountNumber = document.getElementById('accountNumber').value;
 
-    // Jika tipe laporan adalah "Outstanding", langsung anggap data.success = true
     if (reportType.includes('outstanding')) {
+        const month = document.getElementById('modalMonth').value;
+        const year = document.getElementById('modalYear').value;
         closeModal();
-        redirectToReport(reportType, accountNumber, entityNumber);
+        redirectToReport(reportType, null, entityNumber, month, year);
         return;
     }
 
@@ -781,7 +825,7 @@ function viewReport() {
         });
 }
 
-function redirectToReport(reportType, accountNumber, entityNumber) {
+function redirectToReport(reportType, accountNumber, entityNumber, month, year) {
     let url;
     switch(reportType) {
         case 'accrual_interest_effective':
@@ -821,10 +865,10 @@ function redirectToReport(reportType, accountNumber, entityNumber) {
         //     url = `/report-initial-recognition-simple/view/${accountNumber}/${entityNumber}`;
         //     break;
         case 'outstanding_effective':
-            url = `/report-outstanding-effective/view/${entityNumber}`;
+            url = `/report-outstanding-effective/view/${entityNumber}?bulan=${month}&tahun=${year}`;
             break;
         case 'outstanding_simple':
-            url = `/report-outstanding-simple-interest/view/${entityNumber}`;
+            url = `/report-outstanding-simple-interest/view/${entityNumber}?bulan=${month}&tahun=${year}`;
             break;
         case 'journal_effective':
             url = `/report-journal-effective/view/${accountNumber}/${entityNumber}`;
@@ -888,7 +932,7 @@ $(document).ready(function() {
 });
 
 // Tambahkan variable untuk menyimpan URL route
-const reportUrl = "{{ route('report-initial-recognition.index') }}";
+const reportUrl = "{{ route('report-initial-recognition.simple-interest') }}";
 
 // Set nilai default untuk bulan dan tahun dari parameter URL atau data yang dikirim dari controller
 document.addEventListener('DOMContentLoaded', function() {
@@ -1135,6 +1179,7 @@ function showModalWithAccount(accountNumber, type) {
     
     // Set nilai account dan entity
     document.getElementById('accountNumber').value = accountNumber;
+
     
     if (!{{ $isSuperAdmin ? 'true' : 'false' }}) {
         const entityNumber = document.getElementById('entityNumber').value;
@@ -1171,5 +1216,4 @@ function showModalWithAccount(accountNumber, type) {
     // Tampilkan modal
     $('#reportModal').modal('show');
 }
-
 </script>

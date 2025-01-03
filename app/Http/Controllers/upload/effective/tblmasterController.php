@@ -169,18 +169,31 @@ public function importExcel(Request $request)
 {
     try {
         $request->validate([
-            'uploadFile' => 'required|file|mimes:xlsx,csv',
+            'uploadFile' => 'required|file|mimes:xlsx,csv,txt',
         ]);
 
         $user = Auth::user();
         $id_pt = $user->id_pt ?? 'pt001';
 
         $file = $request->file('uploadFile');
-        Log::info('File uploaded:', ['name' => $file->getClientOriginalName()]);
+        Log::info('File uploaded:', [
+            'name' => $file->getClientOriginalName(),
+            'mime' => $file->getMimeType(),
+            'extension' => $file->getClientOriginalExtension()
+        ]);
 
-        $extension = $file->getClientOriginalExtension();
-        $reader = ($extension === 'csv') ? new Csv() : new Xlsx();
+        // Deteksi format file berdasarkan ekstensi
+        $extension = strtolower($file->getClientOriginalExtension());
         
+        // Konfigurasi khusus untuk CSV
+        if ($extension === 'csv') {
+            $reader = new Csv();
+            $reader->setInputEncoding('UTF-8');
+            $reader->setDelimiter(',');  // Ubah delimiter menjadi semicolon
+        } else {
+            $reader = new Xlsx();
+        }
+
         $spreadsheet = $reader->load($file->getRealPath());
         $worksheet = $spreadsheet->getActiveSheet();
         $rows = $worksheet->toArray();
@@ -313,13 +326,13 @@ protected function generateImportMessage($valid, $duplicates, $invalid, $existin
 
 public function executeStoredProcedure(Request $request)
 {
-    $request->validate([
-        'bulan' => 'required|integer',
-        'tahun' => 'required|integer',
-        'no_acc' => 'required|string'
-    ]);
-
     try {
+        $request->validate([
+            'bulan' => 'required|integer',
+            'tahun' => 'required|integer',
+            'no_acc' => 'required|string'
+        ]);
+
         DB::beginTransaction();
         
         $user = Auth::user();
@@ -334,51 +347,58 @@ public function executeStoredProcedure(Request $request)
             return redirect()->back()->with('error', "Data dengan nomor akun {$request->no_acc} tidak ditemukan.");
         }
 
-        // Bersihkan format angka dari simbol dollar dan koma
-        $cleanNumber = function($value) {
-            if (is_string($value)) {
-                // Hapus simbol dollar dan koma
-                $value = str_replace(['$', ','], '', $value);
-            }
-            return is_numeric($value) ? (float)$value : 0.00;
+        // Format tanggal dengan benar
+        $formatDate = function($date) {
+            return $date ? date('Y-m-d H:i:s', strtotime($date)) : null;
         };
 
-        // Siapkan parameter yang sudah dibersihkan
+        // Siapkan parameter tanpa batasan nilai
         $params = [
             $uploadData->no_acc,                    
             $uploadData->status,                    
             $uploadData->ln_type,                   
-            $cleanNumber($uploadData->cbal),        
-            $cleanNumber($uploadData->prebal),      
-            $cleanNumber($uploadData->bilprn),      
-            (int)$uploadData->term,                 
-            $uploadData->org_date_dt,               
-            $uploadData->mtr_date_dt,               
-            $cleanNumber($uploadData->org_bal),     
-            $cleanNumber($uploadData->rate),        
-            $cleanNumber($uploadData->pmtamt),      
-            $uploadData->lrebd_dt,                  
-            $uploadData->nrebd_dt,                  
-            $cleanNumber($uploadData->prov),        
-            $cleanNumber($uploadData->trxcost),     
+            (float)$uploadData->cbal,              
+            (float)$uploadData->prebal,            
+            (float)$uploadData->bilprn,            
+            (int)$uploadData->term,                
+            $formatDate($uploadData->org_date_dt),  
+            $formatDate($uploadData->mtr_date_dt),  
+            (float)$uploadData->org_bal,           
+            (float)$uploadData->rate,              
+            (float)$uploadData->pmtamt,            
+            $formatDate($uploadData->lrebd_dt),     
+            $formatDate($uploadData->nrebd_dt),     
+            (float)$uploadData->prov,              
+            (float)$uploadData->trxcost,           
             (int)$uploadData->ln_grp,              
             0.0,                                    
-            0.0,                                    
-            0.0,                                    
-            0.0,                                    
-            0.0,                                    
-            0.0,                                    
-            0.0,                                    
-            0.0,                                    
-            0.0,                                    
-            0.0,                                    
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
             null,                                   
             null                                    
         ];
 
         // Log parameter untuk debugging
         Log::info('Parameters for stored procedure:', [
-            'params' => $params
+            'no_acc' => $params[0],
+            'status' => $params[1],
+            'ln_type' => $params[2],
+            'cbal' => $params[3],
+            'prebal' => $params[4],
+            'bilprn' => $params[5],
+            'term' => $params[6],
+            'org_date' => $params[7],
+            'mtr_date' => $params[8],
+            'org_bal' => $params[9],
+            'rate' => $params[10],
+            'pmtamt' => $params[11]
         ]);
 
         $result = DB::select("CALL public.ndcashflowobaleffective(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $params);
@@ -393,7 +413,7 @@ public function executeStoredProcedure(Request $request)
         DB::commit();
 
         return redirect()->back()->with([
-            'status' => "Berhasil memproses data untuk nomor akun: {$request->no_acc}",
+            'success' => "Berhasil memproses data untuk nomor akun: {$request->no_acc}",
             'result' => $result
         ]);
 

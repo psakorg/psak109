@@ -56,7 +56,7 @@
                     </div> -->
                 </div>
                  <div class="d-flex justify-content-start mb-3 align-items-center">
-                    <!-- <div class="dropdown me-1">
+                   <!-- <div class="dropdown me-1">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-file-import"></i> Report
                         </button>
@@ -649,7 +649,7 @@ function viewReport() {
     // Jika tipe laporan adalah "Outstanding", langsung anggap data.success = true
     if (reportType.includes('outstanding')) {
         closeModal();
-        redirectToReport(reportType, accountNumber, entityNumber);
+        redirectToReport(reportType, null, entityNumber);
         return;
     }
 

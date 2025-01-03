@@ -3,8 +3,8 @@
         <div class="container mt-5">
             <section class="section">
                 <div class="mb-2">
-                    <a href="{{ route('report-acc-eff.exportPdf', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])  }}" class="btn btn-danger ">Export to PDF</a>
-                    <a href="{{ route('report-acc-eff.exportExcel', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt]) }}" class="btn btn-success ">Export to Excel</a>
+                    <a href="{{ route('report-acc-eff.exportPdf', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])  }}" class="btn btn-danger "><i class="fas fa-file-pdf"></i>Export to PDF</a>
+                    <a href="{{ route('report-acc-eff.exportExcel', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt]) }}" class="btn btn-success "><i class="fas fa-file-excel"></i>Export to Excel</a>
                 </div>
 
                 <!-- Loan Details Form -->
@@ -123,8 +123,11 @@
                             @endphp
                             @foreach ($reports as $report)
                             @php
-                                $cumulativeTimeGap += floatval($report->timegap);
-                                $totalTimeGap += ($report->timegap);
+                                $accruedInterest = $report->accrconv ?? 0;
+                                $interestPayment = $report->bunga ?? 0;
+                                $timegap = $accruedInterest - $interestPayment;
+                                $cumulativeTimeGap += floatval($timegap);
+                                $totalTimeGap += $timegap;
                                 $totalPaymentAmount += $report->pmtamt;
                                 $totalAccruedInterest += $report->accrconv;
                                 $totalInterestPayment += $report->bunga;
@@ -136,7 +139,7 @@
                                 <td>{{ number_format($report->pmtamt ?? 0) }}</td>
                                 <td>{{ number_format($report->accrconv ?? 0) }}</td>
                                 <td>{{ number_format($report->bunga ?? 0) }}</td>
-                                <td>{{ number_format($report->timegap ?? 0) }}</td>
+                                <td>{{ number_format($timegap ?? 0) }}</td>
                                 <td>{{ number_format($report->outsamtconv ?? 0) }}</td>
                                 <td>{{ number_format($cumulativeTimeGap ?? 0) }}</td>
                             </tr>
