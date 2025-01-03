@@ -558,7 +558,7 @@
                         <small id="entityError" class="text-danger" style="display: none;">Data tidak ditemukan</small>
                     </div>
                     <div class="mb-3" id="accountNumberSection">
-                        <label for="accountNumber" class="form-label">Account Number</label>
+                        <label for="accountNumber" id="accountNumberLabel" class="form-label">Account Number</label>
                         <div class="d-flex align-items-center">
                             <input type="number" class="form-control" id="accountNumber" required>
                             <span id="accountLabel" class="ms-3 text-muted"></span>
@@ -605,6 +605,7 @@
 
 <script>
 function showModal(type) {
+    console.log('showModal function called with type:', type);
     const reportTypeSelect = document.getElementById('reportType');
     const accountNumberInput = document.getElementById('accountNumber');
     const accountNumberLabel = document.getElementById('accountNumberLabel');
@@ -715,8 +716,11 @@ function showModal(type) {
 }
 
 function viewReport() {
+    console.log('viewReport function called');
+    
     const form = document.getElementById('reportForm');
     if (!form.checkValidity()) {
+        console.log('Form validation failed');
         form.reportValidity();
         return;
     }
@@ -724,6 +728,7 @@ function viewReport() {
     const reportType = document.getElementById('reportType').value;
     const entityNumber = document.getElementById('entityNumber').value;
     const accountNumber = document.getElementById('accountNumber').value;
+
 
     if (reportType.includes('outstanding')) {
         const month = document.getElementById('modalMonth').value;
@@ -785,20 +790,16 @@ function viewReport() {
             checkUrl = `/check-report-journal-simple/${accountNumber}/${entityNumber}`;
             break;
     }
-
     
+
     // Cek ketersediaan data
     fetch(checkUrl)
         .then(response => {
-            console.log(response);
             return response.json();
         })
         .then(data => {
             if (data.success) {
-                // Tutup modal
                 closeModal();
-                
-                // Redirect ke halaman report
                 redirectToReport(reportType, accountNumber, entityNumber);
             } else {
                 Swal.fire({
@@ -1120,6 +1121,24 @@ function showModalWithAccount(accountNumber, type) {
         accountNumberInput.value = accountNumber;
     }
     
+    const cleanAccountNumber = accountNumber.toString().trim();
+    
+
+    setTimeout(() => {
+        // Set nilai menggunakan setAttribute
+        accountNumberInput.setAttribute('value', cleanAccountNumber);
+        // Set juga menggunakan property value
+        accountNumberInput.value = cleanAccountNumber;
+        
+        const event = new Event('change', { bubbles: true });
+        accountNumberInput.dispatchEvent(event);
+        
+        // Trigger blur event
+        const blurEvent = new Event('blur', { bubbles: true });
+        accountNumberInput.dispatchEvent(blurEvent);
+    }, 100);
+
+
     let options;
     switch(type) {
         case 'accrual_interest_effective':
@@ -1216,24 +1235,16 @@ function showModalWithAccount(accountNumber, type) {
         }
     }
     $('#reportModal').modal('show');
+
+    setTimeout(() => {
+        const accountNumberInput = document.getElementById('accountNumber');
+        const entityNumberInput = document.getElementById('entityNumber');
+        const event = new Event('blur');
+        
+        accountNumberInput.dispatchEvent(event);
+        entityNumberInput.dispatchEvent(event);
+    }, 100);
 }
-function viewReport() {
-    const form = document.getElementById('reportForm');
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-    }
-
-    const reportType = document.getElementById('reportType').value;
-    const entityNumber = document.getElementById('entityNumber').value;
-
-    if (reportType.includes('outstanding')) {
-        const month = document.getElementById('modalMonth').value;
-        const year = document.getElementById('modalYear').value;
-        closeModal();
-        redirectToReport(reportType, null, entityNumber, month, year);
-        return;
-    }
 
     // Trigger blur events
     const accountNumberInput = document.getElementById('accountNumber');
@@ -1241,5 +1252,4 @@ function viewReport() {
     const event = new Event('blur');
     accountNumberInput.dispatchEvent(event);
     entityNumberInput.dispatchEvent(event);
-}
 </script>

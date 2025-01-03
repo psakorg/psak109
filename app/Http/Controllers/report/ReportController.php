@@ -94,7 +94,7 @@ class ReportController extends Controller
 
             $account = DB::table('tblmaster_tmpcorporate')
                 ->where('no_acc', $account_number)
-                ->where('id_pt', $entity_number)
+                ->where('no_branch', $entity_number)
                 ->first();
 
             if ($account) {
