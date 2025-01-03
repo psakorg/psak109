@@ -557,7 +557,7 @@
                         </div>
                         <small id="entityError" class="text-danger" style="display: none;">Data tidak ditemukan</small>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3" id="accountNumberSection">
                         <label for="accountNumber" class="form-label">Account Number</label>
                         <div class="d-flex align-items-center">
                             <input type="number" class="form-control" id="accountNumber" required>
@@ -606,7 +606,35 @@
 <script>
 function showModal(type) {
     const reportTypeSelect = document.getElementById('reportType');
+    const accountNumberInput = document.getElementById('accountNumber');
+    const accountNumberLabel = document.getElementById('accountNumberLabel');
+    const accountLabel = document.getElementById('accountLabel');
+    const outstandingDateInputs = document.getElementById('outstandingDateInputs');
     reportTypeSelect.innerHTML = ''; 
+    
+    // Show/hide input fields based on report type
+    if (type.includes('outstanding')) {
+        // Hide account number input and all related elements
+        accountNumberInput.style.display = 'none';
+        accountNumberLabel.style.display = 'none';
+        accountLabel.style.display = 'none';
+        accountNumberInput.removeAttribute('required');
+        outstandingDateInputs.style.display = 'block';
+        
+        // Clear any existing account number value
+        accountNumberInput.value = '';
+        accountLabel.textContent = '';
+        
+        // Set default values for month and year
+        document.getElementById('modalMonth').value = document.getElementById('monthSelect').value;
+        document.getElementById('modalYear').value = document.getElementById('yearInput').value;
+    } else {
+        accountNumberInput.style.display = 'block';
+        accountNumberLabel.style.display = 'block';
+        accountLabel.style.display = 'block';
+        accountNumberInput.setAttribute('required', 'required');
+        outstandingDateInputs.style.display = 'none';
+    }
     
     let options;
     switch(type) {
@@ -675,6 +703,7 @@ function showModal(type) {
             break;
             
         default:
+            console.error('Tipe report tidak valid:', type);
             options = '<option value="">Pilih tipe report</option>';
             break;
     }
@@ -683,139 +712,6 @@ function showModal(type) {
     reportTypeSelect.value = type; // Set nilai sesuai tipe yang dipilih
     
     $('#reportModal').modal('show');
-}
-
-function showModalWithAccount(accountNumber, type) {
-    
-    // Bersihkan whitespace dan pastikan tipe data string
-    const cleanAccountNumber = accountNumber.toString().trim();
-    
-    const accountNumberInput = document.getElementById('accountNumber');
-    
-    // Set nilai dengan timeout untuk memastikan DOM sudah siap
-    setTimeout(() => {
-        // Set nilai menggunakan setAttribute
-        accountNumberInput.setAttribute('value', cleanAccountNumber);
-        // Set juga menggunakan property value
-        accountNumberInput.value = cleanAccountNumber;
-        
-        const event = new Event('change', { bubbles: true });
-        accountNumberInput.dispatchEvent(event);
-        
-        // Trigger blur event
-        const blurEvent = new Event('blur', { bubbles: true });
-        accountNumberInput.dispatchEvent(blurEvent);
-    }, 100);
-
-    const reportTypeSelect = document.getElementById('reportType');
-    reportTypeSelect.innerHTML = ''; 
-    
-    let options;
-    switch(type) {
-        case 'accrual_interest_effective':
-        case 'accrual_interest_simple':
-            options = `
-                <option value="accrual_interest_effective">Effective</option>
-                <option value="accrual_interest_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'amortised_cost_effective':
-        case 'amortised_cost_simple':
-            options = `
-                <option value="amortised_cost_effective">Effective</option>
-                <option value="amortised_cost_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'amortised_initial_cost_effective':
-        case 'amortised_initial_cost_simple':
-            options = `
-                <option value="amortised_initial_cost_effective">Effective</option>
-                <option value="amortised_initial_cost_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'amortised_initial_fee_effective':
-        case 'amortised_initial_fee_simple':
-            options = `
-                <option value="amortised_initial_fee_effective">Effective</option>
-                <option value="amortised_initial_fee_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'expected_cashflow_effective':
-        case 'expected_cashflow_simple':
-            options = `
-                <option value="expected_cashflow_effective">Effective</option>
-                <option value="expected_cashflow_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'initial_recognition_effective':
-        case 'initial_recognition_simple':
-            options = `
-                <option value="initial_recognition_effective">Effective</option>
-                <option value="initial_recognition_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'outstanding_effective':
-        case 'outstanding_simple':
-            options = `
-                <option value="outstanding_effective">Effective</option>
-                <option value="outstanding_simple">Simple Interest</option>
-            `;
-            break;
-            
-        case 'journal_effective':
-        case 'journal_simple':
-            options = `
-                <option value="journal_effective">Effective</option>
-                <option value="journal_simple">Simple Interest</option>
-            `;
-            break;
-    }
-    
-    reportTypeSelect.innerHTML = options;
-    reportTypeSelect.value = type;
-    
-    
-    if (!{{ $isSuperAdmin ? 'true' : 'false' }}) {
-        const entityNumber = document.getElementById('entityNumber').value;
-        if (entityNumber) {
-            fetch(`/check-entity/${entityNumber}`)
-                .then(response => response.json())
-                .then(data => {
-                    const entityLabel = document.getElementById('entityLabel');
-                    if (data.success) {
-                        entityLabel.innerHTML = data.entity_name;
-                        entityLabel.style = `
-                            display: inline-block;
-                            visibility: visible;
-                            margin-left: 10px;
-                            padding: 4px 8px;
-                            background-color: #d4edda;
-                            color: #155724;
-                            border: 1px solid #c3e6cb;
-                            border-radius: 4px;
-                            font-size: 14px;
-                        `;
-                    }
-                });
-        }
-    }
-    $('#reportModal').modal('show');
-
-    setTimeout(() => {
-        const accountNumberInput = document.getElementById('accountNumber');
-        const entityNumberInput = document.getElementById('entityNumber');
-        const event = new Event('blur');
-        
-        accountNumberInput.dispatchEvent(event);
-        entityNumberInput.dispatchEvent(event);
-    }, 100);
-
 }
 
 function viewReport() {
@@ -828,9 +724,16 @@ function viewReport() {
     const reportType = document.getElementById('reportType').value;
     const entityNumber = document.getElementById('entityNumber').value;
     const accountNumber = document.getElementById('accountNumber').value;
-    
 
-    // Tentukan URL pengecekan berdasarkan jenis reportt
+    if (reportType.includes('outstanding')) {
+        const month = document.getElementById('modalMonth').value;
+        const year = document.getElementById('modalYear').value;
+        closeModal();
+        redirectToReport(reportType, null, entityNumber, month, year);
+        return;
+    }
+
+    // Tentukan URL pengecekan berdasarkan jenis report
     let checkUrl;
     switch(reportType) {
         case 'accrual_interest_effective':
@@ -883,6 +786,7 @@ function viewReport() {
             break;
     }
 
+    
     // Cek ketersediaan data
     fetch(checkUrl)
         .then(response => {
@@ -894,61 +798,8 @@ function viewReport() {
                 // Tutup modal
                 closeModal();
                 
-                // Tentukan URL redirect
-                let url;
-                switch(reportType) {
-                    case 'accrual_interest_effective':
-                        url = `/report-accrual-effective/view/${accountNumber}/${entityNumber}`;
-                        break;
-                    case 'accrual_interest_simple':
-                        url = `/report/accrual-interest/simple-interest/view/${accountNumber}/${entityNumber}`;
-                        break;
-                    case 'amortised_cost_effective':
-                        url = `/report-amortised-cost-effective/view/${accountNumber}/${entityNumber}`;
-                        break;
-                    case 'amortised_cost_simple':
-                        url = `/report-amortised-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
-                        break;
-                    case 'amortised_initial_cost_effective':
-                        url = `/report-amortised-initial-cost-effective/view/${accountNumber}/${entityNumber}`;
-                        break;
-                    case 'amortised_initial_cost_simple':
-                        url = `/report-amortised-initial-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
-                        break;
-                    case 'amortised_initial_fee_effective':
-                        url = `/report-amortised-initial-fee-effective/view/${accountNumber}/${entityNumber}`;
-                        break;
-                    case 'amortised_initial_fee_simple':
-                        url = `/report-amortised-initial-fee-simple-interest/view/${accountNumber}/${entityNumber}`;
-                        break;
-                    case 'expected_cashflow_effective':
-                        url = `/report-expective-cash-flow-effective/view/${accountNumber}/${entityNumber}`;
-                        break;
-                    case 'expected_cashflow_simple':
-                        url = `/report-expective-cash-flow-simple-interest/view/${accountNumber}/${entityNumber}`;
-                        break;
-                    // case 'initial_recognition_effective':
-                    //     url = `/report-initial-recognition-effective/view/${accountNumber}/${entityNumber}`;
-                    //     break;
-                    // case 'initial_recognition_simple':
-                    //     url = `/report-initial-recognition-simple/view/${accountNumber}/${entityNumber}`;
-                    //     break;
-                    case 'outstanding_effective':
-                        url = `/report-outstanding-effective/view/${entityNumber}`;
-                        break;
-                    case 'outstanding_simple':
-                        url = `/report-outstanding-simple-interest/view/${entityNumber}`;
-                        break;
-                    case 'journal_effective':
-                        url = `/report-journal-effective/view/${accountNumber}/${entityNumber}`;
-                        break;
-                    case 'journal_simple':
-                        url = `/report-journal-simple-interest/view/${accountNumber}/${entityNumber}`;
-                        break;
-                }
-                
                 // Redirect ke halaman report
-                window.location.href = url;
+                redirectToReport(reportType, accountNumber, entityNumber);
             } else {
                 Swal.fire({
                     title: 'Error',
@@ -967,6 +818,61 @@ function viewReport() {
                 confirmButtonText: 'OK'
             });
         });
+}
+
+function redirectToReport(reportType, accountNumber, entityNumber, month, year) {
+    let url;
+    switch(reportType) {
+        case 'accrual_interest_effective':
+            url = `/report-accrual-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'accrual_interest_simple':
+            url = `/report/accrual-interest/simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_cost_effective':
+            url = `/report-amortised-cost-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_cost_simple':
+            url = `/report-amortised-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_initial_cost_effective':
+            url = `/report-amortised-initial-cost-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_initial_cost_simple':
+            url = `/report-amortised-initial-cost-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_initial_fee_effective':
+            url = `/report-amortised-initial-fee-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'amortised_initial_fee_simple':
+            url = `/report-amortised-initial-fee-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'expected_cashflow_effective':
+            url = `/report-expective-cash-flow-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'expected_cashflow_simple':
+            url = `/report-expective-cash-flow-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+        // case 'initial_recognition_effective':
+        //     url = `/report-initial-recognition-effective/view/${accountNumber}/${entityNumber}`;
+        //     break;
+        // case 'initial_recognition_simple':
+        //     url = `/report-initial-recognition-simple/view/${accountNumber}/${entityNumber}`;
+        //     break;
+        case 'outstanding_effective':
+            url = `/report-outstanding-effective/view/${entityNumber}?bulan=${month}&tahun=${year}`;
+            break;
+        case 'outstanding_simple':
+            url = `/report-outstanding-simple-interest/view/${entityNumber}?bulan=${month}&tahun=${year}`;
+            break;
+        case 'journal_effective':
+            url = `/report-journal-effective/view/${accountNumber}/${entityNumber}`;
+            break;
+        case 'journal_simple':
+            url = `/report-journal-simple-interest/view/${accountNumber}/${entityNumber}`;
+            break;
+    }
+    window.location.href = url;
 }
 
 // Fungsi untuk menutup modal
@@ -1041,7 +947,7 @@ document.getElementById('yearInput').addEventListener('change', updateReport);
 function updateReport() {
     const month = document.getElementById('monthSelect').value;
     const year = document.getElementById('yearInput').value;
-    const branch = '999'; // Sesuaikan dengan nilai branch yang diinginkan
+    const branch = '{{ $user->id_pt }}'; // Sesuaikan dengan nilai branch yang diinginkan
     
     window.location.href = `${reportUrl}?bulan=${month}&tahun=${year}&branch=${branch}`;
 }
@@ -1159,14 +1065,13 @@ document.getElementById('accountNumber').addEventListener('blur', function() {
     const reportType = document.getElementById('reportType').value;
     
     if (accountNumber) {
+        // Tentukan URL berdasarkan tipe report
         const accountCheckUrl = reportType.includes('simple') 
             ? `/check-account-corporate/${accountNumber}?entity_number=${entityNumber}` 
             : `/check-account/${accountNumber}?entity_number=${entityNumber}`;
-
-
+        
         fetch(accountCheckUrl)
             .then(response => {
-                console.log(response);
                 return response.json();
             })
             .then(data => {
@@ -1192,4 +1097,149 @@ document.getElementById('accountNumber').addEventListener('blur', function() {
         accountError.style.display = 'none';
     }
 });
+
+function showModalWithAccount(accountNumber, type) {
+    const reportTypeSelect = document.getElementById('reportType');
+    const outstandingDateInputs = document.getElementById('outstandingDateInputs');
+    const accountNumberSection = document.getElementById('accountNumberSection');
+    const accountNumberInput = document.getElementById('accountNumber');
+    reportTypeSelect.innerHTML = ''; 
+
+    if (type.includes('outstanding')) {
+        // Hide account number input and all related elements
+        accountNumberSection.style.display = 'none';
+        outstandingDateInputs.style.display = 'block';
+        accountNumberInput.removeAttribute('required');
+        
+        document.getElementById('modalMonth').value = document.getElementById('monthSelect').value;
+        document.getElementById('modalYear').value = document.getElementById('yearInput').value;
+    } else {
+        accountNumberSection.style.display = 'block';
+        outstandingDateInputs.style.display = 'none';
+        accountNumberInput.setAttribute('required', 'required');
+        accountNumberInput.value = accountNumber;
+    }
+    
+    let options;
+    switch(type) {
+        case 'accrual_interest_effective':
+        case 'accrual_interest_simple':
+            options = `
+                <option value="accrual_interest_effective">Effective</option>
+                <option value="accrual_interest_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_cost_effective':
+        case 'amortised_cost_simple':
+            options = `
+                <option value="amortised_cost_effective">Effective</option>
+                <option value="amortised_cost_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_initial_cost_effective':
+        case 'amortised_initial_cost_simple':
+            options = `
+                <option value="amortised_initial_cost_effective">Effective</option>
+                <option value="amortised_initial_cost_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'amortised_initial_fee_effective':
+        case 'amortised_initial_fee_simple':
+            options = `
+                <option value="amortised_initial_fee_effective">Effective</option>
+                <option value="amortised_initial_fee_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'expected_cashflow_effective':
+        case 'expected_cashflow_simple':
+            options = `
+                <option value="expected_cashflow_effective">Effective</option>
+                <option value="expected_cashflow_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'initial_recognition_effective':
+        case 'initial_recognition_simple':
+            options = `
+                <option value="initial_recognition_effective">Effective</option>
+                <option value="initial_recognition_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'outstanding_effective':
+        case 'outstanding_simple':
+            options = `
+                <option value="outstanding_effective">Effective</option>
+                <option value="outstanding_simple">Simple Interest</option>
+            `;
+            break;
+            
+        case 'journal_effective':
+        case 'journal_simple':
+            options = `
+                <option value="journal_effective">Effective</option>
+                <option value="journal_simple">Simple Interest</option>
+            `;
+            break;
+    }
+    
+    reportTypeSelect.innerHTML = options;
+    reportTypeSelect.value = type;
+
+    
+    if (!{{ $isSuperAdmin ? 'true' : 'false' }}) {
+        const entityNumber = document.getElementById('entityNumber').value;
+        if (entityNumber) {
+            fetch(`/check-entity/${entityNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    const entityLabel = document.getElementById('entityLabel');
+                    if (data.success) {
+                        entityLabel.innerHTML = data.entity_name;
+                        entityLabel.style = `
+                            display: inline-block;
+                            visibility: visible;
+                            margin-left: 10px;
+                            padding: 4px 8px;
+                            background-color: #d4edda;
+                            color: #155724;
+                            border: 1px solid #c3e6cb;
+                            border-radius: 4px;
+                            font-size: 14px;
+                        `;
+                    }
+                });
+        }
+    }
+    $('#reportModal').modal('show');
+}
+function viewReport() {
+    const form = document.getElementById('reportForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const reportType = document.getElementById('reportType').value;
+    const entityNumber = document.getElementById('entityNumber').value;
+
+    if (reportType.includes('outstanding')) {
+        const month = document.getElementById('modalMonth').value;
+        const year = document.getElementById('modalYear').value;
+        closeModal();
+        redirectToReport(reportType, null, entityNumber, month, year);
+        return;
+    }
+
+    // Trigger blur events
+    const accountNumberInput = document.getElementById('accountNumber');
+    const entityNumberInput = document.getElementById('entityNumber');
+    const event = new Event('blur');
+    accountNumberInput.dispatchEvent(event);
+    entityNumberInput.dispatchEvent(event);
+}
 </script>

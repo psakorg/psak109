@@ -562,7 +562,7 @@
                         </div>
                         <small id="entityError" class="text-danger" style="display: none;">Data tidak ditemukan</small>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3" id="accountNumberSection">
                         <label for="accountNumber" id="accountNumberLabel" class="form-label">Account Number</label>
                         <div class="d-flex align-items-center">
                             <input type="number" class="form-control" id="accountNumber" required>
@@ -720,8 +720,11 @@ function showModal(type) {
 }
 
 function viewReport() {
+    console.log('viewReport function called');
+    
     const form = document.getElementById('reportForm');
     if (!form.checkValidity()) {
+        console.log('Form validation failed');
         form.reportValidity();
         return;
     }
@@ -730,9 +733,14 @@ function viewReport() {
     const entityNumber = document.getElementById('entityNumber').value;
     const accountNumber = document.getElementById('accountNumber').value;
 
+    console.log('Report Type:', reportType);
+    console.log('Entity Number:', entityNumber);
+    console.log('Account Number:', accountNumber);
+
     if (reportType.includes('outstanding')) {
         const month = document.getElementById('modalMonth').value;
         const year = document.getElementById('modalYear').value;
+        console.log('Outstanding report - Month:', month, 'Year:', year);
         closeModal();
         redirectToReport(reportType, null, entityNumber, month, year);
         return;
@@ -790,20 +798,19 @@ function viewReport() {
             checkUrl = `/check-report-journal-simple/${accountNumber}/${entityNumber}`;
             break;
     }
-
     
+    console.log('Check URL:', checkUrl);
+
     // Cek ketersediaan data
     fetch(checkUrl)
         .then(response => {
-            console.log(response);
+            console.log('Response status:', response.status);
             return response.json();
         })
         .then(data => {
+            console.log('Response data:', data);
             if (data.success) {
-                // Tutup modal
                 closeModal();
-                
-                // Redirect ke halaman report
                 redirectToReport(reportType, accountNumber, entityNumber);
             } else {
                 Swal.fire({
@@ -932,7 +939,7 @@ $(document).ready(function() {
 });
 
 // Tambahkan variable untuk menyimpan URL route
-const reportUrl = "{{ route('report-initial-recognition.simple-interest') }}";
+const reportUrl = "{{ route('report-initial-recognition.index') }}";
 
 // Set nilai default untuk bulan dan tahun dari parameter URL atau data yang dikirim dari controller
 document.addEventListener('DOMContentLoaded', function() {
@@ -952,7 +959,7 @@ document.getElementById('yearInput').addEventListener('change', updateReport);
 function updateReport() {
     const month = document.getElementById('monthSelect').value;
     const year = document.getElementById('yearInput').value;
-    const branch = '999'; // Sesuaikan dengan nilai branch yang diinginkan
+    const branch = '{{ $user->id_pt }}'; // Sesuaikan dengan nilai branch yang diinginkan
     
     window.location.href = `${reportUrl}?bulan=${month}&tahun=${year}&branch=${branch}`;
 }
@@ -1105,7 +1112,25 @@ document.getElementById('accountNumber').addEventListener('blur', function() {
 
 function showModalWithAccount(accountNumber, type) {
     const reportTypeSelect = document.getElementById('reportType');
+    const outstandingDateInputs = document.getElementById('outstandingDateInputs');
+    const accountNumberSection = document.getElementById('accountNumberSection');
+    const accountNumberInput = document.getElementById('accountNumber');
     reportTypeSelect.innerHTML = ''; 
+
+    if (type.includes('outstanding')) {
+        // Hide account number input and all related elements
+        accountNumberSection.style.display = 'none';
+        outstandingDateInputs.style.display = 'block';
+        accountNumberInput.removeAttribute('required');
+        
+        document.getElementById('modalMonth').value = document.getElementById('monthSelect').value;
+        document.getElementById('modalYear').value = document.getElementById('yearInput').value;
+    } else {
+        accountNumberSection.style.display = 'block';
+        outstandingDateInputs.style.display = 'none';
+        accountNumberInput.setAttribute('required', 'required');
+        accountNumberInput.value = accountNumber;
+    }
     
     let options;
     switch(type) {
@@ -1176,9 +1201,6 @@ function showModalWithAccount(accountNumber, type) {
     
     reportTypeSelect.innerHTML = options;
     reportTypeSelect.value = type;
-    
-    // Set nilai account dan entity
-    document.getElementById('accountNumber').value = accountNumber;
 
     
     if (!{{ $isSuperAdmin ? 'true' : 'false' }}) {
@@ -1205,6 +1227,25 @@ function showModalWithAccount(accountNumber, type) {
                 });
         }
     }
+    $('#reportModal').modal('show');
+}
+function viewReport() {
+    const form = document.getElementById('reportForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const reportType = document.getElementById('reportType').value;
+    const entityNumber = document.getElementById('entityNumber').value;
+
+    if (reportType.includes('outstanding')) {
+        const month = document.getElementById('modalMonth').value;
+        const year = document.getElementById('modalYear').value;
+        closeModal();
+        redirectToReport(reportType, null, entityNumber, month, year);
+        return;
+    }
 
     // Trigger blur events
     const accountNumberInput = document.getElementById('accountNumber');
@@ -1212,8 +1253,5 @@ function showModalWithAccount(accountNumber, type) {
     const event = new Event('blur');
     accountNumberInput.dispatchEvent(event);
     entityNumberInput.dispatchEvent(event);
-
-    // Tampilkan modal
-    $('#reportModal').modal('show');
 }
 </script>

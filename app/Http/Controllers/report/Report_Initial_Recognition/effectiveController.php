@@ -21,6 +21,11 @@ class effectiveController extends Controller
         $isSuperAdmin = $user->role === 'superadmin';
         
         $branch = $request->input('branch', $user->id_pt);
+
+        if($branch != $user->id_pt){
+            $branch = $user->id_pt;
+        }
+
         $tahun = $request->input('tahun') ?? date('Y');
         $bulan = $request->input('bulan') ?? date('m');
 
