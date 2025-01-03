@@ -245,15 +245,16 @@
                                 $unamortFee = $unamortFee + $amortizedUpFrontFee;
                                 }
                                 $totalUnamortFee += $unamortFee;
-                                
-                                $interestPayment = $loan->cum_bunga;
-                                // hitung nilai unaerned interest income
-                                if ($loop->first) {
-                                $interestIncome = $loan->cum_bunga;
-                                } else {
-                                $interestIncome = $interestIncome - $interestPayment;
-                                }
+
+                                $bunga = $loan->cum_bunga;
                                 $totalInterestIncome += $loan->cum_bunga;
+                                // hitung nilai unaerned interest income
+                                    if ($loop->first) {
+                                            $interestIncome = $totalInterestIncome;
+                                        } else {
+                                            $totalInterestIncome -= $bunga;
+                                            $interestIncome = $totalInterestIncome;
+                                }
                                 @endphp
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
@@ -267,7 +268,7 @@
                                                 <ul class="dropdown-menu">
                                                     <li>
                                                         <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                                            Accrual Interest <i class="fas fa-chevron-right float-end"></i>
+                                                            Accrued Interest <i class="fas fa-chevron-right float-end"></i>
                                                         </a>
                                                         <ul class="dropdown-menu dropdown-submenu">
                                                             <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'accrual_interest_effective')">Effective</a></li>
@@ -367,7 +368,7 @@
                                     <td class="text-end"><strong>{{ number_format($master->sum('cum_timegap') ?? 0)}}</strong></td>
                                     <td class="text-end"><strong>{{ number_format($unamortCost ?? 0)}}</strong></td>
                                     <td class="text-end"><strong>{{ number_format($unamortFee ?? 0)}}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($totalInterestIncome ?? 0) }}</strong></td>
+                                    <td class="text-end"><strong></strong></td>
                                 </tr>
                             @endif
                         </tbody>

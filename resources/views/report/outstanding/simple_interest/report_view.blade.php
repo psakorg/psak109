@@ -165,7 +165,14 @@
                             @endphp
                                 @foreach ($master as $index => $loan)
                                 @php 
-                                $totalInterestIncome += $loan->cum_bunga;
+                                $totalInterestIncome += $report->cum_bunga;
+                                // hitung nilai unaerned interest income
+                                    if ($loop->first) {
+                                            $interestIncome = $totalInterestIncome;
+                                        } else {
+                                            $totalInterestIncome -= $bunga;
+                                            $interestIncome = $totalInterestIncome;
+                                }
                                 @endphp
                                     <tr>
                                             <td class="text-center">{{ $index + 1 }}</td>
@@ -179,7 +186,7 @@
                                                 <ul class="dropdown-menu">
                                                     <li>
                                                         <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                                            Accrual Interest <i class="fas fa-chevron-right float-end"></i>
+                                                            Accrued Interest <i class="fas fa-chevron-right float-end"></i>
                                                         </a>
                                                         <ul class="dropdown-menu dropdown-submenu">
                                                             <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'accrual_interest_effective')">Effective</a></li>
@@ -281,7 +288,7 @@
                                     <td>{{ number_format($master->sum('org_bal') ?? 0) }}</td>
                                     <td>{{ number_format($master->sum('cum_outsamtcost') ?? 0) }}</td>
                                     <td>{{ number_format($master->sum('cum_outsamtfee') ?? 0) }}</td>
-                                    <td>{{ number_format($totalInterestIncome ?? 0) }}</td>
+                                    <td></td>
                                 </tr>
                             @endif
                         </tbody>

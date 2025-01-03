@@ -24,7 +24,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                    Accrual Interest <i class="fas fa-chevron-right float-end"></i>
+                                    Accrued Interest <i class="fas fa-chevron-right float-end"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-submenu">
                                     <li><a class="dropdown-item" href="#" onclick="showModal('accrual_interest_effective')">Effective</a></li>
@@ -181,7 +181,7 @@
                                                 <ul class="dropdown-menu">
                                                     <li>
                                                         <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                                            Accrual Interest <i class="fas fa-chevron-right float-end"></i>
+                                                            Accrued Interest <i class="fas fa-chevron-right float-end"></i>
                                                         </a>
                                                         <ul class="dropdown-menu dropdown-submenu">
                                                             <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'accrual_interest_effective')">Effective</a></li>

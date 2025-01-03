@@ -98,7 +98,7 @@
                                     <td colspan="10" class="text-center">Data tidak ditemukan atau belum di-generate</td>
                                 </tr>
                             @else
-                                @php
+                               @php
                                     $cumulativebunga = 0;
                                     $totalPaymentAmount = 0;
                                     $totalInterestPayment = 0;
@@ -109,21 +109,25 @@
                                 @endphp
                                 @foreach ($reports as $report)
                                     @php
-                                        $bunga = $report->bunga;
+                                        $totalInterestIncome += $report->bunga;
+                                    @endphp
+                                @endforeach
+                                @foreach ($reports as $report)
+                                    @php
+                                    $bunga = $report->bunga;
                                         $interestPayment = $report->bunga;
                                         $sumBunga += $bunga;
                                         $totalPaymentAmount += $report->pmtamt;
                                         $totalInterestPayment += $report->bunga;
-                                        $totalPrincipalPayment += $report->pokok;
                                         $totalBalanceContractual += $report->balance;
                                         if ($loop->first) {
-                                        $interestIncome = $sumBunga;
+                                            $interestIncome = $totalInterestIncome;
                                         } else {
-                                        $interestIncome = $sumBunga - $interestPayment;
+                                            $totalInterestIncome -= $bunga;
+                                            $interestIncome = $totalInterestIncome;
                                         }
-                                        $totalInterestIncome += $interestIncome;
                                     @endphp
-                                    <tr style="font-weight:normal; height: 20px;">
+                                    <tr style="font-weight:normal;">
                                         <td class="text-center">{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y ', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
                                         <td>{{ number_format($report->pmtamt ?? 0) }}</td>
@@ -140,7 +144,7 @@
                                     <td>{{ number_format($totalInterestPayment ?? 0) }}</td>
                                     <td>{{ number_format($totalPrincipalPayment ?? 0) }}</td>
                                     <td></td>
-                                    <td>{{ number_format($totalInterestIncome ?? 0) }}</td>
+                                    <td></td>
                                 </tr>
                             @endif
                         </tbody>

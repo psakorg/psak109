@@ -89,7 +89,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @php
+                            @php
                                     $cumulativebunga = 0;
                                     $totalPaymentAmount = 0;
                                     $totalInterestPayment = 0;
@@ -97,9 +97,14 @@
                                     $totalBalanceContractual = 0;
                                     $sumBunga = 0;
                                     $totalInterestIncome = 0;
-                                @endphp
+                            @endphp
                             @foreach ($reports as $report)
-                            @php
+                                @php
+                                    $totalInterestIncome += $report->bunga;
+                                @endphp
+                            @endforeach
+                            @foreach ($reports as $report)
+                                @php
                                         $bunga = $report->bunga;
                                         $interestPayment = $report->bunga;
                                         $sumBunga += $bunga;
@@ -107,12 +112,12 @@
                                         $totalInterestPayment += $report->bunga;
                                         $totalBalanceContractual += $report->balance;
                                         if ($loop->first) {
-                                        $interestIncome = $sumBunga;
+                                            $interestIncome = $totalInterestIncome;
                                         } else {
-                                        $interestIncome = $sumBunga - $interestPayment;
+                                            $totalInterestIncome -= $bunga;
+                                            $interestIncome = $totalInterestIncome;
                                         }
-                                        $totalInterestIncome += $interestIncome;
-                                    @endphp
+                                @endphp
                                 <tr>
                                     <td class="text-center">{{ $report->bulanke }}</td>
                                     <td class="text-center">{{ date('d/m/Y', strtotime($report->tglangsuran)) }}</td>
@@ -134,7 +139,7 @@
                                 <td class="text-right">{{ number_format(array_sum(array_column($reports, 'pengembalian'))?? 0) }}</td>
                                 <td class="text-right">{{ number_format(array_sum(array_column($reports, 'bunga'))?? 0) }}</td>
                                 <td></td>
-                                <td class="text-right">{{ number_format($totalInterestIncome ?? 0) }}</td>
+                                <td></td>
 
                             </tr>
                         </tbody>

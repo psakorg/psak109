@@ -10,7 +10,7 @@
                 <!-- Loan Details Form -->
                 <div class="card mb-2" style="font-size: 12px;">
                     <div class="card-header">
-                        <h5 class="card-title" style="font-size: 16px;">REPORT ACCRUAL INTEREST - EFFECTIVE</h5>
+                        <h5 class="card-title" style="font-size: 16px;">REPORT ACCRUED INTEREST - EFFECTIVE</h5>
                     </div>
                     <div class="card-body">
                         <form>
@@ -138,7 +138,7 @@
                                 <td>{{ number_format($report->bunga ?? 0) }}</td>
                                 <td>{{ number_format($report->timegap ?? 0) }}</td>
                                 <td>{{ number_format($report->outsamtconv ?? 0) }}</td>
-                                <td>{{ number_format($totalTimeGap ?? 0) }}</td>
+                                <td>{{ number_format($cumulativeTimeGap ?? 0) }}</td>
                             </tr>
                             @endforeach
                             <tr>
