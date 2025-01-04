@@ -137,20 +137,15 @@
                                 <th>GL Group</th>
                                 <th>Original Date</th>
                                 <th>Term (Months)</th>
-                                <th>Interest Rate</th>
-                                <th>Maturity Date</th>
-                                <th>Original Balance</th>
-                                <th>Interest Payment</th>
+                                <th>Maturity Rate</th>
+                                <th>Interest Date</th>
+                                <th>EIR Amortised Cost Exposure</th>
+                                <th>EIR Amortised Cost Calculated
                                 <th>Current Balance</th>
                                 <th>Carrying Amount</th>
-                                <th>EIR Amortised Cost Exposure</th>
-                                <th>EIR Amortised Cost Calculated</th>
-                                <th>EIR Calculated Convertion</th>
-                                <th>EIR Caculated Transaction Cost</th>
-                                <th>EIR Calculated Up Front Fee</th>
-                                <th>Outstanding Amount</th>
-                                <th>Outstanding Amount Initial Transaction Cost</th>
-                                <th>Outstanding Amount Initial Up Front Fee</th>
+                                <th>Outstanding Interest</th>
+                                <th>Unamortized Transaction Cost</th>
+                                <th>Unamortized UpFront Fee</th>
                                 <th>Unearned Interest Income</th>
                             </tr>
                         </thead>
@@ -160,15 +155,59 @@
                                     <td colspan="22" class="text-center">Data tidak ditemukan atau belum di-generate</td>
                                 </tr>
                             @else
-                            @php 
+                            @php
+                            $totalOutstandingInterest = 0;
+                            $outstandingReceivable = 0;
+                            $outstandingInterest = 0;
+                            $totalUnamortCost = 0;
+                            $totalUnamortFee = 0;
                             $totalInterestIncome = 0;
                             @endphp
                                 @foreach ($master as $index => $loan)
-                                @php 
-                                
+                                @php
+                                $trxcost = $loan->trxcost; 
+                                $trxcost = preg_replace('/[^\d.]/', '', $trxcost);
+                                $trxcostFloat = (float)$trxcost;
+                                $outstandingInterest = $loan->bilint ?? 0;
+                                $totalOutstandingInterest += $outstandingInterest;
+                                $amortized = $loan->cum_amortisecost; // Ambil nilai amortized dari laporan
+                                    // Hitung nilai unamortized
+                                    if ($loop->first) {
+                                        // Untuk baris pertama, gunakan nilai trxcost
+                                        $unamortCost = $trxcostFloat;;
+                                    } else {
+                                        // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
+                                        $unamortCost = $trxcostFloat - $amortized;
+                                    }
+                                $totalUnamortCost += $unamortCost;
+
+                                $prov = $loan->prov; // Ambil nilai dari database
+                                // Hapus simbol mata uang dan pemisah ribuan
+                                $prov = preg_replace('/[^\d.]/', '', $prov);
+                                // Konversi ke float
+                                $provFloat = (float)$prov* -1;
+                                $amortizedUpFrontFee = $loan->cum_amortisefee;
+
+                                // Hitung nilai unamortized Fee
+                                if ($loop->first) {
+                                $unamortFee = $provFloat;
+                                } else {
+                                $unamortFee = $provFloat + $amortizedUpFrontFee;
+                                }
+                                $totalUnamortFee += $unamortFee;
+
+                                $bunga = $loan->cum_bunga;
+                                $totalInterestIncome += $loan->cum_bunga;
+                                // hitung nilai unaerned interest income
+                                    if ($loop->first) {
+                                            $interestIncome = $totalInterestIncome;
+                                        } else {
+                                            $totalInterestIncome -= $bunga;
+                                            $interestIncome = $totalInterestIncome;
+                                }
                                 @endphp
                                     <tr>
-                                            <td class="text-center">{{ $index + 1 }}</td>
+                                            <td class="text-center">{{ $loan->id }}</td>
                                             <td class="text-center">{{ $loan->no_branch }}</td>
                                             <td class="text-center" style="width: 200px;">
                                             <div class="dropdown">
@@ -244,44 +283,37 @@
                                             </div>
                                         </td>
                                             <td class="text-center">{{ $loan->deb_name }}</td>
-                                            <td class="text-center">{{ $loan->coa }}</td>
+                                            <td class="text-center">{{ $loan->ln_grp }}</td>
                                             <td class="text-center">{{ $loan->ln_type }}</td>
-                                            <td class="text-center">{{ $loan->GROUP }}</td>
+                                            <td class="text-center">{{ $loan->coa }}</td>
                                             <td class="text-center">{{ date('d/m/Y', strtotime($loan->org_date_dt)) }}</td>
                                             <td class="text-center">{{ $loan->term }}</td>
-                                            <td class="text-right">{{ number_format($loan->rate*100, 5) }}%</td>
                                             <td class="text-center">{{ date('d/m/Y', strtotime($loan->mtr_date_dt)) }}</td>
-                                            <td class="text-right">{{ number_format($loan->org_bal ?? 0) }}</td>
-                                            <td class="text-right">{{ number_format($loan->cum_bunga ?? 0) }}</td>
+                                            <td class="text-right">{{ number_format($loan->rate*100 ?? 0, 5) }}%</td>
+                                            <td class="text-right">{{ number_format($loan->eirex ?? 0, 14) }}%</td>
+                                            <td class="text-right">{{ number_format($loan->eircalc ?? 0, 14) }}%</td>
                                             <td class="text-right">{{ number_format($loan->cbal ?? 0) }}</td>
                                             <td class="text-right">{{ number_format($loan->carrying_amount ?? 0) }}</td>
-                                            <td class="text-right">{{ number_format($loan->eirex*100, 14) }}%</td>
-                                            <td class="text-right">{{ number_format($loan->eircalc*100, 14) }}%</td>
-                                            <td class="text-right">{{ number_format($loan->eircalc_conv*100, 14, 14) }}%</td>
-                                            <td class="text-right">{{ number_format($loan->eircalc_cost*100, 14) }}%</td>
-                                            <td class="text-right">{{ number_format($loan->eircalc_fee*100, 14) }}%</td>
-                                            <td class="text-right">{{ number_format($loan->org_bal) }}</td>
-                                            <td class="text-right">{{ number_format($loan->cum_outsamtcost) }}</td>
-                                            <td class="text-right">{{ number_format($loan->cum_outsamtfee) }}</td>
+                                            <td class="text-right">{{ number_format($loan->bilint ?? 0) }}%</td>
+                                            <td class="text-right">{{ number_format($unamortCost ?? 0) }}</td>
+                                            <td class="text-right">{{ number_format($unamortFee ?? 0) }}</td>
                                             <td class="text-right">{{ number_format($loan->cum_bunga ?? 0) }}</td>
                                     </tr>
                                 @endforeach
                                 <!-- Row Total / Average -->
                                 <tr class="font-weight-normal text-right">
-                                    <td colspan="11" class="text-center">TOTAL</td>
-                                    <td>{{ number_format($master->sum('org_bal')) }}</td>
-                                    <td>{{ number_format($master->sum('cum_bunga')) }}</td>
-                                    <td>{{ number_format($master->sum('cbal')) }}</td>
-                                    <td>{{ number_format($master->sum('carrying_amount')) }}</td>
-                                    <td>{{ number_format($master->avg('eirex')*100, 14) }}%</td>
-                                    <td>{{ number_format($master->avg('eircalc')*100, 14)}}%</td>
-                                    <td>{{ number_format($master->avg('eircalc_conv')*100, 14)}}%</td>
-                                    <td>{{ number_format($master->avg('eircalc_cost')*100, 14)}}%</td>
-                                    <td>{{ number_format($master->avg('eircalc_fee')*100, 14)}}%</td>
-                                    <td>{{ number_format($master->sum('org_bal') ?? 0) }}</td>
-                                    <td>{{ number_format($master->sum('cum_outsamtcost') ?? 0) }}</td>
-                                    <td>{{ number_format($master->sum('cum_outsamtfee') ?? 0) }}</td>
-                                    <td></td>
+                                    <td colspan="10" class="text-center">TOTAL</td>
+                                    <td>{{ number_format($master->avg('rate')*100 ?? 0, 5) }}%</td>
+                                    <td>{{ number_format($master->avg('eirex')?? 0, 14) }}</td>
+                                    <td>{{ number_format($master->avg('eircalc')?? 0, 14) }}</td>
+                                    <td>{{ number_format($master->sum('cbal')?? 0) }}</td>
+                                    <td>{{ number_format($master->sum('carrying_amount')?? 0) }}</td>
+                                    <td>{{ number_format($master->sum('bilint')?? 0) }}%</td>
+                                    <td>{{ number_format($totalUnamortCost ?? 0)}}</td>
+                                    <td>{{ number_format($totalUnamortFee ?? 0)}}</td>
+                                    <td>{{ number_format($master->sum('cum_bunga')?? 0)}}</td>
+                                   
+                                   
                                 </tr>
                             @endif
                         </tbody>

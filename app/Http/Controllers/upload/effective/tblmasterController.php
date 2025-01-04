@@ -329,8 +329,7 @@ public function executeStoredProcedure(Request $request)
     try {
         $request->validate([
             'bulan' => 'required|integer',
-            'tahun' => 'required|integer',
-            'no_acc' => 'required|string'
+            'tahun' => 'required|integer'
         ]);
 
         DB::beginTransaction();
@@ -338,94 +337,75 @@ public function executeStoredProcedure(Request $request)
         $user = Auth::user();
         $id_pt = $user->id_pt;
 
+        // Get all records from upload table for the current PT
         $uploadData = DB::table('tblmaster_tmp_upload')
-            ->where('no_acc', $request->no_acc)
             ->where('id_pt', $id_pt)
-            ->first();
+            ->get();
 
-        if (!$uploadData) {
-            return redirect()->back()->with('error', "Data dengan nomor akun {$request->no_acc} tidak ditemukan.");
+        if ($uploadData->isEmpty()) {
+            return redirect()->back()->withErrors(['message' => 'Tidak ada data yang tersedia untuk diproses.']);
         }
 
-        // Format tanggal dengan benar
-        $formatDate = function($date) {
-            return $date ? date('Y-m-d H:i:s', strtotime($date)) : null;
-        };
+        // Move all records to tmp table first
+        foreach ($uploadData as $record) {
+            DB::table('tblmaster_tmp')->insert((array)$record);
+        }
 
-        // Siapkan parameter tanpa batasan nilai
-        $params = [
-            $uploadData->no_acc,                    
-            $uploadData->status,                    
-            $uploadData->ln_type,                   
-            (float)$uploadData->cbal,              
-            (float)$uploadData->prebal,            
-            (float)$uploadData->bilprn,            
-            (int)$uploadData->term,                
-            $formatDate($uploadData->org_date_dt),  
-            $formatDate($uploadData->mtr_date_dt),  
-            (float)$uploadData->org_bal,           
-            (float)$uploadData->rate,              
-            (float)$uploadData->pmtamt,            
-            $formatDate($uploadData->lrebd_dt),     
-            $formatDate($uploadData->nrebd_dt),     
-            (float)$uploadData->prov,              
-            (float)$uploadData->trxcost,           
-            (int)$uploadData->ln_grp,              
-            0.0,                                    
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            null,                                   
-            null                                    
-        ];
-
-        // Log parameter untuk debugging
-        Log::info('Parameters for stored procedure:', [
-            'no_acc' => $params[0],
-            'status' => $params[1],
-            'ln_type' => $params[2],
-            'cbal' => $params[3],
-            'prebal' => $params[4],
-            'bilprn' => $params[5],
-            'term' => $params[6],
-            'org_date' => $params[7],
-            'mtr_date' => $params[8],
-            'org_bal' => $params[9],
-            'rate' => $params[10],
-            'pmtamt' => $params[11]
-        ]);
-
-        $result = DB::select("CALL public.ndcashflowobaleffective(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $params);
-
-        // Pindahkan data dan hapus dari upload
-        DB::table('tblmaster_tmp')->insert((array)$uploadData);
+        // Delete moved records from upload table
         DB::table('tblmaster_tmp_upload')
-            ->where('no_acc', $request->no_acc)
             ->where('id_pt', $id_pt)
             ->delete();
 
+        // Now process each record with the stored procedure
+        $processedCount = 0;
+        $errors = [];
+
+        foreach ($uploadData as $record) {
+            try {
+                $result = DB::select("SELECT * FROM public.ndcalculateeffectivetrigger_final(?, ?, ?, ?)", [
+                    $request->bulan,
+                    $request->tahun,
+                    $record->no_acc,
+                    $id_pt
+                ]);
+                $processedCount++;
+            } catch (\Exception $e) {
+                $errors[] = "Error processing account {$record->no_acc}: {$e->getMessage()}";
+                Log::error('Error processing account:', [
+                    'no_acc' => $record->no_acc,
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+
         DB::commit();
 
-        return redirect()->back()->with([
-            'success' => "Berhasil memproses data untuk nomor akun: {$request->no_acc}",
-            'result' => $result
+        // Prepare response message
+        $message = "Berhasil memproses $processedCount data";
+        if (!empty($errors)) {
+            $message .= ". Beberapa error terjadi: " . implode("; ", $errors);
+        }
+
+        return redirect()->back()->with('swal', [
+            'title' => 'Berhasil!',
+            'text' => $message,
+            'icon' => 'success'
         ]);
 
     } catch (\Exception $e) {
         DB::rollBack();
         Log::error('Error executing procedure:', [
             'error' => $e->getMessage(),
-            'no_acc' => $request->no_acc,
-            'id_pt' => $id_pt ?? null,
-            'params' => $params ?? null
+            'bulan' => $request->bulan,
+            'tahun' => $request->tahun,
+            'id_pt' => $id_pt ?? null
         ]);
-        return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        
+        return redirect()->back()->with('swal', [
+            'title' => 'Error!',
+            'text' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            'icon' => 'error'
+        ]);
     }
 }
 

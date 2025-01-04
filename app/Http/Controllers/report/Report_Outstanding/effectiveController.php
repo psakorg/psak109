@@ -37,22 +37,26 @@ class effectiveController extends Controller
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
     public function view(Request $request, $id_pt)
     {
-        $id_pt = Auth::user()->id_pt;
+        if (!$id_pt) {
+            abort(404, 'Invalid ID');
+        }
+    
+        // Validate if the authenticated user has access to this `id_pt`
+        if ($id_pt != Auth::user()->id_pt) {
+            abort(403, 'Unauthorized');
+        }
+        $loan = report_effective::getLoanDetailsbyidpt(trim($id_pt));
+        // $corporateLoans = report_simpleinterest::getCorporateLoans($id_pt);
+        // $reports = report_simpleinterest::getReportsByNoAcc(trim($id_pt));
+        $reports = report_effective::getLoanDetailsbyidpt(trim($id_pt));
 
-        $loan= report_effective::getLoanDetailsbyidpt(trim($id_pt));
-        $loanjoin = report_effective::getLoanjoinByIdPt($id_pt);
-        $loanfirst =$loan->first();
-        $master = report_effective::getMasterByIdPt($id_pt);
-        // if (!$loan) {
-        //     abort(404, 'Loan not found');
-        // }
 
         $user = Auth::user();
 
         if (!$user) {
             return redirect('https://psak.pramatech.id');
         }
-            
+
         $bulan = $request->input('bulan', date('n'));
         $tahun = $request->input('tahun', date('Y'));
 
@@ -70,17 +74,21 @@ class effectiveController extends Controller
         return view('report.outstanding.effective.view', compact('master', 'bulan', 'tahun' ,'isSuperAdmin', "user"));
     }
 
-    public function exportExcel($no_acc, $id_pt)
+    public function exportExcel($id_pt)
     {
         // Ambil data loan dan reports
-        $loan = report_effective::getLoanDetails(trim($no_acc), trim($id_pt));
-        $reports = report_effective::getReportsByNoAcc(trim($no_acc), trim($id_pt));
-
+        $user_id_pt = Auth::user()->id_pt;
+        // Ambil data loan dan reports
+        $loan = report_effective::getLoanDetailsbyidpt(trim($id_pt));
+        $reports = report_effective::getLoanDetailsbyidpt(trim($id_pt));
+    
         // Cek apakah data loan dan reports ada
         if (!$loan || $reports->isEmpty()) {
             return response()->json(['message' => 'No data found for the given account number.'], 404);
         }
-
+    
+        $loanFirst = $loan->first();
+    
         // Buat spreadsheet baru
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -88,16 +96,16 @@ class effectiveController extends Controller
         // Set informasi pinjaman
         $sheet->setCellValue('A3', 'Branch Number');
         $sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Branch Number
-        $sheet->setCellValue('B3', $loan->no_acc);
+        $sheet->setCellValue('B3', $loanFirst->no_acc);
         $sheet->setCellValue('A4', 'Branch Name');
         $sheet->getStyle('A4')->getFont()->setBold(true); // Set bold untuk Branch Name
-        $sheet->setCellValue('B4', $loan->deb_name);
+        $sheet->setCellValue('B4', $loanFirst->deb_name);
         $sheet->setCellValue('A5', 'GL Group');
         $sheet->getStyle('A5')->getFont()->setBold(true); // Set bold untuk GL Group
-        $sheet->setCellValue('B5', number_format($loan->org_bal, 2));
+        $sheet->setCellValue('B5', number_format($loanFirst->org_bal, 2));
         $sheet->setCellValue('A6', 'Date Of Report');
         $sheet->getStyle('A6')->getFont()->setBold(true); // Set bold untukDate Of Report
-        $sheet->setCellValue('B6', date('Y-m-d', strtotime($loan->org_date)));
+        $sheet->setCellValue('B6', date('Y-m-d', strtotime($loanFirst->org_date)));
 
 
         // Set judul tabel laporan
@@ -170,7 +178,7 @@ class effectiveController extends Controller
         }
 
         // Siapkan nama file
-        $filename = "accrual_interest_report_$no_acc.xlsx";
+        $filename = "accrual_interest_report_$id_pt.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -184,16 +192,19 @@ class effectiveController extends Controller
 
 
     // Method untuk mengekspor data ke PDF
-    public function exportPdf($no_acc,$id_pt)
+    public function exportPdf($id_pt)
 {
+    $user_id_pt = Auth::user()->id_pt;
     // Ambil data loan dan reports
-    $loan = report_effective::getLoanDetails(trim($no_acc), trim($id_pt));
-    $reports = report_effective::getReportsByNoAcc(trim($no_acc), trim($id_pt));
+    $loan = report_effective::getLoanDetailsbyidpt(trim($id_pt));
+    $reports = report_effective::getLoanDetailsbyidpt(trim($id_pt));
 
     // Cek apakah data loan dan reports ada
     if (!$loan || $reports->isEmpty()) {
         return response()->json(['message' => 'No data found for the given account number.'], 404);
     }
+
+    $loanFirst = $loan->first();
 
     // Buat spreadsheet baru
     $spreadsheet = new Spreadsheet();
@@ -204,16 +215,16 @@ class effectiveController extends Controller
     // Set informasi pinjaman
     $sheet->setCellValue('A3', 'Branch Number');
         $sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Branch Number
-        $sheet->setCellValue('B3', $loan->no_acc);
+        $sheet->setCellValue('B3', $loanFirst->no_acc);
         $sheet->setCellValue('A4', 'Branch Name');
         $sheet->getStyle('A4')->getFont()->setBold(true); // Set bold untuk Branch Name
-        $sheet->setCellValue('B4', $loan->deb_name);
+        $sheet->setCellValue('B4', $loanFirst->deb_name);
         $sheet->setCellValue('A5', 'GL Group');
         $sheet->getStyle('A5')->getFont()->setBold(true); // Set bold untuk GL Group
-        $sheet->setCellValue('B5', number_format($loan->org_bal, 2));
+        $sheet->setCellValue('B5', number_format($loanFirst->org_bal, 2));
         $sheet->setCellValue('A6', 'Date Of Report');
         $sheet->getStyle('A6')->getFont()->setBold(true); // Set bold untukDate Of Report
-        $sheet->setCellValue('B6', date('Y-m-d', strtotime($loan->org_date)));
+        $sheet->setCellValue('B6', date('Y-m-d', strtotime($loanFirst->org_date)));
 
     // Set judul tabel laporan
     $sheet->setCellValue('A10', 'Accrual Interest Report - Report Details');
@@ -285,7 +296,7 @@ class effectiveController extends Controller
     }
 
     // Siapkan nama file
-    $filename = "accrual_interest_report_$no_acc.pdf";
+    $filename = "accrual_interest_report_$id_pt.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
@@ -298,6 +309,64 @@ class effectiveController extends Controller
 
     // Kembalikan response PDF
     return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
+}
+public function exportCsv($id_pt)
+{
+    // Ambil data loan dan reports
+    $user_id_pt = Auth::user()->id_pt;
+    // Ambil data loan dan reports
+    $loan = report_effective::getLoanDetailsbyidpt(trim($id_pt));
+    $reports = report_effective::getLoanDetailsbyidpt(trim($id_pt));
+
+    // Cek apakah data loan dan reports ada
+    if (!$loan || $reports->isEmpty()) {
+        return response()->json(['message' => 'No data found for the given account number.'], 404);
+    }
+
+    $loanFirst = $loan->first();
+
+    // Siapkan data CSV
+    $csvData = [];
+    $csvData[] = ['Branch Number', $loanFirst->no_acc];
+    $csvData[] = ['Branch Name', $loanFirst->deb_name];
+    $csvData[] = ['GL Group', number_format($loanFirst->org_bal, 2)];
+    $csvData[] = ['Date Of Report', date('Y-m-d', strtotime($loanFirst->org_date))];
+    $csvData[] = [];
+    $csvData[] = ['Accrual Interest Report - Report Details'];
+    $csvData[] = ['Bulanke', 'Tgl Angsuran', 'Hari Bunga', 'PMT Amt', 'Penarikan', 'Pengembalian', 'Bunga', 'Balance', 'Time Gap', 'Outs Amt Conv'];
+
+    // Mengisi data laporan ke dalam CSV
+    foreach ($reports as $report) {
+        $csvData[] = [
+            $report->bulanke,
+            date('Y-m-d', strtotime($report->tglangsuran)),
+            $report->haribunga,
+            number_format($report->pmtamt, 2),
+            number_format($report->penarikan, 2),
+            number_format($report->pengembalian, 2),
+            number_format($report->bunga, 2),
+            number_format($report->balance, 2),
+            $report->timegap,
+            number_format($report->outsamtconv, 2)
+        ];
+    }
+
+    // Siapkan nama file
+    $filename = "accrual_interest_report_$id_pt.csv";
+
+    // Buat file CSV
+    $handle = fopen('php://output', 'w');
+    ob_start();
+    foreach ($csvData as $row) {
+        fputcsv($handle, $row);
+    }
+    fclose($handle);
+    $csvContent = ob_get_clean();
+
+    // Kembalikan response CSV
+    return response($csvContent)
+        ->header('Content-Type', 'text/csv')
+        ->header('Content-Disposition', "attachment; filename=\"$filename\"");
 }
 
     public function checkData($no_acc, $id_pt)

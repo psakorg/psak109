@@ -6,6 +6,7 @@
   <title>Data Table Master - Effective</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body {
       background-color: #f4f7fc;
@@ -313,10 +314,6 @@
                                 <label for="tahun" class="form-label">Tahun:</label>
                                 <input type="number" name="tahun" id="tahun" class="form-control" min="2000" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="no_acc" class="form-label">Nomor Akun:</label>
-                                <input type="text" name="no_acc" id="no_acc" class="form-control" required>
-                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -385,6 +382,15 @@
     @elseif(session('error'))
         $('#notificationMessage').text("{{ session('error') }}");
         $('#notificationModal').modal('show');
+    @endif
+
+    @if(session('swal'))
+        Swal.fire({
+            title: "{{ session('swal.title') }}",
+            text: "{{ session('swal.text') }}",
+            icon: "{{ session('swal.icon') }}",
+            confirmButtonText: 'OK'
+        });
     @endif
 });
 

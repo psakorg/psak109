@@ -338,6 +338,8 @@ class simpleinterestController extends Controller
 public function checkData($no_acc, $id_pt)
 {
     try {
+
+        $no_acc = trim($no_acc);
         // Ambil data loan
         $loan = report_simpleinterest::getLoanDetails(trim($no_acc), trim($id_pt));
         

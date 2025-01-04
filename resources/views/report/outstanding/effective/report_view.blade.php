@@ -153,7 +153,7 @@
 
                     <!-- Tombol Export -->
                     <div class="d-flex gap-2">
-                        <a href="{{ route('report-outstanding-eff.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}" class="btn btn-danger">
+                        <a href="{{ route('report-outstanding-eff.exportPdf',  ['id_pt' => Auth::user()->id_pt]) }}" class="btn btn-danger">
                             <i class="fas fa-file-pdf"></i> Export PDF
                         </a>
                         <a href="{{ route('report-outstanding-eff.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}" class="btn btn-success">
@@ -220,29 +220,28 @@
                                 $totalOutstandingReceivable += $outstandingReceivable;
                                 $totalOutstandingInterest += $outstandingInterest;
                                 $amortized = $loan->cum_amortisecost; // Ambil nilai amortized dari laporan
-                                $unamortrxcost = $trxcostFloat;
                                     // Hitung nilai unamortized
                                     if ($loop->first) {
                                         // Untuk baris pertama, gunakan nilai trxcost
-                                        $unamortCost = $unamortrxcost;
+                                        $unamortCost = $trxcostFloat;
                                     } else {
                                         // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
-                                        $unamortCost = $unamortCost + $amortized;
+                                        $unamortCost = $trxcostFloat - $amortized;
                                     }
                                 $totalUnamortCost += $unamortCost;
+
                                 $prov = $loan->prov; // Ambil nilai dari database
                                 // Hapus simbol mata uang dan pemisah ribuan
                                 $prov = preg_replace('/[^\d.]/', '', $prov);
                                 // Konversi ke float
                                 $provFloat = (float)$prov* -1;
                                 $amortizedUpFrontFee = $loan->cum_amortisefee;
-                                $unamortprovFloat = $provFloat;
 
                                 // Hitung nilai unamortized Fee
                                 if ($loop->first) {
-                                $unamortFee = $unamortprovFloat;
+                                $unamortFee = $provFloat;
                                 } else {
-                                $unamortFee = $unamortFee + $amortizedUpFrontFee;
+                                $unamortFee = $provFloat + $amortizedUpFrontFee;
                                 }
                                 $totalUnamortFee += $unamortFee;
 
@@ -257,7 +256,7 @@
                                 }
                                 @endphp
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $loan->id }}</td>
                                         <td class="text-center">{{ $loan->no_branch ?? 'Data tidak ditemukan' }}</td>
                                         <td>
                                             <div class="dropdown">
@@ -333,16 +332,16 @@
                                             </div>
                                         </td>
                                         <td style="white-space: nowrap;">{{ $loan->deb_name ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->coa ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->ln_grp ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ $loan->ln_type ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->GROUP ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->coa ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($loan->org_date_dt) ? date('d/m/Y', strtotime($loan->org_date_dt)) : 'Belum di-generate' }}</td>
                                         <td class="text-center">{{ $loan->term ?? 0 }}</td>
                                         <td class="text-center">{{ isset($loan->mtr_date_dt) ? date('d/m/Y', strtotime($loan->mtr_date_dt)) : 'Belum di-generate' }}</td>
                                         <td class="text-right">{{ number_format($loan->rate * 100?? 0, 5) }}%</td>
                                         <td class="text-right">{{ number_format($loan->pmtamt ?? 0) }}</td>
-                                        <td class="text-right">{{ number_format($loan->eirex*100 ?? 0, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->eircalc*100 ?? 0, 14) }}%</td>
+                                        <td class="text-right">{{ number_format($loan->eirex ?? 0, 14) }}%</td>
+                                        <td class="text-right">{{ number_format($loan->eircalc ?? 0, 14) }}%</td>
                                         <td class="text-right">{{ number_format($loan->cbal ?? 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->carrying_amount ?? 0) }}</td>
                                         <td class="text-right">{{ number_format($loan->bilprn ?? 0) }}</td> 
@@ -359,8 +358,8 @@
                                     <td colspan="10" class="text-center"><strong>TOTAL:</strong></td>
                                     <td class="text-right"><strong></strong></td>
                                     <td class="text-end"><strong></strong></td>
-                                    <td class="text-right"><strong>{{ number_format(($master->avg('eirex') * 100) ?? 0, 14) }}%</strong></td>
-                                    <td class="text-right"><strong>{{ number_format(($master->avg('eircalc') * 100) ?? 0, 14) }}%</strong></td>
+                                    <td class="text-right"><strong>{{ number_format(($master->avg('eirex')) ?? 0, 14) }}%</strong></td>
+                                    <td class="text-right"><strong>{{ number_format(($master->avg('eircalc')) ?? 0, 14) }}%</strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('cbal') ?? 0) }}</strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('carrying_amount') ?? 0) }}</strong></td>
                                     <td class="text-end"><strong>{{ number_format($totalOutstandingReceivable ?? 0) }}</strong></td>

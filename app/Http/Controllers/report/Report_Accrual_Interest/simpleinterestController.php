@@ -36,7 +36,7 @@ class simpleinterestController extends Controller
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
     public function view($no_acc, $id_pt)
     {
-        // dd($no_acc, $id_pt); // Debugging parameterr
+        // dd($no_acc, $id_pt); // Debugging parameterrr
         $no_acc = trim($no_acc);
         $loan = report_simpleinterest::getLoanDetails($no_acc, $id_pt);
         $reports = report_simpleinterest::getReportsByNoAcc($no_acc, $id_pt);
