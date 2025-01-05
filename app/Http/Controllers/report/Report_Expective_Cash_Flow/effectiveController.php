@@ -65,6 +65,10 @@ class effectiveController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set informasi pinjaman
+$sheet->setCellValue('A2', 'Entitiy Name');
+$sheet->getStyle('A2')->getFont()->setBold(true);
+$entitiyName = 'PT. PACIFIC MULTI FINANCE';
+$sheet->setCellValue('B2', $entitiyName);
         $sheet->setCellValue('A3', 'Account Number');
         $sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Account Number
         $sheet->setCellValue('B3', $loan->no_acc);
@@ -91,7 +95,7 @@ class effectiveController extends Controller
         $sheet->setCellValue('E6', date('Y-m-d', strtotime($loan->org_date)));
 
         // Set judul tabel laporan
-        $sheet->setCellValue('A10', 'Accrual Interest Report - Report Details');
+        $sheet->setCellValue('A10', 'Expected Cash Flow Effective Report - Report Details');
         $sheet->mergeCells('A10:J10'); // Menggabungkan sel untuk judul tabel
         $sheet->getStyle('A10')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('A10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -160,7 +164,7 @@ class effectiveController extends Controller
         }
 
         // Siapkan nama file
-        $filename = "accrual_interest_report_$no_acc.xlsx";
+        $filename = "expected_cash_flow_report_$no_acc.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -192,6 +196,10 @@ class effectiveController extends Controller
 
 
     // Set informasi pinjaman
+    $sheet->setCellValue('A2', 'Entitiy Name');
+$sheet->getStyle('A2')->getFont()->setBold(true);
+$entitiyName = 'PT. PACIFIC MULTI FINANCE';
+$sheet->setCellValue('B2', $entitiyName);
     $sheet->setCellValue('A3', 'Account Number');
     $sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Account Number
     $sheet->setCellValue('B3', $loan->no_acc);
@@ -218,7 +226,7 @@ class effectiveController extends Controller
     $sheet->setCellValue('E6', date('Y-m-d', strtotime($loan->org_date)));
 
     // Set judul tabel laporan
-    $sheet->setCellValue('A10', 'Accrual Interest Report - Report Details');
+    $sheet->setCellValue('A10', 'Expected Cash Flow Effective Report - Report Details');
     $sheet->mergeCells('A10:J10'); // Menggabungkan sel untuk judul tabel
     $sheet->getStyle('A10')->getFont()->setBold(true)->setSize(14);
     $sheet->getStyle('A10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -287,7 +295,7 @@ class effectiveController extends Controller
     }
 
     // Siapkan nama file
-    $filename = "accrual_interest_report_$no_acc.pdf";
+    $filename = "expected_cash_flow_report_$no_acc.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);

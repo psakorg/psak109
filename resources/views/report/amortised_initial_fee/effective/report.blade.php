@@ -47,7 +47,7 @@
                                     <td>{{ date('d-m-Y', strtotime($loan->mtr_date)) }}</td>
                                     <td>{{number_format($loan->rate  * 100, 2) }}%</td>
                                     <td>{{number_format($loan->pmtamt ?? 0, 2)}}</td>
-                                    <td>{{ number_format($provFloat ?? 0, 2)}}</td>
+                                    <td>{{ number_format($loan->prov ?? 0, 2)}}</td>
                                     <td>{{ number_format( $outinitfee ?? 0, 2)  }}</td>
                                     <td>{{number_format($loan->eircalc_fee * 100, 14) }}%</td>
                                     <td>

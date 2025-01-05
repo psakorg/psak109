@@ -65,6 +65,11 @@ class simpleinterestController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set informasi pinjaman
+        $sheet->setCellValue('A2', 'Entitiy Name');
+$sheet->getStyle('A2')->getFont()->setBold(true);
+$entitiyName = 'PT. PACIFIC MULTI FINANCE';
+$sheet->setCellValue('B2', $entitiyName); 
+
         $sheet->setCellValue('A3', 'Account Number');
         $sheet->getStyle('A3')->getFont()->setBold(true);
         $sheet->setCellValue('B3', ':');
@@ -214,7 +219,9 @@ class simpleinterestController extends Controller
         $sheet->getColumnDimension('B')->setWidth(5);
         $sheet->getColumnDimension('C')->setWidth(30);
 
+        $entitiyName = 'PT. PACIFIC MULTI FINANCE';
         $infoRows = [
+            ['Entitiy Name', ':', $entitiyName],
             ['No. Account', ':', $loan->no_acc],
             ['Debtor Name', ':', $loan->deb_name],
             ['Original Balance', ':', number_format($loan->org_bal, 2)],

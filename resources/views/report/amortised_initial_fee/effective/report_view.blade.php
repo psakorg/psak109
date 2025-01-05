@@ -3,8 +3,8 @@
         <div class="container mt-5">
             <section class="section">
                 <div class="mb-3">
-                    <a href="{{ route('report-acc-eff.exportPdf', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])}}" class="btn btn-danger"><i class="fas fa-file-pdf"></i>Export to PDF</a>
-                    <a href="{{ route('report-acc-eff.exportExcel', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])}}" class="btn btn-success"><i class="fas fa-file-excel"></i>Export to Excel</a>
+                    <a href="{{ route('report-amorinitfee-eff.exportPdf', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])}}" class="btn btn-danger"><i class="fas fa-file-pdf"></i>Export to PDF</a>
+                    <a href="{{ route('report-amorinitfee-eff.exportExcel', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])}}" class="btn btn-success"><i class="fas fa-file-excel"></i>Export to Excel</a>
                 </div>
 
                 <!-- Loan Details Form -->
@@ -35,7 +35,7 @@
                                             $org_bal = $loan->org_bal;
                                             $outinitfee = $org_bal+$provFloat;
                                         @endphp
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format($provFloat ?? 0, 2)}}" readonly>
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format($master->prov ?? 0, 2)}}" readonly>
                                     </div>
                                 </div>
                             </div>

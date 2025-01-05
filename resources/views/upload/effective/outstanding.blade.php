@@ -18,7 +18,7 @@
                 
                 <div class="d-flex justify-content-start mb-0 align-items-center">
                     <button type="button" class="btn btn-success btn-icon-split" data-bs-toggle="modal" data-bs-target="#importModal">
-                        <i class="fas fa-file-import"></i> Import
+                        <i class="fas fa-file-import"></i> Upload
                     </button>
                     <button type="button" class="btn btn-danger btn-icon-split me-2" data-bs-toggle="modal" data-bs-target="#clearModal">
                         <i class="fas fa-trash"></i> Clear

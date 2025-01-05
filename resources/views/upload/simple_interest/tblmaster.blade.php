@@ -79,7 +79,7 @@
                 <!-- Button Section -->
                 <div>
                     <button type="button" class="btn btn-success btn-icon-split" data-bs-toggle="modal" data-bs-target="#importModal">
-                        <i class="fas fa-file-import"></i> Import
+                        <i class="fas fa-file-import"></i> Upload
                     </button>
 
                     <button type="button" class="btn btn-warning btn-icon-split" data-bs-toggle="modal" data-bs-target="#executeModal">

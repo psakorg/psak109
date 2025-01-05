@@ -53,7 +53,7 @@
                                     <td>{{ date('d/m/Y', strtotime($loan->mtr_date)) }}</td>
                                     <td>{{ number_format($loan->rate  * 100, 2) }}%</td>
                                     <td>{{number_format($loan->pmtamt ?? 0, 2)}}</td>
-                                    <td>{{number_format($upfrontFee ?? 0, 2)}}</td>
+                                    <td>{{number_format($loan->prov ?? 0, 2)}}</td>
                                     <td>{{ number_format($trxcostFloat, 2)}}</td>
                                     <td>{{number_format($CarryingAmount ?? 0, 2)}}</td>
                                     <td>{{$loan->eirex* 100, 15}}%</td>

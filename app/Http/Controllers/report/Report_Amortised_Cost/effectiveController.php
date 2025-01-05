@@ -46,6 +46,7 @@ class effectiveController extends Controller
             abort(404, 'Loan not found');
         }
 
+        // dd($loan, $master, $reports);
 
         return view('report.amortised_cost.effective.view', compact('loan', 'reports','master'));
     }
@@ -67,6 +68,11 @@ class effectiveController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set informasi pinjaman
+$sheet->setCellValue('A2', 'Entitiy Name');
+$sheet->getStyle('A2')->getFont()->setBold(true);
+$entitiyName = 'PT. PACIFIC MULTI FINANCE';
+$sheet->setCellValue('B2', $entitiyName);
+
 $sheet->setCellValue('A3', 'Account Number');
 $sheet->getStyle('A3')->getFont()->setBold(true);
 $accountNumber = ' ' . (string) $loan->no_acc; // Menambahkan spasi di depan
@@ -128,7 +134,7 @@ $sheet->setCellValue('E8', number_format($master->pmtamt ?? 0, 2));
 
 
         // Set judul tabel laporan
-        $sheet->setCellValue('A10', 'Accrual Interest Report - Report Details');
+        $sheet->setCellValue('A10', 'Amortised Cost Effective Report - Report Details');
         $sheet->mergeCells('A10:J10'); // Menggabungkan sel untuk judul tabel
         $sheet->getStyle('A10')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('A10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -212,7 +218,7 @@ $sheet->setCellValue('E8', number_format($master->pmtamt ?? 0, 2));
         }
 
         // Siapkan nama file
-        $filename = "accrual_interest_report_$no_acc.xlsx";
+        $filename = "amortised_cost_report_$no_acc.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -244,6 +250,10 @@ $sheet->setCellValue('E8', number_format($master->pmtamt ?? 0, 2));
 
 
     // Set informasi pinjaman
+$sheet->setCellValue('A2', 'Entitiy Name');
+$sheet->getStyle('A2')->getFont()->setBold(true);
+$entitiyName = 'PT. PACIFIC MULTI FINANCE';
+$sheet->setCellValue('B2', $entitiyName);
     $sheet->setCellValue('A3', 'Account Number');
     $sheet->getStyle('A3')->getFont()->setBold(true);
     $sheet->setCellValue('B3', $loan->no_acc);
@@ -285,7 +295,7 @@ $sheet->setCellValue('E8', number_format($master->pmtamt ?? 0, 2));
     $sheet->setCellValue('E8', date('Y-m-d', strtotime($loan->mtr_date)));
 
     // Set judul tabel laporan
-    $sheet->setCellValue('A10', 'Accrual Interest Report - Report Details');
+    $sheet->setCellValue('A10', 'Amortised Cost Effective Report - Report Details');
     $sheet->mergeCells('A10:J10'); // Menggabungkan sel untuk judul tabel
     $sheet->getStyle('A10')->getFont()->setBold(true)->setSize(14);
     $sheet->getStyle('A10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -354,7 +364,7 @@ $sheet->setCellValue('E8', number_format($master->pmtamt ?? 0, 2));
     }
 
     // Siapkan nama file
-    $filename = "accrual_interest_report_$no_acc.pdf";
+    $filename = "amortised_cost_report_$no_acc.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);

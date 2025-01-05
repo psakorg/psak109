@@ -33,7 +33,7 @@ class TblmasterController extends Controller
     $perPage = $request->input('per_page', 10);
 
      // Ambil data dengan pagination dan filter berdasarkan id_pt
-     $tblmaster = $this->uploadEffectiveUpload
+     $tblmaster = $this->uploadEffective
      ->where('id_pt', $id_pt)
      ->paginate($perPage);
 
@@ -189,7 +189,7 @@ public function importExcel(Request $request)
         if ($extension === 'csv') {
             $reader = new Csv();
             $reader->setInputEncoding('UTF-8');
-            $reader->setDelimiter(',');  // Ubah delimiter menjadi semicolon
+            $reader->setDelimiter(',');
         } else {
             $reader = new Xlsx();
         }
@@ -200,19 +200,27 @@ public function importExcel(Request $request)
 
         $successCount = 0;
         $errors = [];
+        $duplicates = [];
 
         foreach ($rows as $index => $row) {
-            // if ($index === 0) continue;
-
             DB::beginTransaction();
             try {
+                // Check for existing no_acc for this id_pt
+                $existingRecord = DB::table('tblmaster_tmp')
+                    ->where('no_acc', trim((string)$row[0]))
+                    ->where('id_pt', $id_pt)
+                    ->first();
+
+                if ($existingRecord) {
+                    $duplicates[] = "Baris " . ($index + 1) . ": No ACC '" . trim((string)$row[0]) . "' sudah ada untuk PT ini";
+                    continue;
+                }
+
                 // Fungsi helper untuk mengkonversi tanggal
                 $convertDate = function($date) {
                     if (empty($date)) return null;
                     return date('Y-m-d H:i:s', strtotime($date));
                 };
-
-                // dd($row);
 
                 $data = [
                     'no_acc' => trim((string)$row[0]),
@@ -267,7 +275,7 @@ public function importExcel(Request $request)
                 }
 
                 Log::info('Attempting to insert row ' . ($index + 1), ['data' => $data]);
-                DB::table('tblmaster_tmp_upload')->insert($data);
+                DB::table('tblmaster_tmp')->insert($data);
                 DB::commit();
                 $successCount++;
 
@@ -282,15 +290,24 @@ public function importExcel(Request $request)
             }
         }
 
-        if ($successCount > 0) {
-            $message = "Berhasil import $successCount data";
-            if (count($errors) > 0) {
-                $message .= ". Beberapa baris gagal: " . implode(", ", $errors);
+        // Prepare response message
+        if ($successCount > 0 || !empty($duplicates)) {
+            $message = [];
+            if ($successCount > 0) {
+                $message[] = "Berhasil import $successCount data";
             }
-            return redirect()->back()->with('success', $message);
+            if (!empty($duplicates)) {
+                $message[] = "Data duplikat: " . implode("; ", $duplicates);
+            }
+            if (!empty($errors)) {
+                $message[] = "Error: " . implode("; ", $errors);
+            }
+            return redirect()->back()->with('warning', implode(". ", $message));
         }
 
-        throw new \Exception('Tidak ada data yang berhasil diimport. Error: ' . implode(", ", $errors));
+        throw new \Exception('Tidak ada data yang berhasil diimport. ' . 
+            (!empty($duplicates) ? "Data duplikat: " . implode("; ", $duplicates) : "") .
+            (!empty($errors) ? "Error: " . implode("; ", $errors) : ""));
         
     } catch (\Exception $e) {
         Log::error('Import gagal: ' . $e->getMessage());
@@ -301,7 +318,7 @@ public function importExcel(Request $request)
 protected function generateImportMessage($valid, $duplicates, $invalid, $existing)
 {
     $messages = [];
-    $hasSuccess = $valid > 0; // Menandai apakah ada catatan yang berhasil diimpor
+    $hasSuccess = $valid > 0; // Menandai apakah ada catatan yang berhasil diimporr
 
     if ($valid > 0) {
         $messages[] = "$valid catatan berhasil diimpor";
@@ -338,7 +355,7 @@ public function executeStoredProcedure(Request $request)
         $id_pt = $user->id_pt;
 
         // Get all records from upload table for the current PT
-        $uploadData = DB::table('tblmaster_tmp_upload')
+        $uploadData = DB::table('tblmaster_tmp')
             ->where('id_pt', $id_pt)
             ->get();
 
@@ -347,14 +364,14 @@ public function executeStoredProcedure(Request $request)
         }
 
         // Move all records to tmp table first
-        foreach ($uploadData as $record) {
-            DB::table('tblmaster_tmp')->insert((array)$record);
-        }
+        // foreach ($uploadData as $record) {
+        //     DB::table('tblmaster_tmp')->insert((array)$record);
+        // }
 
-        // Delete moved records from upload table
-        DB::table('tblmaster_tmp_upload')
-            ->where('id_pt', $id_pt)
-            ->delete();
+        // // Delete moved records from upload table
+        // DB::table('tblmaster_tmp_upload')
+        //     ->where('id_pt', $id_pt)
+        //     ->delete();
 
         // Now process each record with the stored procedure
         $processedCount = 0;
@@ -424,7 +441,7 @@ public function clear(Request $request)
 
         Log::info('Attempting to clear data for PT ID: ' . $id_pt);
         
-        $deleted = DB::table('tblmaster_tmp_upload')
+        $deleted = DB::table('tblmaster_tmp')
             ->where('id_pt', $id_pt)
             ->delete();
         

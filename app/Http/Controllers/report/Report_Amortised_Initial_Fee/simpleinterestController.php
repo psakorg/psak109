@@ -64,6 +64,10 @@ class simpleinterestController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set informasi pinjaman
+        $sheet->setCellValue('A2', 'Entitiy Name');
+$sheet->getStyle('A2')->getFont()->setBold(true);
+$entitiyName = 'PT. PACIFIC MULTI FINANCE';
+$sheet->setCellValue('B2', $entitiyName);
         $sheet->setCellValue('A3', 'Account Number');
         $sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Account Number
         $sheet->setCellValue('B3', $loan->no_acc);
@@ -97,7 +101,7 @@ class simpleinterestController extends Controller
 
 
         // Set judul tabel laporan
-        $sheet->setCellValue('A10', 'Accrual Interest Report - Report Details');
+        $sheet->setCellValue('A10', 'Amortised Initial Fee Simple Interest - Report Details');
         $sheet->mergeCells('A10:J10'); // Menggabungkan sel untuk judul tabel
         $sheet->getStyle('A10')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('A10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -166,7 +170,7 @@ class simpleinterestController extends Controller
         }
 
         // Siapkan nama file
-        $filename = "accrual_interest_report_$no_acc.xlsx";
+        $filename = "amortised_initial_fee_report_$no_acc.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -198,6 +202,10 @@ class simpleinterestController extends Controller
 
 
     // Set informasi pinjaman
+    $sheet->setCellValue('A2', 'Entitiy Name');
+$sheet->getStyle('A2')->getFont()->setBold(true);
+$entitiyName = 'PT. PACIFIC MULTI FINANCE';
+$sheet->setCellValue('B2', $entitiyName);
     $sheet->setCellValue('A3', 'Account Number');
         $sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Account Number
         $sheet->setCellValue('B3', $loan->no_acc);
@@ -230,7 +238,7 @@ class simpleinterestController extends Controller
         $sheet->setCellValue('E7', $loan->TERM);
 
     // Set judul tabel laporan
-    $sheet->setCellValue('A10', 'Accrual Interest Report - Report Details');
+    $sheet->setCellValue('A10', 'Amortised Initial Fee Simple Interest Report - Report Details');
     $sheet->mergeCells('A10:J10'); // Menggabungkan sel untuk judul tabel
     $sheet->getStyle('A10')->getFont()->setBold(true)->setSize(14);
     $sheet->getStyle('A10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -299,7 +307,7 @@ class simpleinterestController extends Controller
     }
 
     // Siapkan nama file
-    $filename = "accrual_interest_report_$no_acc.pdf";
+    $filename = "amortised_initial_fee_report_$no_acc.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);

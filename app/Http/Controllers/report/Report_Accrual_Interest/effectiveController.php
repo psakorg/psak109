@@ -66,8 +66,9 @@ class effectiveController extends Controller
         $sheet->getColumnDimension('A')->setWidth(20);
         $sheet->getColumnDimension('B')->setWidth(5);
         $sheet->getColumnDimension('C')->setWidth(30);
-
+        $entitiyName = 'PT. PACIFIC MULTI FINANCE';
         $infoRows = [
+            ['Entitiy Name', ':', $entitiyName],
             ['No. Account', ':', "'" . $loan->no_acc],
             ['Debtor Name', ':', $loan->deb_name],
             ['Original Balance', ':', 'Rp ' . number_format($loan->org_bal, 2)],
@@ -187,8 +188,9 @@ class effectiveController extends Controller
         $sheet->getColumnDimension('A')->setWidth(20);
         $sheet->getColumnDimension('B')->setWidth(5);
         $sheet->getColumnDimension('C')->setWidth(30);
-
+        $entitiyName = 'PT. PACIFIC MULTI FINANCE';
         $infoRows = [
+            ['Entitiy Name', ':', $entitiyName],
             ['No. Account', ':', "'" . $loan->no_acc],
             ['Debtor Name', ':', $loan->deb_name],
             ['Original Balance', ':', 'Rp ' . number_format($loan->org_bal, 2)],

@@ -44,7 +44,7 @@
                                         // Menghitung nilai org amount
                                             $upfrontFee = round(-($loan->org_bal * 0.01), 0);
                                         @endphp
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($upfrontFee, 2) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="-{{ number_format($loan->prov ?? 0, 2) }}" readonly>
                                     </div>
                                 </div>
                             </div>

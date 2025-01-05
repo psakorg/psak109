@@ -94,9 +94,13 @@ class effectiveController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set informasi pinjaman
+        $sheet->setCellValue('A2', 'Entitiy Name');
+$sheet->getStyle('A2')->getFont()->setBold(true);
+$entitiyName = 'PT. PACIFIC MULTI FINANCE';
+$sheet->setCellValue('B2', $entitiyName);
         $sheet->setCellValue('A3', 'Branch Number');
         $sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Branch Number
-        $sheet->setCellValue('B3', $loanFirst->no_acc);
+        $sheet->setCellValue('B3', $loanFirst->no_branch);
         $sheet->setCellValue('A4', 'Branch Name');
         $sheet->getStyle('A4')->getFont()->setBold(true); // Set bold untuk Branch Name
         $sheet->setCellValue('B4', $loanFirst->deb_name);
@@ -178,7 +182,7 @@ class effectiveController extends Controller
         }
 
         // Siapkan nama file
-        $filename = "accrual_interest_report_$id_pt.xlsx";
+        $filename = "outstanding_effective__report_$id_pt.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -213,9 +217,13 @@ class effectiveController extends Controller
 
 
     // Set informasi pinjaman
+    $sheet->setCellValue('A2', 'Entitiy Name');
+$sheet->getStyle('A2')->getFont()->setBold(true);
+$entitiyName = 'PT. PACIFIC MULTI FINANCE';
+$sheet->setCellValue('B2', $entitiyName);
     $sheet->setCellValue('A3', 'Branch Number');
         $sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Branch Number
-        $sheet->setCellValue('B3', $loanFirst->no_acc);
+        $sheet->setCellValue('B3', $loanFirst->no_branch);
         $sheet->setCellValue('A4', 'Branch Name');
         $sheet->getStyle('A4')->getFont()->setBold(true); // Set bold untuk Branch Name
         $sheet->setCellValue('B4', $loanFirst->deb_name);
@@ -296,7 +304,7 @@ class effectiveController extends Controller
     }
 
     // Siapkan nama file
-    $filename = "accrual_interest_report_$id_pt.pdf";
+    $filename = "outstanding_effective__$id_pt.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);

@@ -26,10 +26,10 @@
                                     <label class="col-sm-3 col-form-label d-flex justify-content-end">UpFront Fee</label>
                                     <div class="col-sm-8">
                                         @php
-                                        // Menghitung nilai org amount
+                                        // Menghitung nilai org amountt
                                             $upfrontFee = round(-($loan->org_bal * 0.01), 0);
                                         @endphp
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($upfrontFee, 2) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="-{{ number_format($master->prov, 2) }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -127,19 +127,19 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Interest Rate</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($master->rate  * 100, 5) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($master->rate  * 100, 5) }}%" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label d-flex justify-content-end" style="white-space: nowrap;">Outstanding Principal</label>
+                                    <label class="col-sm-3 col-form-label d-flex justify-content-end" style="white-space: nowrap;">Ibase (Year Base)</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format(0) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="360" readonly>
                                     </div>
                                 </div>
                             </div>
                             <!-- Row 9 -->
-                            <div class="form-row">
-                            <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                            <!-- <div class="form-row">
+                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label" style="white-space: nowrap;">Outstanding Interest</label>
                                     <div class="col-sm-8">
                                         <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->bilint + $loan->bilprn ?? 0, 5) }}" readonly>
@@ -151,7 +151,7 @@
                                         <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->bilprn + $loan->bilint ?? 0, 2) }}" readonly>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </form>
                     </div>
                 </div>
@@ -196,8 +196,8 @@
 
                                     // Hitung nilai unamortized
                                     if ($loop->first) {
-                                        // Untuk baris pertama, gunakan nilai upfrontFee
-                                        $unamortized = $upfrontFee;
+                                        // Untuk baris pertama, gunakan nilai pov negatif
+                                        $unamortized = -$master->prov;
                                     } else {
                                         // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
                                         $unamortized = $unamortized + $amortized;
