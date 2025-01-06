@@ -335,9 +335,9 @@
                                             </div>
                                         </td>
                                         <td style="white-space: nowrap;">{{ $loan->deb_name ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->ln_grp ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->ln_type ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ $loan->coa ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->ln_type ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->ln_grp ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($loan->org_date_dt) ? date('d/m/Y', strtotime($loan->org_date_dt)) : 'Belum di-generate' }}</td>
                                         <td class="text-center">{{ $loan->term ?? 0 }}</td>
                                         <td class="text-center">{{ isset($loan->mtr_date_dt) ? date('d/m/Y', strtotime($loan->mtr_date_dt)) : 'Belum di-generate' }}</td>
