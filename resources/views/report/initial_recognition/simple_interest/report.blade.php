@@ -18,7 +18,7 @@
                 <div class="d-flex justify-content-start mb-0 align-items-center">
                     <div class="dropdown me-3">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-file-import"></i> Report
+                            <i class="fas fa-file-import"></i> Bulan/Tahun
                         </button>
                         
                         <ul class="dropdown-menu">

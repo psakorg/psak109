@@ -276,7 +276,7 @@ class effectiveController extends Controller
         // Set border untuk header tabel
         $sheet->getStyle('A12:H12')->applyFromArray($styleArray);
 
-        // Set border untuk semua data laporan
+        // Set border untuk semua data laporann
         $sheet->getStyle('A13:H' . ($row - 1))->applyFromArray($styleArray);
 
         $filename = "accrual_interest_report_$no_acc.pdf";

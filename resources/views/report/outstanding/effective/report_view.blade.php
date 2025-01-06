@@ -56,11 +56,13 @@
                     </div> -->
                 </div>
                  <div class="d-flex justify-content-start mb-3 align-items-center">
-                   <!-- <div class="dropdown me-1">
+                     <div class="dropdown me-1">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-file-import"></i> Report
+                            <i class="fas fa-file-import"></i> Bulan/Tahun
                         </button>
-                        
+                     </div> 
+
+                     <!--  
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
@@ -209,6 +211,7 @@
                             $totalUnamortCost = 0;
                             $totalUnamortFee = 0;
                             $totalInterestIncome = 0;
+                            $nourut = 0;
                             @endphp
                                 @foreach ($master as $index => $loan)
                                 @php
@@ -257,9 +260,10 @@
                                 $bilprn = $loan->bilprn;
                                 $outstandingReceivable = $bilprn + $bilint;
                                 $totalOutstandingReceivable += $outstandingReceivable;
+                                $nourut += 1;
                                 @endphp
                                     <tr>
-                                        <td>{{ $loan->id }}</td>
+                                        <td>{{ $nourut }}</td>
                                         <td class="text-center">{{ $loan->no_branch ?? 'Data tidak ditemukan' }}</td>
                                         <td>
                                             <div class="dropdown">
@@ -337,7 +341,7 @@
                                         <td style="white-space: nowrap;">{{ $loan->deb_name ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ $loan->coa ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ $loan->ln_type ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->ln_grp ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->GROUP ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ isset($loan->org_date_dt) ? date('d/m/Y', strtotime($loan->org_date_dt)) : 'Belum di-generate' }}</td>
                                         <td class="text-center">{{ $loan->term ?? 0 }}</td>
                                         <td class="text-center">{{ isset($loan->mtr_date_dt) ? date('d/m/Y', strtotime($loan->mtr_date_dt)) : 'Belum di-generate' }}</td>

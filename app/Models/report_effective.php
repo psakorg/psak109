@@ -216,7 +216,7 @@ class Report_effective extends Model
            'master.no_branch',
             'effective.no_acc',
             'master.deb_name',
-            'effective.deb_name as effective_deb_name', // Mengambil deb_name dari effective
+            'effective.deb_name as effective_deb_name', // Mengambil deb_name dari eeffective
             'master.ln_type',
             'master.org_bal',
             'effective.org_bal as effective_org_bal', // Mengambil org_bal dari effective

@@ -94,6 +94,10 @@ class simpleinterestController extends Controller
             return response()->json(['message' => 'No data found for the given account number.'], 404);
         }
 
+        $master = DB::table('public.tblpsaklbueffective')
+        ->where('no_branch', $id_pt)
+        ->get();
+
         // Buat spreadsheet baru
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -127,7 +131,7 @@ $sheet->setCellValue('B2', $entitiyName);
         $sheet->getStyle('A10')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
         // Set judul kolom tabel
-        $headers = ['Bulanke', 'Tgl Angsuran', 'Hari Bunga', 'PMT Amt', 'Penarikan', 'Pengembalian', 'Bunga', 'Balance', 'Time Gap', 'Outs Amt Conv'];
+        $headers = ['No','Entity Number','Account Number','Debitor Name','GL Account','Loan Type','GL Group','Original Date','Term (Months)','Maturity Date','Interest Rate','EIR Armotised Cost Exposure','EIR Amortised Cost Calculated','Currennt Balance','Carrying Amount','Outstanding Receivable','Outstanding Interest','Unamortized Transation Cost','Unamortized UpFront Fee','Unearned Interest Income'];
         $columnIndex = 'A';
         foreach ($headers as $header) {
             $sheet->setCellValue($columnIndex . '12', $header);
@@ -140,18 +144,82 @@ $sheet->setCellValue('B2', $entitiyName);
         }
 
         // Mengisi data laporan ke dalam tabel
-        $row = 13; // Mulai dari baris 13 untuk data laporan
-        foreach ($reports as $report) {
-            $sheet->setCellValue('A' . $row, $report->bulanke);
-            $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($report->tglangsuran)));
-            $sheet->setCellValue('C' . $row, $report->haribunga);
-            $sheet->setCellValue('D' . $row, number_format($report->pmtamt, 2));
-            $sheet->setCellValue('E' . $row, number_format($report->penarikan, 2));
-            $sheet->setCellValue('F' . $row, number_format($report->pengembalian, 2));
-            $sheet->setCellValue('G' . $row, number_format($report->bunga, 2));
-            $sheet->setCellValue('H' . $row, number_format($report->balance, 2));
-            $sheet->setCellValue('I' . $row, $report->timegap);
-            $sheet->setCellValue('J' . $row, number_format($report->outsamtconv, 2));
+        $totalOutstandingInterest = 0;
+        $outstandingReceivable = 0;
+        $outstandingInterest = 0;
+        $totalUnamortCost = 0;
+        $totalUnamortFee = 0;
+        $totalInterestIncome = 0;
+        $totalOutstandingReceivable = 0;
+        $nourut =0;
+            foreach ($master as $loan){
+            $trxcost = $loan->trxcost; 
+            $trxcost = preg_replace('/[^\d.]/', '', $trxcost);
+            $trxcostFloat = (float)$trxcost;
+            $outstandingInterest = $loan->bilint ?? 0;
+            $totalOutstandingInterest += $outstandingInterest;
+            $amortized = $loan->cum_amortisecost; // Ambil nilai amortized dari laporan
+                // Hitung nilai unamortized
+                if ($row == 13) {
+                    // Untuk baris pertama, gunakan nilai trxcost
+                    $unamortCost = $trxcostFloat;;
+                } else {
+                    // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
+                    $unamortCost = $trxcostFloat - $amortized;
+                }
+            $totalUnamortCost += $unamortCost;
+
+            $prov = $loan->prov; // Ambil nilai dari database
+            // Hapus simbol mata uang dan pemisah ribuan
+            $prov = preg_replace('/[^\d.]/', '', $prov);
+            // Konversi ke float
+            $provFloat = (float)$prov* -1;
+            $amortizedUpFrontFee = $loan->cum_amortisefee;
+
+            // Hitung nilai unamortized Fee
+            if ($row == 13) {
+            $unamortFee = $provFloat;
+            } else {
+            $unamortFee = $provFloat + $amortizedUpFrontFee;
+            }
+            $totalUnamortFee += $unamortFee;
+
+            $bunga = $loan->cum_bunga;
+            $totalInterestIncome += $loan->cum_bunga;
+            // hitung nilai unaerned interest income
+                if ($row == 13) {
+                        $interestIncome = $totalInterestIncome;
+                    } else {
+                        $totalInterestIncome -= $bunga;
+                        $interestIncome = $totalInterestIncome;
+            }
+
+            $bilint = $loan->bilint;
+            $bilprn = $loan->bilprn;
+            $outstandingReceivable = $bilprn + $bilint;
+            $totalOutstandingReceivable += $outstandingReceivable;
+            $nourut += 1;
+       
+            $sheet->setCellValue('A' . $row, $nourut);
+            $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($loan->no_branch)));
+            $sheet->setCellValue('C' . $row, $loan->no_acc);
+            $sheet->setCellValue('D' . $row, $loan->deb_name);
+            $sheet->setCellValue('E' . $row, $loan->coa);
+            $sheet->setCellValue('F' . $row, $loan->ln_type);
+            $sheet->setCellValue('G' . $row, $loan->GROUP);
+            $sheet->setCellValue('H' . $row, $loan->org_date_dt);
+            $sheet->setCellValue('I' . $row, $loan->term);
+            $sheet->setCellValue('J' . $row, $loan->mtr_date_dt);
+            $sheet->setCellValue('K' . $row, $loan->rate*100);
+            $sheet->setCellValue('L' . $row, $loan->eirex*100);
+            $sheet->setCellValue('M' . $row, $loan->eircalc*100);
+            $sheet->setCellValue('N' . $row, $loan->cbal);
+            $sheet->setCellValue('O' . $row, $loan->carrying_amount);
+            $sheet->setCellValue('P' . $row, $loan->$outstandingReceivable);
+            $sheet->setCellValue('Q' . $row, $loan->bilint);
+            $sheet->setCellValue('R' . $row, $unamortCost);
+            $sheet->setCellValue('S' . $row, $unamortFee);
+            $sheet->setCellValue('T' . $row, $loan->cum_bunga);
 
             // Mengatur font menjadi bold untuk setiap baris data
             $sheet->getStyle('A' . $row . ':J' . $row)->getFont()->setBold(true);
@@ -223,8 +291,8 @@ $sheet->setCellValue('B2', $entitiyName);
 $sheet->getStyle('A2')->getFont()->setBold(true);
 $entitiyName = 'PT. PACIFIC MULTI FINANCE';
 $sheet->setCellValue('B2', $entitiyName);
-    $sheet->setCellValue('A3', 'Branch Number');
-        $sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Branch Number
+$sheet->setCellValue('A3', 'Branch Number');
+$sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Branch Number
         $sheet->setCellValue('B3', $loan->no_branch);
         $sheet->setCellValue('A4', 'Branch Name');
         $sheet->getStyle('A4')->getFont()->setBold(true); // Set bold untuk Branch Name
@@ -246,7 +314,7 @@ $sheet->setCellValue('B2', $entitiyName);
     $sheet->getStyle('A10')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
     // Set judul kolom tabel
-    $headers = ['Bulanke', 'Tgl Angsuran', 'Hari Bunga', 'PMT Amt', 'Penarikan', 'Pengembalian', 'Bunga', 'Balance', 'Time Gap', 'Outs Amt Conv'];
+    $headers =['No','Entity Number','Account Number','Debitor Name','GL Account','Loan Type','GL Group','Original Date','Term (Months)','Maturity Date','Interest Rate','EIR Armotised Cost Exposure','EIR Amortised Cost Calculated','Currennt Balance','Carrying Amount','Outstanding Receivable','Outstanding Interest','Unamortized Transation Cost','Unamortized UpFront Fee','Unearned Interest Income'];
     $columnIndex = 'A';
     foreach ($headers as $header) {
         $sheet->setCellValue($columnIndex . '12', $header);
@@ -258,19 +326,83 @@ $sheet->setCellValue('B2', $entitiyName);
         $columnIndex++;
     }
 
-    // Mengisi data laporan ke dalam tabel
-    $row = 13; // Mulai dari baris 13 untuk data laporan
-    foreach ($reports as $report) {
-        $sheet->setCellValue('A' . $row, $report->bulanke);
-        $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($report->tglangsuran)));
-        $sheet->setCellValue('C' . $row, $report->haribunga);
-        $sheet->setCellValue('D' . $row, number_format($report->pmtamt, 2));
-        $sheet->setCellValue('E' . $row, number_format($report->penarikan, 2));
-        $sheet->setCellValue('F' . $row, number_format($report->pengembalian, 2));
-        $sheet->setCellValue('G' . $row, number_format($report->bunga, 2));
-        $sheet->setCellValue('H' . $row, number_format($report->balance, 2));
-        $sheet->setCellValue('I' . $row, $report->timegap);
-        $sheet->setCellValue('J' . $row, number_format($report->outsamtconv, 2));
+      // Mengisi data laporan ke dalam tabel
+      $totalOutstandingInterest = 0;
+      $outstandingReceivable = 0;
+      $outstandingInterest = 0;
+      $totalUnamortCost = 0;
+      $totalUnamortFee = 0;
+      $totalInterestIncome = 0;
+      $totalOutstandingReceivable = 0;
+      $nourut =0;
+          foreach ($master as $loan){
+          $trxcost = $loan->trxcost; 
+          $trxcost = preg_replace('/[^\d.]/', '', $trxcost);
+          $trxcostFloat = (float)$trxcost;
+          $outstandingInterest = $loan->bilint ?? 0;
+          $totalOutstandingInterest += $outstandingInterest;
+          $amortized = $loan->cum_amortisecost; // Ambil nilai amortized dari laporan
+              // Hitung nilai unamortized
+              if ($row == 13) {
+                  // Untuk baris pertama, gunakan nilai trxcost
+                  $unamortCost = $trxcostFloat;;
+              } else {
+                  // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
+                  $unamortCost = $trxcostFloat - $amortized;
+              }
+          $totalUnamortCost += $unamortCost;
+
+          $prov = $loan->prov; // Ambil nilai dari database
+          // Hapus simbol mata uang dan pemisah ribuan
+          $prov = preg_replace('/[^\d.]/', '', $prov);
+          // Konversi ke float
+          $provFloat = (float)$prov* -1;
+          $amortizedUpFrontFee = $loan->cum_amortisefee;
+
+          // Hitung nilai unamortized Fee
+          if ($row == 13) {
+          $unamortFee = $provFloat;
+          } else {
+          $unamortFee = $provFloat + $amortizedUpFrontFee;
+          }
+          $totalUnamortFee += $unamortFee;
+
+          $bunga = $loan->cum_bunga;
+          $totalInterestIncome += $loan->cum_bunga;
+          // hitung nilai unaerned interest income
+              if ($row == 13) {
+                      $interestIncome = $totalInterestIncome;
+                  } else {
+                      $totalInterestIncome -= $bunga;
+                      $interestIncome = $totalInterestIncome;
+          }
+
+          $bilint = $loan->bilint;
+          $bilprn = $loan->bilprn;
+          $outstandingReceivable = $bilprn + $bilint;
+          $totalOutstandingReceivable += $outstandingReceivable;
+          $nourut += 1;
+     
+          $sheet->setCellValue('A' . $row, $nourut);
+          $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($loan->no_branch)));
+          $sheet->setCellValue('C' . $row, $loan->no_acc);
+          $sheet->setCellValue('D' . $row, $loan->deb_name);
+          $sheet->setCellValue('E' . $row, $loan->coa);
+          $sheet->setCellValue('F' . $row, $loan->ln_type);
+          $sheet->setCellValue('G' . $row, $loan->GROUP);
+          $sheet->setCellValue('H' . $row, $loan->org_date_dt);
+          $sheet->setCellValue('I' . $row, $loan->term);
+          $sheet->setCellValue('J' . $row, $loan->mtr_date_dt);
+          $sheet->setCellValue('K' . $row, $loan->rate*100);
+          $sheet->setCellValue('L' . $row, $loan->eirex*100);
+          $sheet->setCellValue('M' . $row, $loan->eircalc*100);
+          $sheet->setCellValue('N' . $row, $loan->cbal);
+          $sheet->setCellValue('O' . $row, $loan->carrying_amount);
+          $sheet->setCellValue('P' . $row, $loan->$outstandingReceivable);
+          $sheet->setCellValue('Q' . $row, $loan->bilint);
+          $sheet->setCellValue('R' . $row, $unamortCost);
+          $sheet->setCellValue('S' . $row, $unamortFee);
+          $sheet->setCellValue('T' . $row, $loan->cum_bunga);
 
         // Mengatur font menjadi bold untuk setiap baris data
         $sheet->getStyle('A' . $row . ':J' . $row)->getFont()->setBold(true);

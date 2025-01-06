@@ -66,9 +66,9 @@ class simpleinterestController extends Controller
 
         // Set informasi pinjaman
         $sheet->setCellValue('A2', 'Entitiy Name');
-$sheet->getStyle('A2')->getFont()->setBold(true);
-$entitiyName = 'PT. PACIFIC MULTI FINANCE';
-$sheet->setCellValue('B2', $entitiyName); 
+        $sheet->getStyle('A2')->getFont()->setBold(true);
+        $entitiyName = 'PT. PACIFIC MULTI FINANCE';
+        $sheet->setCellValue('B2', $entitiyName); 
 
         $sheet->setCellValue('A3', 'Account Number');
         $sheet->getStyle('A3')->getFont()->setBold(true);

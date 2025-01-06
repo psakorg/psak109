@@ -22,11 +22,12 @@
                 </div>
                 
                 <div class="mb-3 d-flex justify-content-start align-items-center gap-2">
-                    <!-- <div class="dropdown me-1">
+                    <div class="dropdown me-1">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-file-import"></i> Report
+                            <i class="fas fa-file-import"></i> Bulan/Tahun
                         </button>
-                        
+                    </div>
+                    <!--
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
@@ -164,6 +165,7 @@
                             $totalUnamortFee = 0;
                             $totalInterestIncome = 0;
                             $totalOutstandingReceivable = 0;
+                            $nourut =0;
                             @endphp
                                 @foreach ($master as $index => $loan)
                                 @php
@@ -212,9 +214,10 @@
                                 $bilprn = $loan->bilprn;
                                 $outstandingReceivable = $bilprn + $bilint;
                                 $totalOutstandingReceivable += $outstandingReceivable;
+                                $nourut += 1;
                                 @endphp
                                     <tr>
-                                            <td class="text-center">{{ $loan->id }}</td>
+                                            <td class="text-center">{{ $nourut }}</td>
                                             <td class="text-center">{{ $loan->no_branch }}</td>
                                             <td class="text-center" style="width: 200px;">
                                             <div class="dropdown">
@@ -290,9 +293,9 @@
                                             </div>
                                         </td>
                                             <td class="text-center">{{ $loan->deb_name }}</td>
-                                            <td class="text-center">{{ $loan->ln_grp }}</td>
-                                            <td class="text-center">{{ $loan->ln_type }}</td>
                                             <td class="text-center">{{ $loan->coa }}</td>
+                                            <td class="text-center">{{ $loan->ln_type }}</td>
+                                            <td class="text-center">{{ $loan->GROUP }}</td>
                                             <td class="text-center">{{ date('d/m/Y', strtotime($loan->org_date_dt)) }}</td>
                                             <td class="text-center">{{ $loan->term }}</td>
                                             <td class="text-center">{{ date('d/m/Y', strtotime($loan->mtr_date_dt)) }}</td>
