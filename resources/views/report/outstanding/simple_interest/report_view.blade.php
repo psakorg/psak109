@@ -118,9 +118,9 @@
                                max="2099">
                     </div>
 
-                    <a href="{{ route('report-acc-si.exportPdf',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch]) }}" class="btn btn-danger"><i class="fas fa-file-pdf"></i>Export to PDF</a>
-                    <a href="{{ route('report-acc-si.exportExcel',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-success"><i class="fas fa-file-excel"></i>Export to Excel</a>
-                    <a href="{{ route('report-acc-si.exportCsv',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-warning text-white"><i class="fas fa-file-csv"></i>Export to CSV</a> 
+                    <a href="{{ route('report-outstanding-si.exportPdf',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch]) }}" class="btn btn-danger"><i class="fas fa-file-pdf"></i>Export to PDF</a>
+                    <a href="{{ route('report-outstanding-si.exportExcel',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-success"><i class="fas fa-file-excel"></i>Export to Excel</a>
+                    <a href="{{ route('report-outstanding-si.exportCsv',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-warning text-white"><i class="fas fa-file-csv"></i>Export to CSV</a> 
                 </div>
 
                 <!-- Report Table -->

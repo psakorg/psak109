@@ -308,9 +308,9 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/report-outstanding-simple-interest', [outstandsiControler::class, 'index'])->name('report-outstanding-si.index');
     Route::get('/report-outstanding-simple-interest/view/{id_pt}', [outstandsiControler::class, 'view'])->name('report-outstanding-si.view');
-    Route::get('/report-outstanding-simple-interest/export-pdf/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportPdf'])->name('report-outstanding-si.exportPdf');
-    Route::get('/report-outstanding-simple-interest/export-excel/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportExcel'])->name('report-outstanding-si.exportExcel');
-    Route::get('/report-outstanding-simple-interest/export-csv/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportCsv'])->name('report-outstanding-si.exportCsv');
+    Route::get('/report-outstanding-simple-interest/export-pdf/{id_pt}', [outstandsiControler::class, 'exportPdf'])->name('report-outstanding-si.exportPdf');
+    Route::get('/report-outstanding-simple-interest/export-excel/{id_pt}', [outstandsiControler::class, 'exportExcel'])->name('report-outstanding-si.exportExcel');
+    Route::get('/report-outstanding-simple-interest/export-csv/{id_pt}', [outstandsiControler::class, 'exportCsv'])->name('report-outstanding-si.exportCsv');
     Route::get('report-acc-si/exportCsv/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportCsv'])->name('report-acc-si.exportCsv');
     Route::get('/check-report-outstanding-simple/{no_acc}/{id_pt}', 
         [outstandsiControler::class, 'checkData'])
