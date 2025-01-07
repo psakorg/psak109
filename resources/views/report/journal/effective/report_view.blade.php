@@ -33,7 +33,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Entity Name</label>
                                     <div class="col-sm-6">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ '' }}" readonly>
                                     </div>
                                 </div>
                             </div>

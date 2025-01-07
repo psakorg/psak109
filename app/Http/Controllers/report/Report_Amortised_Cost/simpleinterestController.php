@@ -33,7 +33,7 @@ class simpleinterestController extends Controller
         return view('report.amortised_cost.simple_interest.master', compact('loans'));
     }
 
-    // Method untuk menampilkan detail pinjaman berdasarkan nomor akunn
+    // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
     public function view($no_acc,$id_pt)
     {
         $no_acc = trim($no_acc);

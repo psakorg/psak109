@@ -60,9 +60,9 @@
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-file-import"></i> Bulan/Tahun
                         </button>
-                     </div> 
+                     <!--</div> 
 
-                     <!--  
+                       
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
@@ -128,7 +128,8 @@
                                 </ul>
                             </li>
                         </ul>
-                    </div> -->
+                        -->
+                    </div> 
 
                     <div class="d-flex align-items-center ">
                         <select class="form-select me-2" style="width: 120px;" id="monthSelect">
@@ -155,13 +156,13 @@
 
                     <!-- Tombol Export -->
                     <div class="d-flex gap-2">
-                        <a href="{{ route('report-outstanding-eff.exportPdf',  ['id_pt' => Auth::user()->id_pt]) }}" class="btn btn-danger">
+                        <a href="#" class="btn btn-danger" id="exportPdf">
                             <i class="fas fa-file-pdf"></i> Export PDF
                         </a>
-                        <a href="{{ route('report-outstanding-eff.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}" class="btn btn-success">
+                        <a href="#" id="exportExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Export Excel
                         </a>
-                        <a href="{{ route('report-outstanding-eff.exportCsv', ['id_pt' => Auth::user()->id_pt]) }}" class="btn btn-primary">
+                        <a href="#" id="exportCsv" class="btn btn-primary">
                             <i class="fas fa-file-csv"></i> Export CSV
                         </a>
                     </div>
@@ -238,13 +239,11 @@
                                 $provFloat = (float)$prov* -1;
                                 $amortizedUpFrontFee = $loan->cum_amortisefee;
 
+                                //Berubah dari pak darwis. 
                                 // Hitung nilai unamortized Fee
-                                if ($loop->first) {
-                                $unamortFee = $provFloat;
-                                } else {
-                                $unamortFee = $provFloat + $amortizedUpFrontFee;
-                                }
+                                $unamortFee = $loan->prov * -1 + $loan->cum_amortisefee;
                                 $totalUnamortFee += $unamortFee;
+
 
                                 $bunga = $loan->cum_bunga;
                                 $totalInterestIncome += $loan->cum_bunga;
@@ -363,8 +362,8 @@
                                 <!-- Row Total / Average -->
                                 <tr class="table-secondary font-weight-normal">
                                     <td colspan="10" class="text-center"><strong>TOTAL:</strong></td>
-                                    <td class="text-right"><strong></strong></td>
-                                    <td class="text-end"><strong></strong></td>
+                                    <td class="text-right"><strong>{{ number_format($master->avg('rate')*100 ?? 0, 5) }}%</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($master->sum('pmtamt') ?? 0) }}</strong></td>
                                     <td class="text-right"><strong>{{ number_format(($master->avg('eirex')*100) ?? 0, 14) }}%</strong></td>
                                     <td class="text-right"><strong>{{ number_format(($master->avg('eircalc')*100) ?? 0, 14) }}%</strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('cbal') ?? 0) }}</strong></td>
@@ -372,9 +371,9 @@
                                     <td class="text-end"><strong>{{ number_format($totalOutstandingReceivable ?? 0) }}</strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('bilint') ?? 0) }}</strong></td>
                                     <td class="text-end"><strong>{{ number_format($master->sum('cum_timegap') ?? 0)}}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($unamortCost ?? 0)}}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($unamortFee ?? 0)}}</strong></td>
-                                    <td class="text-end"><strong></strong>{{ number_format($interestIncome ?? 0)}}</td>
+                                    <td class="text-end"><strong>{{ number_format($totalUnamortCost ?? 0)}}</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($totalUnamortFee ?? 0)}}</strong></td>
+                                    <td class="text-end"><strong></strong>{{number_format($interestIncome ?? 0)}}</td>
                                 </tr>
                             @endif
                         </tbody>
@@ -427,6 +426,26 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" onclick="viewReport()">View Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {{ session('error') }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -1013,6 +1032,32 @@ function updateReport() {
     // Sesuaikan dengan route yang benar
     window.location.href = `/report-outstanding-effective/view/${id_pt}?bulan=${month}&tahun=${year}`;
 }
+    // Update export URL dynamically based on selected month and year
+    document.getElementById('exportExcel').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-outstanding-eff.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
+
+    document.getElementById('exportPdf').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-outstanding-eff.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
+    document.getElementById('exportCsv').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-outstanding-eff.exportCsv', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
 </script>
 
 <style>

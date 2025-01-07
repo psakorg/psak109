@@ -21,6 +21,8 @@
                             <i class="fas fa-file-import"></i> Bulan/Tahun
                         </button>
                         
+                        <!-- Request Pak Darwis, matikan popup menu dari tombol tersebut. Cukup dari klik no_acc saja. -->
+                        <!--
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
@@ -67,15 +69,17 @@
                                     <li><a class="dropdown-item" href="#" onclick="showModal('expected_cashflow_simple')">Simple Interest</a></li>
                                 </ul>
                             </li>
-                            <!-- <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                    Initial Recognition <i class="fas fa-chevron-right float-end"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('initial_recognition_effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('initial_recognition_simple')">Simple Interest</a></li>
-                                </ul>
-                            </li> -->
+                        -->    
+                                <!-- <li> Ini sudah di-remark lebih dulu
+                                    <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                        Initial Recognition <i class="fas fa-chevron-right float-end"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-submenu">
+                                        <li><a class="dropdown-item" href="#" onclick="showModal('initial_recognition_effective')">Effective</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="showModal('initial_recognition_simple')">Simple Interest</a></li>
+                                    </ul>
+                                </li> -->
+                        <!--
                             <li>
                                 <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
                                     Outstanding <i class="fas fa-chevron-right float-end"></i>
@@ -95,6 +99,7 @@
                                 </ul>
                             </li>
                         </ul>
+                    -->
                     </div>
 
                     <!-- Tambahan input bulan dan tahun -->

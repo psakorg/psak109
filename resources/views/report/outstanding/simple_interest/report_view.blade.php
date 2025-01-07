@@ -118,9 +118,9 @@
                                max="2099">
                     </div>
 
-                    <a href="{{ route('report-outstanding-si.exportPdf',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch]) }}" class="btn btn-danger"><i class="fas fa-file-pdf"></i>Export to PDF</a>
-                    <a href="{{ route('report-outstanding-si.exportExcel',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-success"><i class="fas fa-file-excel"></i>Export to Excel</a>
-                    <a href="{{ route('report-outstanding-si.exportCsv',  ['no_acc' => $loan[0]->no_acc, 'id_pt' => $loan[0]->no_branch])}}" class="btn btn-warning text-white"><i class="fas fa-file-csv"></i>Export to CSV</a> 
+                    <a href="#" class="btn btn-danger" id="exportPdf"><i class="fas fa-file-pdf"></i>Export to PDF</a>
+                    <a href="#" class="btn btn-success" id="exportExcel"><i class="fas fa-file-excel"></i>Export to Excel</a>
+                    <a href="#" class="btn btn-warning text-white" id="exportCsv"><i class="fas fa-file-csv"></i>Export to CSV</a> 
                 </div>
 
                 <!-- Report Table -->
@@ -193,11 +193,7 @@
                                 $amortizedUpFrontFee = $loan->cum_amortisefee;
 
                                 // Hitung nilai unamortized Fee
-                                if ($loop->first) {
-                                $unamortFee = $provFloat;
-                                } else {
-                                $unamortFee = $provFloat + $amortizedUpFrontFee;
-                                }
+                                $unamortFee = $loan->prov * -1 + $loan->cum_amortisefee;
                                 $totalUnamortFee += $unamortFee;
 
                                 $bunga = $loan->cum_bunga;
@@ -985,7 +981,32 @@ function updateReport() {
     
     // Sesuaikan dengan route yang benar
     window.location.href = `/report-outstanding-simple-interest/view/${id_pt}?bulan=${month}&tahun=${year}`;
-}
+} // Update export URL dynamically based on selected month and year
+    document.getElementById('exportExcel').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-outstanding-si.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
+
+    document.getElementById('exportPdf').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-outstanding-si.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
+    document.getElementById('exportCsv').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-outstanding-si.exportCsv', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
 </script>
 
 <style>
