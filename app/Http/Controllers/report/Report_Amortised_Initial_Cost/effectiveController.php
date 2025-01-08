@@ -33,7 +33,7 @@ class effectiveController extends Controller
         return view('report.amortised_initial_cost.effective.master', compact('loans'));
     }
 
-    // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
+    // Method untuk menampilkan detail pinjaman berdasarkan nomor akunn
     public function view($no_acc,$id_pt)
     {
         $no_acc = trim($no_acc);

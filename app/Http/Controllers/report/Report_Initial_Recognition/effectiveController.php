@@ -29,7 +29,7 @@ class effectiveController extends Controller
         $tahun = $request->input('tahun') ?? date('Y');
         $bulan = $request->input('bulan') ?? date('m');
 
-        // $result1 = InitialRecognitionEffective::getInitialRecognition('999', '2024', '5');
+        // $result1 = InitialRecognitionEffective::getInitialRecognition('999', '2024', '5');;
         // dd($id_pt);
 
         $loans = InitialRecognitionEffective::getInitialRecognition($branch, $tahun, $bulan);

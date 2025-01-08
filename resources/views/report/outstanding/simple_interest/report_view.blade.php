@@ -120,7 +120,7 @@
 
                     <a href="#" class="btn btn-danger" id="exportPdf"><i class="fas fa-file-pdf"></i>Export to PDF</a>
                     <a href="#" class="btn btn-success" id="exportExcel"><i class="fas fa-file-excel"></i>Export to Excel</a>
-                    <a href="#" class="btn btn-warning text-white" id="exportCsv"><i class="fas fa-file-csv"></i>Export to CSV</a> 
+                    <a href="#" class="btn btn-primary" id="exportCsv"><i class="fas fa-file-csv"></i>Download File CSV</a> 
                 </div>
 
                 <!-- Report Table -->
@@ -199,12 +199,12 @@
                                 $bunga = $loan->cum_bunga;
                                 $totalInterestIncome += $loan->cum_bunga;
                                 // hitung nilai unaerned interest income
-                                    if ($loop->first) {
-                                            $interestIncome = $totalInterestIncome;
-                                        } else {
-                                            $totalInterestIncome -= $bunga;
-                                            $interestIncome = $totalInterestIncome;
-                                }
+                                //if ($loop->first) {
+                                // $interestIncome = $totalInterestIncome;
+                                // } else {
+                                //       $totalInterestIncome -= $bunga;
+                                //      $interestIncome = $totalInterestIncome;
+                                //}
 
                                 $bilint = $loan->bilint;
                                 $bilprn = $loan->bilprn;
@@ -319,7 +319,7 @@
                                     <td>{{ number_format($master->sum('bilint')?? 0) }}</td>
                                     <td>{{ number_format($totalUnamortCost ?? 0)}}</td>
                                     <td>{{ number_format($totalUnamortFee ?? 0)}}</td>
-                                    <td>{{ number_format($master->sum('cum_bunga')?? 0)}}</td>
+                                    <td>{{ number_format($totalInterestIncome ?? 0)}}</td>
                                    
                                    
                                 </tr>

@@ -54,7 +54,7 @@ class simpleinterestController extends Controller
         $loan = report_simpleinterest::getLoanDetails(trim($no_acc), trim($id_pt));
         $reports = report_simpleinterest::getReportsByNoAcc(trim($no_acc), trim($id_pt));
 
-        // Cek apakah data loan dan reports ada
+        // Cek apakah data loan dan reports adaa
         if (!$loan || $reports->isEmpty()) {
             return response()->json(['message' => 'No data found for the given account number.'], 404);
         }

@@ -12,6 +12,8 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 class effectiveController extends Controller
 {
@@ -52,6 +54,7 @@ class effectiveController extends Controller
     {
         $loan = report_effective::getLoanDetails($no_acc, $id_pt);
         $reports = report_effective::getReportsByNoAcc($no_acc, $id_pt);
+        $master = report_effective::getMasterDataByNoAcc($no_acc, $id_pt);
 
         if (!$loan || $reports->isEmpty()) {
             return response()->json(['message' => 'No data found for the given account number.'], 404);
@@ -66,16 +69,16 @@ class effectiveController extends Controller
         $sheet->getColumnDimension('A')->setWidth(20);
         $sheet->getColumnDimension('B')->setWidth(5);
         $sheet->getColumnDimension('C')->setWidth(30);
-        $entitiyName = 'PT. PACIFIC MULTI FINANCE';
+        $entityName = "PT PRAMATECH";
         $infoRows = [
-            ['Entitiy Name', ':', $entitiyName],
-            ['No. Account', ':', "'" . $loan->no_acc],
-            ['Debtor Name', ':', $loan->deb_name],
-            ['Original Balance', ':', 'Rp ' . number_format($loan->org_bal, 2)],
-            ['Original Date', ':', date('d/m/Y', strtotime($loan->org_date))],
-            ['Term', ':', $loan->term . ' Months'],
-            ['Maturity Date', ':', date('d/m/Y', strtotime($loan->mtr_date))],
+            ['Entity Name', ':', $entityName],
+            ['Account Number', ':', "'" . $loan->no_acc],
+            ['Debitor Name', ':', $loan->deb_name],
+            ['Original Amount', ':', number_format($loan->org_bal, 2)],
+            ['Term', ':', $master->term . ' Month'],
+            ['Interest Rate', ':', number_format($master->rate*100, 5) . '%'],
         ];
+
 
         $currentRow = 3;
         foreach ($infoRows as $info) {
@@ -85,8 +88,26 @@ class effectiveController extends Controller
             $sheet->getRowDimension($currentRow)->setRowHeight(25);
             $currentRow++;
         }
+        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('G')->setWidth(5);
+        $sheet->getColumnDimension('H')->setWidth(30);
+        $infoRows = [
+        ['Outstanding Amount', ':', number_format($loan->org_bal, 2)],
+        ['EIR Conversion Calculated', ':', number_format($loan->eircalc_conv * 100, 14) . '%'],
+        ['Original Loan Date', ':',date('d/m/Y', strtotime($master->org_date_dt))],
+        ['Maturity Loan Date', ':', date('d/m/Y', strtotime($master->mtr_date_dt))],
+        ['Payment Amount', ':', number_format($master->pmtamt, 2)],
+        ];
+        $currentRow = 3;
+        foreach ($infoRows as $info) {
+            $sheet->setCellValue('F' . $currentRow, $info[0]);
+            $sheet->setCellValue('G' . $currentRow, $info[1]);
+            $sheet->setCellValue('H' . $currentRow, $info[2]);
+            $sheet->getRowDimension($currentRow)->setRowHeight(25);
+            $currentRow++;
+        }
 
-        $sheet->setCellValue('A10', 'Accrual Interest Report - Report Details');
+        $sheet->setCellValue('A10', 'Accrual Interest Effective Report - Report Details');
         $sheet->mergeCells('A10:H10');
         $sheet->getStyle('A10:H10')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('A10:H10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -118,24 +139,60 @@ class effectiveController extends Controller
 
         $row = 13;
         $totalTimeGap = 0;
+        $cumulativeTimeGap = 0;
+        $totalPaymentAmount = 0;
+        $totalAccruedInterest = 0;
+        $totalInterestPayment = 0;
+        $totalOutstandingAmount = 0;
         foreach ($reports as $report) {
-            $totalTimeGap += $report->timegap;
+            $accruedInterest = $report->accrconv ?? 0;
+            $interestPayment = $report->bunga ?? 0;
+            $timegap = $accruedInterest - $interestPayment;
+            $cumulativeTimeGap += floatval($timegap);
+            $totalTimeGap += $timegap;
+            $totalPaymentAmount += $report->pmtamt;
+            $totalAccruedInterest += $report->accrconv;
+            $totalInterestPayment += $report->bunga;
+            $totalOutstandingAmount += $report->outsamtconv;
 
+            $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('A' . $row, $report->bulanke);
-            $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($report->tglangsuran)));
             $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->setCellValue('B' . $row, date('d/m/Y', strtotime($report->tglangsuran)));
+            $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('C' . $row, 'Rp ' . number_format($report->pmtamt, 2));
+            $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('D' . $row, 'Rp ' . number_format($report->accrconv ?? 0, 2));
+            $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('E' . $row, 'Rp ' . number_format($report->bunga, 2));
+            $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('F' . $row, number_format($report->timegap, 2));
+            $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('G' . $row, 'Rp ' . number_format($report->outsamtconv, 2));
-            $sheet->setCellValue('H' . $row, number_format($totalTimeGap, 2));
+            $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('H' . $row, number_format($cumulativeTimeGap, 2));
 
             // Mengatur angka menjadi rata kanan
             $sheet->getStyle('C' . $row . ':H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
             $row++;
         }
+        //TOTAL ACCRUAL INEREST
+        $sheet->setCellValue('A' . $row, "TOTAL");
+        $sheet->mergeCells('A' . $row . ':B' . $row); // Merge cells A to J for the Total row
+        $sheet->getStyle('A' . $row . ':B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('C' . $row, number_format($totalPaymentAmount ?? 0));
+        $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('D' . $row, number_format($totalAccruedInterest ?? 0));
+        $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('E' . $row, number_format($totalInterestPayment ?? 0));
+        $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('F' . $row, number_format($totalTimeGap ?? 0));
+        $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('G' . $row, null);
+        $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('H' . $row, null);
 
         foreach (range('A', 'H') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
@@ -155,9 +212,9 @@ class effectiveController extends Controller
         $sheet->getStyle('A12:H12')->applyFromArray($styleArray);
 
         // Set border untuk semua data laporan
-        $sheet->getStyle('A13:H' . ($row - 1))->applyFromArray($styleArray);
+        $sheet->getStyle('A13:H' . $row)->applyFromArray($styleArray);
 
-        $filename = "accrual_interest_report_$no_acc.xlsx";
+        $filename = "accrual_interest_effective_report_$no_acc.xlsx";
         $writer = new Xlsx($spreadsheet);
         $temp_file = tempnam(sys_get_temp_dir(), 'phpspreadsheet');
         $writer->save($temp_file);
@@ -170,6 +227,7 @@ class effectiveController extends Controller
     {
         $loan = report_effective::getLoanDetails($no_acc, $id_pt);
         $reports = report_effective::getReportsByNoAcc($no_acc, $id_pt);
+        $master = report_effective::getMasterDataByNoAcc($no_acc, $id_pt);
 
         if (!$loan || $reports->isEmpty()) {
             return response()->json(['message' => 'No data found for the given account number.'], 404);
@@ -188,16 +246,16 @@ class effectiveController extends Controller
         $sheet->getColumnDimension('A')->setWidth(20);
         $sheet->getColumnDimension('B')->setWidth(5);
         $sheet->getColumnDimension('C')->setWidth(30);
-        $entitiyName = 'PT. PACIFIC MULTI FINANCE';
+        $entityName = "PT PRAMATECH";
         $infoRows = [
-            ['Entitiy Name', ':', $entitiyName],
-            ['No. Account', ':', "'" . $loan->no_acc],
-            ['Debtor Name', ':', $loan->deb_name],
-            ['Original Balance', ':', 'Rp ' . number_format($loan->org_bal, 2)],
-            ['Original Date', ':', date('d/m/Y', strtotime($loan->org_date))],
-            ['Term', ':', $loan->term . ' Months'],
-            ['Maturity Date', ':', date('d/m/Y', strtotime($loan->mtr_date))],
+            ['Entity Name', ':', $entityName],
+            ['Account Number', ':', "'" . $loan->no_acc],
+            ['Debitor Name', ':', $loan->deb_name],
+            ['Original Amount', ':', number_format($loan->org_bal, 2)],
+            ['Term', ':', $master->term . ' Month'],
+            ['Interest Rate', ':', number_format($master->rate*100, 5) . '%'],
         ];
+
 
         $currentRow = 3;
         foreach ($infoRows as $info) {
@@ -207,8 +265,26 @@ class effectiveController extends Controller
             $sheet->getRowDimension($currentRow)->setRowHeight(25);
             $currentRow++;
         }
+        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('G')->setWidth(5);
+        $sheet->getColumnDimension('H')->setWidth(30);
+        $infoRows = [
+        ['Outstanding Amount', ':', number_format($loan->org_bal, 2)],
+        ['EIR Conversion Calculated', ':', number_format($loan->eircalc_conv * 100, 14) . '%'],
+        ['Original Loan Date', ':',date('d/m/Y', strtotime($master->org_date_dt))],
+        ['Maturity Loan Date', ':', date('d/m/Y', strtotime($master->mtr_date_dt))],
+        ['Payment Amount', ':', number_format($master->pmtamt, 2)],
+        ];
+        $currentRow = 3;
+        foreach ($infoRows as $info) {
+            $sheet->setCellValue('F' . $currentRow, $info[0]);
+            $sheet->setCellValue('G' . $currentRow, $info[1]);
+            $sheet->setCellValue('H' . $currentRow, $info[2]);
+            $sheet->getRowDimension($currentRow)->setRowHeight(25);
+            $currentRow++;
+        }
 
-        $sheet->setCellValue('A10', 'Accrual Interest Report - Report Details');
+        $sheet->setCellValue('A10', 'Accrual Interest Effective Report - Report Details');
         $sheet->mergeCells('A10:H10');
         $sheet->getStyle('A10:H10')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('A10:H10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -240,28 +316,65 @@ class effectiveController extends Controller
 
         $row = 13;
         $totalTimeGap = 0;
+        $cumulativeTimeGap = 0;
+        $totalPaymentAmount = 0;
+        $totalAccruedInterest = 0;
+        $totalInterestPayment = 0;
+        $totalOutstandingAmount = 0;
         foreach ($reports as $report) {
-            $totalTimeGap += $report->timegap;
+            $accruedInterest = $report->accrconv ?? 0;
+            $interestPayment = $report->bunga ?? 0;
+            $timegap = $accruedInterest - $interestPayment;
+            $cumulativeTimeGap += floatval($timegap);
+            $totalTimeGap += $timegap;
+            $totalPaymentAmount += $report->pmtamt;
+            $totalAccruedInterest += $report->accrconv;
+            $totalInterestPayment += $report->bunga;
+            $totalOutstandingAmount += $report->outsamtconv;
 
+            $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('A' . $row, $report->bulanke);
-            $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($report->tglangsuran)));
             $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('C' . $row, 'Rp ' . number_format($report->pmtamt, 2));
-            $sheet->setCellValue('D' . $row, 'Rp ' . number_format($report->accrconv ?? 0, 2));
-            $sheet->setCellValue('E' . $row, 'Rp ' . number_format($report->bunga, 2));
+            $sheet->setCellValue('B' . $row, date('d/m/Y', strtotime($report->tglangsuran)));
+            $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('C' . $row, number_format($report->pmtamt, 2));
+            $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('D' . $row, number_format($report->accrconv ?? 0, 2));
+            $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('E' . $row, number_format($report->bunga, 2));
+            $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('F' . $row, number_format($report->timegap, 2));
-            $sheet->setCellValue('G' . $row, 'Rp ' . number_format($report->outsamtconv, 2));
-            $sheet->setCellValue('H' . $row, number_format($totalTimeGap, 2));
+            $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('G' . $row, number_format($report->outsamtconv, 2));
+            $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('H' . $row, number_format($cumulativeTimeGap, 2));
 
             // Mengatur angka menjadi rata kanan
             $sheet->getStyle('C' . $row . ':H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
             $row++;
         }
+        //TOTAL ACCRUAL INTEREST
+        $sheet->setCellValue('A' . $row, "TOTAL");
+        $sheet->mergeCells('A' . $row . ':B' . $row); 
+        $sheet->getStyle('A' . $row . ':B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('C' . $row, number_format($totalPaymentAmount ?? 0));
+        $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('D' . $row, number_format($totalAccruedInterest ?? 0));
+        $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('E' . $row, number_format($totalInterestPayment ?? 0));
+        $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('F' . $row, number_format($totalTimeGap ?? 0));
+        $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('G' . $row, null);
+        $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('H' . $row, null);
 
         foreach (range('A', 'H') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
+
 
         // Mengatur border untuk tabel
         $styleArray = [
@@ -277,9 +390,9 @@ class effectiveController extends Controller
         $sheet->getStyle('A12:H12')->applyFromArray($styleArray);
 
         // Set border untuk semua data laporann
-        $sheet->getStyle('A13:H' . ($row - 1))->applyFromArray($styleArray);
+        $sheet->getStyle('A13:H' . $row)->applyFromArray($styleArray);
 
-        $filename = "accrual_interest_report_$no_acc.pdf";
+        $filename = "accrual_interest__effective_report_$no_acc.pdf";
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
         $temp_file = tempnam(sys_get_temp_dir(), 'phpspreadsheet_pdf');
         $writer->save($temp_file);

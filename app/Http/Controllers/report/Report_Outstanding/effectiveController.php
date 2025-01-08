@@ -27,11 +27,11 @@ class effectiveController extends Controller
     public function index(Request $request)
     {
         $id_pt = Auth::user()->id_pt;
-          // Ambil jumlah item per halaman dari query string, default 10
 
-          // Ambil data dengan pagination
-          $loans = report_effective::getLoanDetailsbyidpt($id_pt);
-
+        // Ambil jumlah item per halaman dari query string, default 10
+        $perPage = $request->input('per_page', 10);
+        // Ambil data dengan pagination
+        $loans = report_effective::fetchAll($id_pt, $perPage);
         return view('report.outstanding.effective.master', compact('loans'));
     }
 
@@ -42,15 +42,14 @@ class effectiveController extends Controller
             abort(404, 'Invalid ID');
         }
     
-        // Validate if the authenticated user has access to this `id_pt`
+        // Validate if the authenticated user has access to this `id_pt`'
         if ($id_pt != Auth::user()->id_pt) {
             abort(403, 'Unauthorized');
         }
-        $loan = report_effective::getLoanDetailsbyidpt(trim($id_pt));
+        // $loan = report_effective::getLoanDetailsbyidpt(trim($id_pt));
         // $corporateLoans = report_simpleinterest::getCorporateLoans($id_pt);
         // $reports = report_simpleinterest::getReportsByNoAcc(trim($id_pt));
-        $reports = report_effective::getLoanDetailsbyidpt(trim($id_pt));
-
+        // $reports = report_effective::getLoanDetailsbyidpt(trim($id_pt));
 
         $user = Auth::user();
 
@@ -131,6 +130,7 @@ class effectiveController extends Controller
         // Set informasi pinjaman
         $sheet->setCellValue('A2', 'Entity Number');
         $sheet->getStyle('A2')->getFont()->setBold(true); 
+        $sheet->getStyle('B2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         $sheet->setCellValue('B2', $loanFirst->no_branch);
         $sheet->setCellValue('A3', 'Entitiy Name');
         $sheet->getStyle('A3')->getFont()->setBold(true);
@@ -161,7 +161,7 @@ class effectiveController extends Controller
         $sheet->getStyle('A6')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
         // Set judul kolom tabel
-        $headers = ['No', 'Branch Number', 'Account Number','Debitort Name ','GL Account','Loan Type','GL Group','Original Date', 'Term (Months)', 'Maturity Date','Interest Rate','Payment Amount','EIR Amortised Cost Exposure','EIR Amortised Cost Calculated','Current Balance', 'Carrying Amount', 'Outstanding Receivable','Outstanding Interest','Cumulative Time Gap','Unamortized Transaction Cost','Unamortized UpFront Fee', 'Unearned Interest Income'];
+        $headers = ['No', 'Branch Number', 'Account Number','Debitor Name ','GL Account','Loan Type','GL Group','Original Date', 'Term (Months)', 'Maturity Date','Interest Rate','Payment Amount','EIR Amortised Cost Exposure','EIR Amortised Cost Calculated','Current Balance', 'Carrying Amount', 'Outstanding Receivable','Outstanding Interest','Cumulative Time Gap','Unamortized Transaction Cost','Unamortized UpFront Fee', 'Unearned Interest Income'];
         $columnIndex = 'A';
         foreach ($headers as $header) {
             $sheet->setCellValue($columnIndex . '8', $header);
@@ -217,12 +217,12 @@ class effectiveController extends Controller
             $bunga = $loan->cum_bunga;
             $totalInterestIncome += $loan->cum_bunga;
             // hitung nilai unaerned interest income
-                if ($row == 9) {
-                        $interestIncome = $totalInterestIncome;
-                    } else {
-                        $totalInterestIncome -= $bunga;
-                        $interestIncome = $totalInterestIncome;
-            }
+            //    if ($row == 9) {
+            //            $interestIncome = $totalInterestIncome;
+            //        } else {
+            //            $totalInterestIncome -= $bunga;
+            //            $interestIncome = $totalInterestIncome;
+            //}
 
             $bilint = $loan->bilint;
             $bilprn = $loan->bilprn;
@@ -236,6 +236,7 @@ class effectiveController extends Controller
          $sheet->setCellValue('B' . $row, $loan->no_branch);
          $sheet->getStyle('C' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
          $sheet->setCellValue('C' . $row, " " . $loan->no_acc);
+         $sheet->getStyle('D' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
          $sheet->setCellValue('D' . $row, $loan->deb_name);
          $sheet->getStyle('E' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
          $sheet->setCellValue('E' . $row, $loan->coa);
@@ -244,12 +245,12 @@ class effectiveController extends Controller
          $sheet->getStyle('G' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
          $sheet->setCellValue('G' . $row, $loan->GROUP);
          $sheet->getStyle('H' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-         $sheet->setCellValue('H' . $row, date('Y-m-d', strtotime($loan->org_date_dt)));
+         $sheet->setCellValue('H' . $row, date('d/m/Y', strtotime($loan->org_date_dt)));
          $sheet->getStyle('I' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
          $sheet->setCellValue('I' . $row, $loan->term);
          $sheet->getStyle('J' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-         $sheet->setCellValue('J' . $row, date('Y-m-d', strtotime($loan->mtr_date_dt)));
-         $sheet->getStyle('K' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+         $sheet->setCellValue('J' . $row, date('d/m/Y', strtotime($loan->mtr_date_dt)));
+         $sheet->getStyle('K' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
          $sheet->setCellValue('K' . $row, number_format($loan->rate*100,5). '%');
          $sheet->getStyle('L' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
          $sheet->setCellValue('L' . $row, number_format($loan->pmtamt));
@@ -288,9 +289,10 @@ class effectiveController extends Controller
             $row++;
         }
         //TOTAL EXCEL
-        $sheet->setCellValue('A' . $row, "Total");
+        $sheet->setCellValue('A' . $row, "TOTAL:");
         $sheet->mergeCells('A' . $row . ':J' . $row); // Merge cells A to J for the Total row
         $sheet->getStyle('A' . $row . ':J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('K' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         $sheet->setCellValue('K' . $row, number_format($master->avg('rate')*100, 5).'%');
         $sheet->getStyle('L' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         $sheet->setCellValue('L' . $row, number_format($master->sum('pmtamt')));
@@ -313,7 +315,7 @@ class effectiveController extends Controller
         $sheet->getStyle('U' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         $sheet->setCellValue('U' . $row, number_format($totalUnamortFee));
         $sheet->getStyle('V' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('V' . $row, number_format($interestIncome));
+        $sheet->setCellValue('V' . $row, number_format($totalInterestIncome));
            
 
 
@@ -338,7 +340,7 @@ class effectiveController extends Controller
         $sheet->getStyle('A6:V6')->applyFromArray($styleArray);
 
         // Set border untuk semua data laporan
-        $sheet->getStyle('A8:V' . ($row - 1))->applyFromArray($styleArray);
+        $sheet->getStyle('A8:V' . $row )->applyFromArray($styleArray);
 
         // Mengatur lebar kolom agar lebih rapi
         foreach (range('A', 'V') as $columnID) {
@@ -418,6 +420,7 @@ class effectiveController extends Controller
     // Set informasi pinjaman
     $sheet->setCellValue('A2', 'Entity Number');
     $sheet->getStyle('A2')->getFont()->setBold(true); 
+    $sheet->getStyle('B2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
     $sheet->setCellValue('B2', $loanFirst->no_branch);
     $sheet->setCellValue('A3', 'Entitiy Name');
     $sheet->getStyle('A3')->getFont()->setBold(true);
@@ -448,7 +451,7 @@ class effectiveController extends Controller
     $sheet->getStyle('A6')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
     // Set judul kolom tabel
-    $headers = ['No', 'Branch Number', 'Account Number','Debitort Name ','GL Account','Loan Type','GL Group','Original Date', 'Term (Months)', 'Maturity Date','Interest Rate','Payment Amount','EIR Amortised Cost Exposure','EIR Amortised Cost Calculated','Current Balance', 'Carrying Amount', 'Outstanding Receivable','Outstanding Interest','Cumulative Time Gap','Unamortized Transaction Cost','Unamortized UpFront Fee', 'Unearned Interest Income'];
+    $headers = ['No', 'Branch Number', 'Account Number','Debitor Name ','GL Account','Loan Type','GL Group','Original Date', 'Term (Months)', 'Maturity Date','Interest Rate','Payment Amount','EIR Amortised Cost Exposure','EIR Amortised Cost Calculated','Current Balance', 'Carrying Amount', 'Outstanding Receivable','Outstanding Interest','Cumulative Time Gap','Unamortized Transaction Cost','Unamortized UpFront Fee', 'Unearned Interest Income'];
     $columnIndex = 'A';
     foreach ($headers as $header) {
         $sheet->setCellValue($columnIndex . '8', $header);
@@ -508,12 +511,12 @@ class effectiveController extends Controller
          $bunga = $loan->cum_bunga;
          $totalInterestIncome += $loan->cum_bunga;
          // hitung nilai unaerned interest income
-             if ($row == 9) {
-                     $interestIncome = $totalInterestIncome;
-                 } else {
-                     $totalInterestIncome -= $bunga;
-                     $interestIncome = $totalInterestIncome;
-         }
+         //    if ($row == 9) {
+         //            $interestIncome = $totalInterestIncome;
+         //        } else {
+         //            $totalInterestIncome -= $bunga;
+         //            $interestIncome = $totalInterestIncome;
+         //}
 
          $bilint = $loan->bilint;
          $bilprn = $loan->bilprn;
@@ -534,12 +537,12 @@ class effectiveController extends Controller
          $sheet->getStyle('G' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
          $sheet->setCellValue('G' . $row, $loan->GROUP);
          $sheet->getStyle('H' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-         $sheet->setCellValue('H' . $row, date('Y-m-d', strtotime($loan->org_date_dt)));
+         $sheet->setCellValue('H' . $row, date('d/m/Y', strtotime($loan->org_date_dt)));
          $sheet->getStyle('I' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
          $sheet->setCellValue('I' . $row, $loan->term);
          $sheet->getStyle('J' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-         $sheet->setCellValue('J' . $row, date('Y-m-d', strtotime($loan->mtr_date_dt)));
-         $sheet->getStyle('K' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+         $sheet->setCellValue('J' . $row, date('d/m/Y', strtotime($loan->mtr_date_dt)));
+         $sheet->getStyle('K' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
          $sheet->setCellValue('K' . $row, number_format($loan->rate*100,5). '%');
          $sheet->getStyle('L' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
          $sheet->setCellValue('L' . $row, number_format($loan->pmtamt));
@@ -576,9 +579,10 @@ class effectiveController extends Controller
         $row++;
     }
     //TOTAL PDF
-    $sheet->setCellValue('A' . $row, "Total");
+    $sheet->setCellValue('A' . $row, "TOTAL:");
     $sheet->mergeCells('A' . $row . ':J' . $row); // Merge cells A to J for the Total row
     $sheet->getStyle('A' . $row . ':J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    $sheet->getStyle('K' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
     $sheet->setCellValue('K' . $row, number_format($master->avg('rate')*100, 5).'%');
     $sheet->getStyle('L' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
     $sheet->setCellValue('L' . $row, number_format($master->sum('pmtamt')));
@@ -601,7 +605,7 @@ class effectiveController extends Controller
     $sheet->getStyle('U' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
     $sheet->setCellValue('U' . $row, number_format($totalUnamortFee));
     $sheet->getStyle('V' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-    $sheet->setCellValue('V' . $row, number_format($interestIncome));
+    $sheet->setCellValue('V' . $row, number_format($totalInterestIncome));
        
 
 
@@ -628,7 +632,7 @@ class effectiveController extends Controller
     $sheet->getStyle('A6:V6')->applyFromArray($styleArray);
 
     // Set border untuk semua data laporan
-    $sheet->getStyle('A8:V' . ($row - 1))->applyFromArray($styleArray);
+    $sheet->getStyle('A8:V' . $row)->applyFromArray($styleArray);
 
     // Mengatur lebar kolom agar lebih rapi
     foreach (range('A', 'V') as $columnID) {
@@ -699,8 +703,8 @@ public function exportCsv(Request $request,$id_pt)
     $bulanAngka =  $request->input('bulan', date('n'));
 
     // Siapkan data CSV
-    $csvData[] = ['Outstanding Effective Report - Report Details'];
-    $csvData[] = ['No','Branch Number', 'Account Number','Debitor Name ', 'Carrying Amount', 'Unamortized Transaction Cost','Unamortized UpFront Fee','Unearned Interest Income'];
+    //$csvData[] = ['Outstanding Effective Report - Report Details'];
+    $csvData[] = ['Branch Number', 'Account Number','Debitor Name', 'EIR Exposure', 'Current Balance', 'Carrying Amount', 'Outstanding Interest', 'Unamortized Transaction Cost','Unamortized UpFront Fee','Unearned Interest Income'];
 
     $row = 1; // Mulai dari baris 13 untuk data laporan
     $totalInterestIncome = 0;
@@ -729,31 +733,29 @@ public function exportCsv(Request $request,$id_pt)
         $amortizedUpFrontFee = $loan->cum_amortisefee;
 
         // Hitung nilai unamortized Fee
-        if ($row === 1) {
-        $unamortFee = $provFloat;
-        } else {
-        $unamortFee = $provFloat + $amortizedUpFrontFee;
-        }
-
+        $unamortFee = $loan->prov * -1 + $loan->cum_amortisefee;
         $bunga = $loan->cum_bunga;
         $totalInterestIncome += $loan->cum_bunga;
         // hitung nilai unaerned interest income
-            if ($row == 9) {
-                    $interestIncome = $totalInterestIncome;
-                } else {
-                    $totalInterestIncome -= $bunga;
-                    $interestIncome = $totalInterestIncome;
-        }
+       //     if ($row == 9) {
+         //           $interestIncome = $totalInterestIncome;
+           //     } else {
+           //         $totalInterestIncome -= $bunga;
+           //         $interestIncome = $totalInterestIncome;
+      //  }
         $nourut += 1;
         $row++;
         $csvData[] = [
-            $nourut,
+            //$nourut,
             $loan->no_branch,
             $loan->no_acc,
             $loan->deb_name,
+            number_format($loan->eirex, 2 ?? 0),
+            number_format($loan->cbal, 2 ?? 0),
             number_format($loan->carrying_amount, 2 ?? 0),
+            number_format($loan->bilint, 2 ?? 0),
             number_format($unamortCost, 2 ?? 0),            
-            number_format($unamortFee, 2 ?? 0),
+            number_format(abs($unamortFee), 2 ?? 0),
             number_format($loan->cum_bunga, 2 ?? 0)
         ];
     }

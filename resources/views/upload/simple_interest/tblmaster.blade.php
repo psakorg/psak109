@@ -162,6 +162,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                        @if(count($tblmaster) > 0)
                             @foreach($tblmaster as $item)
                             <tr>
                                 <td>{{ $item->no_acc }}</td>
@@ -200,6 +201,11 @@
                                 <td>{{ $item->gol }}</td>
                             </tr>
                             @endforeach
+                            @else
+                            <tr>
+                                <td colspan="34" class="text-center">No data available</td>
+                            </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>

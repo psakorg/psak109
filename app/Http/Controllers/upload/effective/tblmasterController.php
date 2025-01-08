@@ -441,19 +441,20 @@ public function clear(Request $request)
 
         Log::info('Attempting to clear data for PT ID: ' . $id_pt);
         
-        $deleted = DB::table('tblmaster_tmp')
-            ->where('id_pt', $id_pt)
-            ->delete();
-        
-        if ($deleted > 0) {
-            DB::commit();
-            Log::info('Successfully deleted ' . $deleted . ' records');
-            return redirect()->back()->with('success', 'Berhasil menghapus ' . $deleted . ' data');
-        }
-        
-        DB::rollBack();
-        Log::warning('No data found to delete for PT ID: ' . $id_pt);
-        return redirect()->back()->with('error', 'Tidak ada data yang dapat dihapus untuk PT ini');
+        // Riyaci remark - Tidak boleh hapus data tblmaster_tmpcorporate
+        //$deleted = DB::table('tblmaster_tmp')
+        //->where('id_pt', $id_pt)
+        //->delete();
+        //
+        //if ($deleted > 0) {
+        //    DB::commit();
+        //    Log::info('Successfully deleted ' . $deleted . ' records');
+        //    return redirect()->back()->with('success', 'Berhasil menghapus ' . $deleted . ' data');
+        //}
+        //
+        //DB::rollBack();
+        //Log::warning('No data found to delete for PT ID: ' . $id_pt);
+        //return redirect()->back()->with('error', 'Tidak ada data yang dapat dihapus untuk PT ini');
         
     } catch (\Exception $e) {
         DB::rollBack();

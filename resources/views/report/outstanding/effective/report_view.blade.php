@@ -157,13 +157,13 @@
                     <!-- Tombol Export -->
                     <div class="d-flex gap-2">
                         <a href="#" class="btn btn-danger" id="exportPdf">
-                            <i class="fas fa-file-pdf"></i> Export PDF
+                            <i class="fas fa-file-pdf"></i> Export to PDF
                         </a>
                         <a href="#" id="exportExcel" class="btn btn-success">
-                            <i class="fas fa-file-excel"></i> Export Excel
+                            <i class="fas fa-file-excel"></i> Export to Excel
                         </a>
                         <a href="#" id="exportCsv" class="btn btn-primary">
-                            <i class="fas fa-file-csv"></i> Export CSV
+                            <i class="fas fa-file-csv"></i> Download File CSV
                         </a>
                     </div>
                 </div>
@@ -246,14 +246,15 @@
 
 
                                 $bunga = $loan->cum_bunga;
-                                $totalInterestIncome += $loan->cum_bunga;
+                                $totalInterestIncome += $loan->cum_bunga;                             
                                 // hitung nilai unaerned interest income
-                                    if ($loop->first) {
-                                            $interestIncome = $totalInterestIncome;
-                                        } else {
-                                            $totalInterestIncome -= $bunga;
-                                            $interestIncome = $totalInterestIncome;
-                                }
+                                //    if ($loop->first) {
+                                //        $interestIncome = $totalInterestIncome;
+                                //    } else {
+                                //        $totalInterestIncome -= $bunga;
+                                //        $interestIncome = $totalInterestIncome;
+                                //}  
+                                
 
                                 $bilint = $loan->bilint;
                                 $bilprn = $loan->bilprn;
@@ -373,7 +374,8 @@
                                     <td class="text-end"><strong>{{ number_format($master->sum('cum_timegap') ?? 0)}}</strong></td>
                                     <td class="text-end"><strong>{{ number_format($totalUnamortCost ?? 0)}}</strong></td>
                                     <td class="text-end"><strong>{{ number_format($totalUnamortFee ?? 0)}}</strong></td>
-                                    <td class="text-end"><strong></strong>{{number_format($interestIncome ?? 0)}}</td>
+                                    <td class="text-end"><strong>{{number_format($totalInterestIncome ?? 0)}}</strong></td>
+                                    <!-- <td class="text-end"><strong></strong>{{number_format($interestIncome ?? 0)}}</td> -->
                                 </tr>
                             @endif
                         </tbody>
@@ -452,6 +454,15 @@
 </div>
 
 <script>
+//Pagination
+    function changePerPage() {
+        const perPage = document.getElementById('per_page').value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('per_page', perPage);
+        url.searchParams.delete('page'); // Hapus parameter page saat mengganti per_page
+        window.location.href = url;
+    }
+
 function showModal(type) {
     const reportTypeSelect = document.getElementById('reportType');
     const accountNumberInput = document.getElementById('accountNumber');

@@ -45,7 +45,7 @@ class simpleinterestController extends Controller
             // $loan = report_simpleinterest::getLoanDetails($no_acc,$id_pt);
             // $reports = report_simpleinterest::getReportsByNoAcc($no_acc,$id_pt);
             
-            // Eksekusi stored procedure
+            // Eksekusi stored proceduree
             DB::beginTransaction();
             
             // Panggil procedure

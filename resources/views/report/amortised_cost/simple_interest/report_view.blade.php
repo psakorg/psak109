@@ -173,7 +173,8 @@
                                 // Hitung nilai unamortized
                                     if ($loop->first) {
                                         // Untuk baris pertama, gunakan nilai upfrontFee
-                                        $unamortized = $upfrontFee;
+                                        $unamortized = -$loan->prov;
+                                        //$unamortized = $upfrontFee;
                                     } else {
                                         // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
                                         $unamortized = $unamortized + $amortized;
