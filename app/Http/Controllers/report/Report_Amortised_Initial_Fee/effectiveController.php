@@ -202,9 +202,6 @@ foreach ($infoRows as $info) {
     $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
     $sheet->setCellValue('I' . $row, number_format($unamort ?? 0));
 
-    // Mengatur font menjadi bold untuk setiap baris data
-    $sheet->getStyle('A' . $row . ':I' . $row)->getFont()->setBold(true);
-
 
             // Menambahkan warna latar belakang alternatif pada baris data
             if ($row % 2 == 0) {
@@ -214,7 +211,7 @@ foreach ($infoRows as $info) {
 
             $row++;
         }
-        //TOTAL AMORTISED INITIAL COST
+        //TOTAL AMORTISED INITIAL FEE
       $sheet->setCellValue('A' . $row, "TOTAL");
       $sheet->mergeCells('A' . $row . ':B' . $row); 
       $sheet->getStyle('A' . $row . ':B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -426,9 +423,6 @@ foreach ($infoRows as $info) {
     $sheet->setCellValue('H' . $row, number_format($cumulativeAmortized));
     $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
     $sheet->setCellValue('I' . $row, number_format($unamort ?? 0));
-
-    // Mengatur font menjadi bold untuk setiap baris data
-    $sheet->getStyle('A' . $row . ':I' . $row)->getFont()->setBold(true);
 
 
             // Menambahkan warna latar belakang alternatif pada baris data
