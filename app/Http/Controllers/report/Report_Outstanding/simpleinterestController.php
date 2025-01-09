@@ -216,7 +216,8 @@ class simpleinterestController extends Controller
             $amortizedUpFrontFee = $loan->cum_amortisefee;
 
           // Hitung nilai unamortized Fee
-           $unamortFee = $loan->prov * -1 + $loan->cum_amortisefee;
+          // $unamortFee = $loan->prov * -1 + $loan->cum_amortisefee;
+           $unamortFee = $loan->prov * -1 + $loan->cum_amortized;
            $totalUnamortFee += $unamortFee;
 
             $bunga = $loan->cum_bunga;
@@ -493,7 +494,8 @@ class simpleinterestController extends Controller
           $amortizedUpFrontFee = $loan->cum_amortisefee;
 
         // Hitung nilai unamortized Fee
-        $unamortFee = $loan->prov * -1 + $loan->cum_amortisefee;
+        //$unamortFee = $loan->prov * -1 + $loan->cum_amortisefee;
+        $unamortFee = $loan->prov * -1 + $loan->cum_amortized;
         $totalUnamortFee += $unamortFee;
 
           $bunga = $loan->cum_bunga;
@@ -719,7 +721,7 @@ public function exportCsv(Request $request, $id_pt)
 
     // Siapkan data CSV
     //$csvData[] = ['Outstanding Simple Interest - Report Details'];
-    $csvData[] = ['Entity Number','Account Number','Debitor Name','EIR Exposure', 'Current Balance', 'Carrying Amount', 'Outstanding Interest', 'Unamortized Transation Cost','Unamortized UpFront Fee','Unearned Interest Income'];
+    $csvData[] = ['Entity Number','Account Number','Debitor Name','EIR Exposure', 'Current Balance', 'Carrying Amount', 'Outstanding Interest', 'Unamortized Transaction Cost','Unamortized UpFront Fee','Unearned Interest Income'];
 
     $row = 1;
     $nourut = 0;
@@ -747,7 +749,8 @@ public function exportCsv(Request $request, $id_pt)
         $amortizedUpFrontFee = $loan->cum_amortisefee;
 
         // Hitung nilai unamortized Fee
-        $unamortFee = $loan->prov * -1 + $loan->cum_amortisefee;
+        //$unamortFee = $loan->prov * -1 + $loan->cum_amortisefee;
+        $unamortFee = $loan->prov * -1 + $loan->cum_amortized;
 
         $bunga = $loan->cum_bunga;
         $totalInterestIncome += $loan->cum_bunga;
@@ -765,7 +768,7 @@ public function exportCsv(Request $request, $id_pt)
             $loan->no_branch,
             $loan->no_acc,
             $loan->deb_name,
-            number_format($loan->eirex, 2 ?? 0),
+            number_format($loan->eirex, 5 ?? 0),
             number_format($loan->cbal, 2 ?? 0),
             number_format($loan->carrying_amount, 2 ?? 0),
             number_format($loan->bilint, 2 ?? 0),

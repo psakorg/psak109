@@ -85,7 +85,7 @@ class effectiveController extends Controller
             $sheet->setCellValue('A' . $currentRow, $info[0]);
             $sheet->setCellValue('B' . $currentRow, $info[1]);
             $sheet->setCellValue('C' . $currentRow, $info[2]);
-            $sheet->getRowDimension($currentRow)->setRowHeight(25);
+            $sheet->getRowDimension($currentRow)->setRowHeight(15);
             $currentRow++;
         }
         $sheet->getColumnDimension('F')->setWidth(20);
@@ -160,15 +160,15 @@ class effectiveController extends Controller
             $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('B' . $row, date('d/m/Y', strtotime($report->tglangsuran)));
             $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('C' . $row, 'Rp ' . number_format($report->pmtamt, 2));
+            $sheet->setCellValue('C' . $row, number_format($report->pmtamt, 2));
             $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('D' . $row, 'Rp ' . number_format($report->accrconv ?? 0, 2));
+            $sheet->setCellValue('D' . $row, number_format($report->accrconv ?? 0, 2));
             $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('E' . $row, 'Rp ' . number_format($report->bunga, 2));
+            $sheet->setCellValue('E' . $row, number_format($report->bunga, 2));
             $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('F' . $row, number_format($report->timegap, 2));
             $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('G' . $row, 'Rp ' . number_format($report->outsamtconv, 2));
+            $sheet->setCellValue('G' . $row, number_format($report->outsamtconv, 2));
             $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('H' . $row, number_format($cumulativeTimeGap, 2));
 
@@ -392,7 +392,7 @@ class effectiveController extends Controller
         // Set border untuk semua data laporann
         $sheet->getStyle('A13:H' . $row)->applyFromArray($styleArray);
 
-        $filename = "accrual_interest__effective_report_$no_acc.pdf";
+        $filename = "accrual_interest_effective_report_$no_acc.pdf";
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
         $temp_file = tempnam(sys_get_temp_dir(), 'phpspreadsheet_pdf');
         $writer->save($temp_file);

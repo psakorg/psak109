@@ -65,48 +65,57 @@ class simpleinterestController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set informasi pinjaman
-        $sheet->setCellValue('A2', 'Entitiy Name');
+        //$sheet->setCellValue('A2', 'Entitiy Name');
+        //$sheet->getStyle('A2')->getFont()->setBold(true);
+        //$entitiyName = 'PT. PACIFIC MULTI FINANCE';
+        //$sheet->setCellValue('B2', $entitiyName); 
+
+        $sheet->setCellValue('A2', 'Account Number');
         $sheet->getStyle('A2')->getFont()->setBold(true);
-        $entitiyName = 'PT. PACIFIC MULTI FINANCE';
-        $sheet->setCellValue('B2', $entitiyName); 
+        //$sheet->setCellValue('B3', ':');
+        $sheet->setCellValue('B2', $loan->no_acc);
+        $sheet->getStyle('B2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('B2')->getAlignment()->setWrapText(false);
 
-        $sheet->setCellValue('A3', 'Account Number');
+        $sheet->setCellValue('A3', 'Debitor Name');
         $sheet->getStyle('A3')->getFont()->setBold(true);
-        $sheet->setCellValue('B3', ':');
-        $sheet->setCellValue('C3', $loan->no_acc);
-        $sheet->getStyle('A3')->getAlignment()->setWrapText(false);
+        //$sheet->setCellValue('B3', ':');
+        $sheet->setCellValue('B3', $loan->deb_name);
+        $sheet->getStyle('B3')->getAlignment()->setWrapText(false);
 
-        $sheet->setCellValue('A4', 'Debitor Name');
+        $sheet->setCellValue('A4', 'Original Amount');
         $sheet->getStyle('A4')->getFont()->setBold(true);
-        $sheet->setCellValue('B4', ':');
-        $sheet->setCellValue('C4', $loan->deb_name);
-        $sheet->getStyle('A4')->getAlignment()->setWrapText(false);
+        //$sheet->setCellValue('B5', ':');
+        $sheet->setCellValue('B4', number_format($loan->org_bal ?? 0,0));
+        $sheet->getStyle('B4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
-        $sheet->setCellValue('A5', 'Original Amount');
+        $sheet->setCellValue('A5', 'Term');
         $sheet->getStyle('A5')->getFont()->setBold(true);
-        $sheet->setCellValue('B5', ':');
-        $sheet->setCellValue('C5', $loan->org_bal);
-        $sheet->getStyle('A5')->getAlignment()->setWrapText(false);
+        //$sheet->setCellValue('B6', ':');
+        $sheet->setCellValue('B5', $loan->TERM . ' Months');
+        $sheet->getStyle('B5')->getAlignment()->setWrapText(false);
 
-        $sheet->setCellValue('A6', 'Term');
-        $sheet->getStyle('A6')->getFont()->setBold(true);
-        $sheet->setCellValue('B6', ':');
-        $sheet->setCellValue('C6', $loan->TERM . ' Months');
-        $sheet->getStyle('A6')->getAlignment()->setWrapText(false);
-
-        $sheet->setCellValue('A7', 'Interest Rate');
-        $sheet->getStyle('B7')->getFont()->setBold(true); // Set bol untuk  Interest Rate
-        $sheet->setCellValue('D3', 'Outstanding Amount');
-        $sheet->getStyle('D3')->getFont()->setBold(true); // Set bold untuk  Outstanding Amount
-        $sheet->setCellValue('E3', $loan->no_acc);
-        $sheet->setCellValue('D4', 'EIR Conversion Calculated');
-        $sheet->getStyle('D4')->getFont()->setBold(true); // Set bold untuk EIR Conversion Calculated
-        $sheet->setCellValue('E4', $loan->deb_name);
-        $sheet->setCellValue('D5', 'Original Loan Date');
-        $sheet->getStyle('D5')->getFont()->setBold(true); // Set bold untuk Original Loan Date
-        $sheet->setCellValue('E5', $loan->org_bal);
-        $sheet->setCellValue('D6', 'Maturity Date');
-        $sheet->getStyle('E6')->getFont()->setBold(true); // Set bold untuk Maturity Date
+        $sheet->setCellValue('A6', 'Interest Rate');
+        $sheet->getStyle('A6')->getFont()->setBold(true); // Set bol untuk  Interest Rate
+        $sheet->setCellValue('B6', number_format($loan->rate*100,5). "%" ?? 0);
+        $sheet->getStyle('B4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+     
+        $sheet->setCellValue('E2', 'Outstanding Amount');
+        $sheet->getStyle('E2')->getFont()->setBold(true); // Set bold untuk  Outstanding Amount
+        $sheet->setCellValue('F2', number_format($$loan->org_bal ?? 0));
+        $sheet->getStyle('F2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->setCellValue('E3', 'EIR Conversion Calculated');
+        $sheet->getStyle('E3')->getFont()->setBold(true); // Set bold untuk EIR Conversion Calculated
+        $sheet->setCellValue('F3', number_format($loan->eirex*100,14). "%" ?? 0);
+        $sheet->getStyle('F3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->setCellValue('E4', 'Original Loan Date');
+        $sheet->getStyle('E4')->getFont()->setBold(true); // Set bold untuk Original Loan Date
+        $sheet->setCellValue('F4', number_format($loan->org_bal ?? 0));
+        $sheet->getStyle('F4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->setCellValue('E5', 'Maturity Date');
+        $sheet->getStyle('E5')->getFont()->setBold(true); // Set bold untuk Maturity Date
+        $sheet->setCellValue('F5', date('d-m-Y', strtotime($loan->mtr_date)));
+        $sheet->getStyle('F5')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
         // Set judul tabel laporan
         $sheet->setCellValue('A10', 'Accrual Interest Report - Report Details');

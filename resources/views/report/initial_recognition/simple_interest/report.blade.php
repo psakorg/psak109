@@ -229,7 +229,7 @@
                                                             <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'expected_cashflow_simple')">Simple Interest</a></li>
                                                         </ul>
                                                     </li>
-                                                    <li>
+                                                    <!-- <li>
                                                         <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
                                                             Outstanding <i class="fas fa-chevron-right float-end"></i>
                                                         </a>
@@ -246,7 +246,7 @@
                                                             <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'journal_effective')">Effective</a></li>
                                                             <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'journal_simple')">Simple Interest</a></li>
                                                         </ul>
-                                                    </li>
+                                                    </li> -->
                                                 </ul>
                                             </div>
                             </div>

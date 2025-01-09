@@ -704,7 +704,7 @@ public function exportCsv(Request $request,$id_pt)
 
     // Siapkan data CSV
     //$csvData[] = ['Outstanding Effective Report - Report Details'];
-    $csvData[] = ['Branch Number', 'Account Number','Debitor Name', 'EIR Exposure', 'Current Balance', 'Carrying Amount', 'Outstanding Interest', 'Unamortized Transaction Cost','Unamortized UpFront Fee','Unearned Interest Income'];
+    $csvData[] = ['Entity Number', 'Account Number','Debitor Name', 'EIR Exposure', 'Current Balance', 'Carrying Amount', 'Outstanding Interest', 'Unamortized Transaction Cost','Unamortized UpFront Fee','Unearned Interest Income'];
 
     $row = 1; // Mulai dari baris 13 untuk data laporan
     $totalInterestIncome = 0;
@@ -750,7 +750,7 @@ public function exportCsv(Request $request,$id_pt)
             $loan->no_branch,
             $loan->no_acc,
             $loan->deb_name,
-            number_format($loan->eirex, 2 ?? 0),
+            number_format($loan->eirex, 5 ?? 0),
             number_format($loan->cbal, 2 ?? 0),
             number_format($loan->carrying_amount, 2 ?? 0),
             number_format($loan->bilint, 2 ?? 0),

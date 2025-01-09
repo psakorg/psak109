@@ -65,57 +65,70 @@ class effectiveController extends Controller
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Set informasi pinjaman
-        $sheet->setCellValue('A2', 'Entitiy Name');
-        $sheet->getStyle('A2')->getFont()->setBold(true);
-        $entitiyName = 'PT. PACIFIC MULTI FINANCE';
-        $sheet->setCellValue('B2', $entitiyName);
-
-$sheet->setCellValue('A3', 'Account Number');
-$sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Account Number
-$sheet->setCellValue('B3', $loan->no_acc);
-
-$sheet->setCellValue('A4', 'Debitor Name');
-$sheet->getStyle('A4')->getFont()->setBold(true); // Set bold untuk Debitor Name
-$sheet->setCellValue('B4', $loan->deb_name);
-
-$sheet->setCellValue('A5', 'Original Amount');
-$sheet->getStyle('A5')->getFont()->setBold(true); // Set bold untuk Original Amount
-$sheet->setCellValue('B5', number_format($loan->org_bal, 2));
-
-$sheet->setCellValue('A6', 'Original Loan Date');
-$sheet->getStyle('A6')->getFont()->setBold(true); // Set bold untuk Original Loan Date
-$sheet->setCellValue('B6', date('Y-m-d', strtotime($loan->org_date)));
-
-$sheet->setCellValue('A7', 'Term');
-$sheet->getStyle('A7')->getFont()->setBold(true); // Set bold untuk Term
-$sheet->setCellValue('B7', $loan->TERM);
-
-$sheet->setCellValue('D3', 'Transaction Cost');
-$sheet->getStyle('D3')->getFont()->setBold(true); // Set bold untuk Transaction Cost
-$trxcost = preg_replace('/[^\d.]/', '', $master->trxcost); // Mengambil nilai dari database
-$trxcostFloat = (float)$trxcost;
-$sheet->setCellValue('E3', number_format($trxcostFloat, 2));
-
-$sheet->setCellValue('D4', 'Outstanding Initial Cost');
-$sheet->getStyle('D4')->getFont()->setBold(true); // Set bold untuk Outstanding Initial Cost
-$sheet->setCellValue('E4', number_format($loan->org_bal, 2));
-
-$sheet->setCellValue('D5', 'EIR Cost Calculated');
-$sheet->getStyle('D5')->getFont()->setBold(true); // Set bold untuk EIR Cost Calculated
-$sheet->setCellValue('E5', number_format($loan->eircalc_cost * 100, 2) . ' %');
-
-$sheet->setCellValue('D6', 'Maturity Loan Date');
-$sheet->getStyle('D6')->getFont()->setBold(true); // Set bold untuk Maturity Loan Date
-$sheet->setCellValue('E6', date('Y-m-d', strtotime($loan->mtr_date)));
-
-$sheet->setCellValue('D7', 'Interest Rate');
-$sheet->getStyle('D7')->getFont()->setBold(true); // Set bold untuk Interest Rate
-$sheet->setCellValue('E7', number_format($master->rate * 100, 2) . ' %');
+  // Set informasi pinjaman
+  $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+  $sheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+  $sheet->getPageMargins()->setTop(0.5);
+  $sheet->getPageMargins()->setRight(0.5);
+  $sheet->getPageMargins()->setLeft(0.5);
+  $sheet->getPageMargins()->setBottom(0.5);
+ 
+  $sheet->getColumnDimension('A')->setWidth(20);
+  $sheet->getColumnDimension('B')->setWidth(5);
+  $sheet->getColumnDimension('C')->setWidth(30);
+  $entityName = "PT PRAMATECH";
+  $infoRows = [
+      ['Entity Name', ':', $entityName],
+      ['Account Number', ':', "'" . $loan->no_acc],
+      ['Debitor Name', ':', $loan->deb_name],
+      ['Original Amount', ':', number_format($loan->org_bal, 2)],
+      ['Original Loan Date', ':', date('d/m/Y', strtotime($loan->org_date))],
+      ['Term', ':', $loan->term . ' Month'],
+  ];
+ 
+ 
+  $currentRow = 3;
+  foreach ($infoRows as $info) {
+      $sheet->setCellValue('A' . $currentRow, $info[0]);
+      $sheet->setCellValue('B' . $currentRow, $info[1]);
+      $sheet->setCellValue('C' . $currentRow, $info[2]);
+      $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getStyle('B' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getStyle('C' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getRowDimension($currentRow)->setRowHeight(25);
+      $currentRow++;
+  }
+  $sheet->getColumnDimension('G')->setWidth(20);
+  $sheet->getColumnDimension('H')->setWidth(5);
+  $sheet->getColumnDimension('I')->setWidth(30);
+   // Misalkan trxcost adalah string dengan simbol mata uang
+   $trxcost = $master->trxcost; // Ambil nilai dari database
+   // Hapus simbol mata uang dan pemisah ribuan
+   $trxcost = preg_replace('/[^\d.]/', '', $trxcost);
+   // Konversi ke float
+   $trxcostFloat = (float)$trxcost;
+  $infoRows = [
+  ['Transaction Cost', ':', number_format($trxcostFloat ?? 0, 2)],
+  ['Outstanding Initial Cost', ':', number_format($loan->org_bal ?? 0, 2) ],
+  ['EIR Cost Calculated', ':', number_format($loan->eircalc_cost * 100, 14) . '%'],
+  ['Maturity Loan Date', ':', date('d/m/Y', strtotime($loan->mtr_date))],
+  ['Interest Rate', ':', number_format($master->rate  * 100, 5) . '%'],
+  ];
+  $currentRow = 3;
+  foreach ($infoRows as $info) {
+      $sheet->setCellValue('G' . $currentRow, $info[0]);
+      $sheet->setCellValue('H' . $currentRow, $info[1]);
+      $sheet->setCellValue('I' . $currentRow, $info[2]);
+      $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getStyle('I' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getRowDimension($currentRow)->setRowHeight(25);
+      $currentRow++;
+  }
 
         // Set judul tabel laporan
         $sheet->setCellValue('A10', 'Amortised Initial Cost Effective - Report Details');
-        $sheet->mergeCells('A10:J10'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('A10:I10'); // Menggabungkan sel untuk judul tabel
         $sheet->getStyle('A10')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('A10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('A10')->getFill()->setFillType(Fill::FILL_SOLID);
@@ -146,32 +159,59 @@ $sheet->setCellValue('E7', number_format($master->rate * 100, 2) . ' %');
         }
 
         // Mengisi data laporan ke dalam tabel
-        // Mengisi data laporan ke dalam tabel
 $row = 13; // Mulai dari baris 13 untuk data laporan
 $cumulativeAmortized = 0; // Inisialisasi variabel kumulatif
 $unamortrxcost = $trxcostFloat ?? 0; // Menggunakan nilai trxcostFloat untuk unamortized
 $unamort = $unamortrxcost; // Inisialisasi unamort
+                                $totalPaymentAmount = 0;
+                                $totalEffectiveInterestUF_TC = 0;
+                                $totalEffectiveInterestUF = 0;
+                                $totalAmortised = 0;
+                                $totalOutstandingAmountInitialTransactionCost = 0;
+                                $totalUnamortizedTransactionCost = 0;
 foreach ($reports as $report) {
     $amortized = $report->amortisecost ?? 0; // Ambil nilai amortized dari laporan
     $cumulativeAmortized += $amortized; // Tambahkan amortized ke total kumulatif
-
+    $amortized = $report->amortisecost; // Ambil nilai amortized dari laporan
+    $cumulativeAmortized += $amortized; // Tambahkan amortized ke total kumulatif
+    $unamortrxcost = $trxcostFloat;
+    $amorcost = $report->amortisecost;
     // Hitung nilai unamortized
-    if ($row == 13) { // Untuk baris pertama
-        $unamort = $unamortrxcost; // Gunakan nilai upfrontFee
+    if ($row == 13) {
+        // Untuk baris pertama, gunakan nilai trxcost
+        $unamort = $unamortrxcost;
     } else {
-        $unamort += $amortized; // Tambahkan amortized ke unamortized
+        // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
+        $unamort = $unamort + $amortized;
     }
 
+    // Hitung total untuk setiap kolom
+    $totalPaymentAmount += $report->pmtamt ?? 0;
+    $totalEffectiveInterestUF_TC += $report->bunga ?? 0;
+    $totalEffectiveInterestUF += $report->bunga ?? 0;
+    $totalAmortised += $amortized;
+    $totalOutstandingAmountInitialTransactionCost += $report->outsamtcost ?? 0;
+    $totalUnamortizedTransactionCost += $unamort;
+
     // Mengisi data ke dalam kolom
+    $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
     $sheet->setCellValue('A' . $row, $report->bulanke ?? 'Data tidak ditemukan');
+    $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
     $sheet->setCellValue('B' . $row, isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate');
-    $sheet->setCellValue('C' . $row, number_format($report->pmtamt ?? 0, 2));
-    $sheet->setCellValue('D' . $row, number_format($report->bunga ?? 0, 2));
-    $sheet->setCellValue('E' . $row, number_format($report->bunga ?? 0, 2)); // Sama dengan kolom D
-    $sheet->setCellValue('F' . $row, number_format($report->amortisecost ?? 0, 2));
-    $sheet->setCellValue('G' . $row, number_format($report->outsamtcost ?? 0, 2));
-    $sheet->setCellValue('H' . $row, number_format($cumulativeAmortized, 2));
-    $sheet->setCellValue('I' . $row, number_format($unamort ?? 0, 2));
+    $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('C' . $row, number_format($report->pmtamt ?? 0));
+    $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('D' . $row, number_format($report->bunga ?? 0));
+    $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('E' . $row, number_format($report->bunga ?? 0)); // Sama dengan kolom D
+    $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('F' . $row, number_format($report->amortisecost ?? 0));
+    $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('G' . $row, number_format($report->outsamtcost ?? 0));
+    $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('H' . $row, number_format($cumulativeAmortized));
+    $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('I' . $row, number_format($unamort ?? 0));
 
     // Mengatur font menjadi bold untuk setiap baris data
     $sheet->getStyle('A' . $row . ':I' . $row)->getFont()->setBold(true);
@@ -179,12 +219,34 @@ foreach ($reports as $report) {
 
             // Menambahkan warna latar belakang alternatif pada baris data
             if ($row % 2 == 0) {
-                $sheet->getStyle('A' . $row . ':J' . $row)->getFill()->setFillType(Fill::FILL_SOLID);
-                $sheet->getStyle('A' . $row . ':J' . $row)->getFill()->getStartColor()->setARGB('FFEFEFEF'); // Warna latar belakang untuk baris genap
+                $sheet->getStyle('A' . $row . ':I' . $row)->getFill()->setFillType(Fill::FILL_SOLID);
+                $sheet->getStyle('A' . $row . ':I' . $row)->getFill()->getStartColor()->setARGB('FFEFEFEF'); // Warna latar belakang untuk baris genap
             }
 
             $row++;
         }
+        //TOTAL AMORTISED INITIAL COST
+      $sheet->setCellValue('A' . $row, "TOTAL");
+      $sheet->mergeCells('A' . $row . ':B' . $row); 
+      $sheet->getStyle('A' . $row . ':B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('C' . $row, number_format($reports->sum('pmtamt')));
+      $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('D' . $row, number_format($reports->sum('bunga')));
+      $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('E' . $row, number_format($reports->sum('bunga')));
+      $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('F' . $row, number_format($reports->sum('amortisecost')));
+      $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('G' . $row, $reports->sum('outsamtcost'));
+      $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('H' . $row, null);
+      $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('I' . $row, null);
+
+      foreach (range('A', 'I') as $columnID) {
+          $sheet->getColumnDimension($columnID)->setAutoSize(true);
+      }
 
         // Mengatur border untuk tabel
         $styleArray = [
@@ -197,18 +259,18 @@ foreach ($reports as $report) {
         ];
 
         // Set border untuk header tabel
-        $sheet->getStyle('A12:J12')->applyFromArray($styleArray);
+        $sheet->getStyle('A12:I12')->applyFromArray($styleArray);
 
         // Set border untuk semua data laporan
-        $sheet->getStyle('A13:J' . ($row - 1))->applyFromArray($styleArray);
+        $sheet->getStyle('A13:I' . $row)->applyFromArray($styleArray);
 
         // Mengatur lebar kolom agar lebih rapi
-        foreach (range('A', 'J') as $columnID) {
+        foreach (range('A', 'I') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 
         // Siapkan nama file
-        $filename = "amortised_initial_cost_report_$no_acc.xlsx";
+        $filename = "amortised_initial_cost_report_effective_$no_acc.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -227,6 +289,7 @@ foreach ($reports as $report) {
     // Ambil data loan dan reports
     $loan = report_effective::getLoanDetails(trim($no_acc), trim($id_pt));
     $reports = report_effective::getReportsByNoAcc(trim($no_acc), trim($id_pt));
+    $master = report_effective::getMasterDataByNoAcc(trim($no_acc), trim($id_pt));
 
     // Cek apakah data loan dan reports ada
     if (!$loan || $reports->isEmpty()) {
@@ -239,45 +302,70 @@ foreach ($reports as $report) {
     $sheet->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
 
 
-    // Set informasi pinjaman
-$sheet->setCellValue('A2', 'Entitiy Name');
-$sheet->getStyle('A2')->getFont()->setBold(true);
-$entitiyName = 'PT. PACIFIC MULTI FINANCE';
-$sheet->setCellValue('B2', $entitiyName);
-    $sheet->setCellValue('A3', 'Account Number');
-        $sheet->getStyle('A3')->getFont()->setBold(true); // Set bold untuk Account Number
-        $sheet->setCellValue('B3', $loan->no_acc);
-        $sheet->setCellValue('A4', 'Debitor Name');
-        $sheet->getStyle('A4')->getFont()->setBold(true); // Set bold untuk Debitor Name
-        $sheet->setCellValue('B4', $loan->deb_name);
-        $sheet->setCellValue('A5', 'Original Amount');
-        $sheet->getStyle('A5')->getFont()->setBold(true); // Set bold untuk Original Amount
-        $sheet->setCellValue('B5', number_format($loan->org_bal, 2));
-        $sheet->setCellValue('A6', 'Original Loan Date');
-        $sheet->getStyle('A6')->getFont()->setBold(true); // Set bold untuk Original Loan Date
-        $sheet->setCellValue('B6', date('Y-m-d', strtotime($loan->org_date)));
-        $sheet->setCellValue('A7', 'Term');
-        $sheet->getStyle('A7')->getFont()->setBold(true); // Set bold untuk Term
-        $sheet->setCellValue('B7', $loan->TERM);
-        $sheet->setCellValue('D3', 'Transaction Cost');
-        $sheet->getStyle('D3')->getFont()->setBold(true); // Set bold untuk Transaction Cost
-        $sheet->setCellValue('E3', $loan->no_acc);
-        $sheet->setCellValue('D4', 'Outstanding Initial Cost');
-        $sheet->getStyle('D4')->getFont()->setBold(true); // Set bold untuk Outstanding Initial Cost
-        $sheet->setCellValue('E4', $loan->deb_name);
-        $sheet->setCellValue('D5', 'EIR Cost Calculated');
-        $sheet->getStyle('D5')->getFont()->setBold(true); // Set bold untuk EIR Cost Calculated
-        $sheet->setCellValue('E5', number_format($loan->org_bal, 2));
-        $sheet->setCellValue('D6', 'Maturity Loan Date');
-        $sheet->getStyle('D6')->getFont()->setBold(true); // Set bold untuk Maturity Loan Date
-        $sheet->setCellValue('E6', date('Y-m-d', strtotime($loan->org_date)));
-        $sheet->setCellValue('D7', 'Interest Rate');
-        $sheet->getStyle('D7')->getFont()->setBold(true); // Set bold untuk Interest Rate
-        $sheet->setCellValue('E7', $loan->TERM);
+  // Set informasi pinjaman
+  $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+  $sheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+  $sheet->getPageMargins()->setTop(0.5);
+  $sheet->getPageMargins()->setRight(0.5);
+  $sheet->getPageMargins()->setLeft(0.5);
+  $sheet->getPageMargins()->setBottom(0.5);
+ 
+  $sheet->getColumnDimension('A')->setWidth(20);
+  $sheet->getColumnDimension('B')->setWidth(5);
+  $sheet->getColumnDimension('C')->setWidth(30);
+  $entityName = "PT PRAMATECH";
+  $infoRows = [
+      ['Entity Name', ':', $entityName],
+      ['Account Number', ':', "'" . $loan->no_acc],
+      ['Debitor Name', ':', $loan->deb_name],
+      ['Original Amount', ':', number_format($loan->org_bal, 2)],
+      ['Original Loan Date', ':', date('d/m/Y', strtotime($loan->org_date))],
+      ['Term', ':', $loan->term . ' Month'],
+  ];
+ 
+ 
+  $currentRow = 3;
+  foreach ($infoRows as $info) {
+      $sheet->setCellValue('A' . $currentRow, $info[0]);
+      $sheet->setCellValue('B' . $currentRow, $info[1]);
+      $sheet->setCellValue('C' . $currentRow, $info[2]);
+      $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getStyle('B' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getStyle('C' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getRowDimension($currentRow)->setRowHeight(25);
+      $currentRow++;
+  }
+  $sheet->getColumnDimension('G')->setWidth(20);
+  $sheet->getColumnDimension('H')->setWidth(5);
+  $sheet->getColumnDimension('I')->setWidth(30);
+   // Misalkan trxcost adalah string dengan simbol mata uang
+   $trxcost = $master->trxcost; // Ambil nilai dari database
+   // Hapus simbol mata uang dan pemisah ribuan
+   $trxcost = preg_replace('/[^\d.]/', '', $trxcost);
+   // Konversi ke float
+   $trxcostFloat = (float)$trxcost;
+  $infoRows = [
+  ['Transaction Cost', ':', number_format($trxcostFloat ?? 0, 2)],
+  ['Outstanding Initial Cost', ':', number_format($loan->org_bal ?? 0, 2) ],
+  ['EIR Cost Calculated', ':', number_format($loan->eircalc_cost * 100, 14) . '%'],
+  ['Maturity Loan Date', ':', date('d/m/Y', strtotime($loan->mtr_date))],
+  ['Interest Rate', ':', number_format($master->rate  * 100, 5) . '%'],
+  ];
+  $currentRow = 3;
+  foreach ($infoRows as $info) {
+      $sheet->setCellValue('G' . $currentRow, $info[0]);
+      $sheet->setCellValue('H' . $currentRow, $info[1]);
+      $sheet->setCellValue('I' . $currentRow, $info[2]);
+      $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getStyle('I' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+      $sheet->getRowDimension($currentRow)->setRowHeight(25);
+      $currentRow++;
+  }
 
     // Set judul tabel laporan
     $sheet->setCellValue('A10', 'Amortised Initial Cost Effective Report - Report Details');
-    $sheet->mergeCells('A10:J10'); // Menggabungkan sel untuk judul tabel
+    $sheet->mergeCells('A10:I10'); // Menggabungkan sel untuk judul tabel
     $sheet->getStyle('A10')->getFont()->setBold(true)->setSize(14);
     $sheet->getStyle('A10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
     $sheet->getStyle('A10')->getFill()->setFillType(Fill::FILL_SOLID);
@@ -285,7 +373,17 @@ $sheet->setCellValue('B2', $entitiyName);
     $sheet->getStyle('A10')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
     // Set judul kolom tabel
-    $headers = ['Bulanke', 'Tgl Angsuran', 'Hari Bunga', 'PMT Amt', 'Penarikan', 'Pengembalian', 'Bunga', 'Balance', 'Time Gap', 'Outs Amt Conv'];
+    $headers = [ 
+    'Month',
+    'Payment Date',
+    'Payment Amount',
+    'Effective Interest Base On Effective Yield (UF/TC)',
+    'Effective Interest Base On Effective Yield (UF)',
+    'Amortised Transaction Cost',
+    'Outstanding Amount Initial Transaction Cost',
+    'Cumulative Amortized Transaction Cost',
+    'Unamortized Transaction Cost'
+];
     $columnIndex = 'A';
     foreach ($headers as $header) {
         $sheet->setCellValue($columnIndex . '12', $header);
@@ -297,31 +395,94 @@ $sheet->setCellValue('B2', $entitiyName);
         $columnIndex++;
     }
 
-    // Mengisi data laporan ke dalam tabel
     $row = 13; // Mulai dari baris 13 untuk data laporan
-    foreach ($reports as $report) {
-        $sheet->setCellValue('A' . $row, $report->bulanke);
-        $sheet->setCellValue('B' . $row, date('Y-m-d', strtotime($report->tglangsuran)));
-        $sheet->setCellValue('C' . $row, $report->haribunga ?? 0);
-        $sheet->setCellValue('D' . $row, number_format($report->pmtamt, 2));
-        $sheet->setCellValue('E' . $row, number_format($report->penarikan?? 0));
-        $sheet->setCellValue('F' . $row, number_format($report->pengembalian?? 0));
-        $sheet->setCellValue('G' . $row, number_format($report->bunga, 2));
-        $sheet->setCellValue('H' . $row, number_format($report->balance, 2));
-        $sheet->setCellValue('I' . $row, $report->timegap);
-        $sheet->setCellValue('J' . $row, number_format($report->outsamtconv, 2));
-
-        // Mengatur font menjadi bold untuk setiap baris data
-        $sheet->getStyle('A' . $row . ':J' . $row)->getFont()->setBold(true);
-
-        // Menambahkan warna latar belakang alternatif pada baris data
-        if ($row % 2 == 0) {
-            $sheet->getStyle('A' . $row . ':J' . $row)->getFill()->setFillType(Fill::FILL_SOLID);
-            $sheet->getStyle('A' . $row . ':J' . $row)->getFill()->getStartColor()->setARGB('FFEFEFEF'); // Warna latar belakang untuk baris genap
-        }
-
-        $row++;
+$cumulativeAmortized = 0; // Inisialisasi variabel kumulatif
+$unamortrxcost = $trxcostFloat ?? 0; // Menggunakan nilai trxcostFloat untuk unamortized
+$unamort = $unamortrxcost; // Inisialisasi unamort
+                                $totalPaymentAmount = 0;
+                                $totalEffectiveInterestUF_TC = 0;
+                                $totalEffectiveInterestUF = 0;
+                                $totalAmortised = 0;
+                                $totalOutstandingAmountInitialTransactionCost = 0;
+                                $totalUnamortizedTransactionCost = 0;
+foreach ($reports as $report) {
+    $amortized = $report->amortisecost ?? 0; // Ambil nilai amortized dari laporan
+    $cumulativeAmortized += $amortized; // Tambahkan amortized ke total kumulatif
+    $amortized = $report->amortisecost; // Ambil nilai amortized dari laporan
+    $cumulativeAmortized += $amortized; // Tambahkan amortized ke total kumulatif
+    $unamortrxcost = $trxcostFloat;
+    $amorcost = $report->amortisecost;
+    // Hitung nilai unamortized
+    if ($row == 13) {
+        // Untuk baris pertama, gunakan nilai trxcost
+        $unamort = $unamortrxcost;
+    } else {
+        // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
+        $unamort = $unamort + $amortized;
     }
+
+    // Hitung total untuk setiap kolom
+    $totalPaymentAmount += $report->pmtamt ?? 0;
+    $totalEffectiveInterestUF_TC += $report->bunga ?? 0;
+    $totalEffectiveInterestUF += $report->bunga ?? 0;
+    $totalAmortised += $amortized;
+    $totalOutstandingAmountInitialTransactionCost += $report->outsamtcost ?? 0;
+    $totalUnamortizedTransactionCost += $unamort;
+
+    // Mengisi data ke dalam kolom
+    $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    $sheet->setCellValue('A' . $row, $report->bulanke ?? 'Data tidak ditemukan');
+    $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    $sheet->setCellValue('B' . $row, isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate');
+    $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('C' . $row, number_format($report->pmtamt ?? 0));
+    $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('D' . $row, number_format($report->bunga ?? 0));
+    $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('E' . $row, number_format($report->bunga ?? 0)); // Sama dengan kolom D
+    $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('F' . $row, number_format($report->amortisecost ?? 0));
+    $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('G' . $row, number_format($report->outsamtcost ?? 0));
+    $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('H' . $row, number_format($cumulativeAmortized));
+    $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('I' . $row, number_format($unamort ?? 0));
+
+    // Mengatur font menjadi bold untuk setiap baris data
+    $sheet->getStyle('A' . $row . ':I' . $row)->getFont()->setBold(true);
+
+
+            // Menambahkan warna latar belakang alternatif pada baris data
+            if ($row % 2 == 0) {
+                $sheet->getStyle('A' . $row . ':I' . $row)->getFill()->setFillType(Fill::FILL_SOLID);
+                $sheet->getStyle('A' . $row . ':I' . $row)->getFill()->getStartColor()->setARGB('FFEFEFEF'); // Warna latar belakang untuk baris genap
+            }
+
+            $row++;
+        }
+        //TOTAL AMORTISED INITIAL COST
+      $sheet->setCellValue('A' . $row, "TOTAL");
+      $sheet->mergeCells('A' . $row . ':B' . $row); 
+      $sheet->getStyle('A' . $row . ':B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('C' . $row, number_format($reports->sum('pmtamt')));
+      $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('D' . $row, number_format($reports->sum('bunga')));
+      $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('E' . $row, number_format($reports->sum('bunga')));
+      $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('F' . $row, number_format($reports->sum('amortisecost')));
+      $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('G' . $row, $reports->sum('outsamtcost'));
+      $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('H' . $row, null);
+      $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('I' . $row, null);
+
+      foreach (range('A', 'I') as $columnID) {
+          $sheet->getColumnDimension($columnID)->setAutoSize(true);
+      }
 
     // Mengatur border untuk tabel
     $styleArray = [
@@ -334,18 +495,18 @@ $sheet->setCellValue('B2', $entitiyName);
     ];
 
     // Set border untuk header tabel
-    $sheet->getStyle('A12:J12')->applyFromArray($styleArray);
+    $sheet->getStyle('A12:I12')->applyFromArray($styleArray);
 
     // Set border untuk semua data laporan
-    $sheet->getStyle('A13:J' . ($row - 1))->applyFromArray($styleArray);
+    $sheet->getStyle('A13:I' . $row)->applyFromArray($styleArray);
 
     // Mengatur lebar kolom agar lebih rapi
-    foreach (range('A', 'J') as $columnID) {
+    foreach (range('A', 'I') as $columnID) {
         $sheet->getColumnDimension($columnID)->setAutoSize(true);
     }
 
     // Siapkan nama file
-    $filename = "amortised_initial_cost_report_$no_acc.pdf";
+    $filename = "amortised_initial_cost_report-effective_$no_acc.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
