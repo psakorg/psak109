@@ -1,6 +1,7 @@
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light fixed-top" id="navbar">
 
+  <h1 class="ml-3 font-weight-bold text-uppercase" style="font-size: 2rem;">{{ Auth::user()->nama_pt }}</h1>
 
   <!-- Right navbar links -->
   <ul class="navbar-nav ml-auto">

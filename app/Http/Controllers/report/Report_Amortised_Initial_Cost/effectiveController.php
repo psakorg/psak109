@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use Illuminate\Support\Facades\DB;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -56,6 +57,11 @@ class effectiveController extends Controller
         $loan = report_effective::getLoanDetails(trim($no_acc), trim($id_pt));
         $reports = report_effective::getReportsByNoAcc(trim($no_acc), trim($id_pt));
         $master = report_effective::getMasterDataByNoAcc(trim($no_acc), trim($id_pt));
+        $entityName = DB::table('public.tblobaleffective')
+        ->join('public.tbl_pt', 'tblobaleffective.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobaleffective.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
         // Cek apakah data loan dan reports ada
         if (!$loan || $reports->isEmpty()) {
             return response()->json(['message' => 'No data found for the given account number.'], 404);
@@ -76,8 +82,8 @@ class effectiveController extends Controller
   $sheet->getColumnDimension('A')->setWidth(20);
   $sheet->getColumnDimension('B')->setWidth(5);
   $sheet->getColumnDimension('C')->setWidth(30);
-  $entityName = "PT PRAMATECH";
   $infoRows = [
+      ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
       ['Account Number', ':', "'" . $loan->no_acc],
       ['Debitor Name', ':', $loan->deb_name],
       ['Original Amount', ':', number_format($loan->org_bal, 2)],
@@ -234,7 +240,7 @@ foreach ($reports as $report) {
       $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
       $sheet->setCellValue('F' . $row, number_format($reports->sum('amortisecost')));
       $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-      $sheet->setCellValue('G' . $row, $reports->sum('outsamtcost'));
+      $sheet->setCellValue('G' . $row, number_format($reports->sum('outsamtcost')));
       $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
       $sheet->setCellValue('H' . $row, null);
       $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
@@ -286,6 +292,11 @@ foreach ($reports as $report) {
     $loan = report_effective::getLoanDetails(trim($no_acc), trim($id_pt));
     $reports = report_effective::getReportsByNoAcc(trim($no_acc), trim($id_pt));
     $master = report_effective::getMasterDataByNoAcc(trim($no_acc), trim($id_pt));
+    $entityName = DB::table('public.tblobaleffective')
+        ->join('public.tbl_pt', 'tblobaleffective.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobaleffective.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
 
     // Cek apakah data loan dan reports ada
     if (!$loan || $reports->isEmpty()) {
@@ -309,8 +320,8 @@ foreach ($reports as $report) {
   $sheet->getColumnDimension('A')->setWidth(20);
   $sheet->getColumnDimension('B')->setWidth(5);
   $sheet->getColumnDimension('C')->setWidth(30);
-  $entityName = "PT PRAMATECH";
   $infoRows = [
+      ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
       ['Account Number', ':', "'" . $loan->no_acc],
       ['Debitor Name', ':', $loan->deb_name],
       ['Original Amount', ':', number_format($loan->org_bal, 2)],
@@ -466,7 +477,7 @@ foreach ($reports as $report) {
       $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
       $sheet->setCellValue('F' . $row, number_format($reports->sum('amortisecost')));
       $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-      $sheet->setCellValue('G' . $row, $reports->sum('outsamtcost'));
+      $sheet->setCellValue('G' . $row, number_format($reports->sum('outsamtcost')));
       $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
       $sheet->setCellValue('H' . $row, null);
       $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);

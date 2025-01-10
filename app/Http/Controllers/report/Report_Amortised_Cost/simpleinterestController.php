@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use Illuminate\Support\Facades\DB;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -55,6 +56,11 @@ class simpleinterestController extends Controller
         // Ambil data loan dan reports
         $loan = report_simpleinterest::getLoanDetails(trim($no_acc), trim($id_pt));
         $reports = report_simpleinterest::getReportsByNoAcc(trim($no_acc), trim($id_pt));
+        $entityName = DB::table('public.tblobalcorporateloan')
+        ->join('public.tbl_pt', 'tblobalcorporateloan.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobalcorporateloan.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
 
         // Cek apakah data loan dan reports ada
         if (!$loan || $reports->isEmpty()) {
@@ -73,66 +79,115 @@ class simpleinterestController extends Controller
  $sheet->getPageMargins()->setLeft(0.5);
  $sheet->getPageMargins()->setBottom(0.5);
 
- $sheet->getColumnDimension('A')->setWidth(20);
- $sheet->getColumnDimension('B')->setWidth(5);
- $sheet->getColumnDimension('C')->setWidth(30);
- $entityName = "PT PRAMATECH";
+ $entitiyname = ": $entityName->nama_pt";
+ $teksnoacc = ": $loan->no_acc";
+ $teksdebname = ": $loan->deb_name";
+ $teksorgbal = number_format($loan->nbal, 2);
+ $teksorgbal = ": $teksorgbal";
+ $teksorgdate = date('d/m/Y', strtotime($loan->org_date));
+ $teksorgdate = ": $teksorgdate";
+ $teksterm = ": $loan->term";
+ $teksmtrdate = date('d/m/Y', strtotime($loan->mtr_date));
+ $teksmtrdate = ": $teksmtrdate";
+ $teksrate = number_format($loan->rate*100, 5);
+ $teksrate = ": $teksrate";
 
  $infoRows = [
-     ['Account Number', ':', "'" . $loan->no_acc],
-     ['Debitor Name', ':', $loan->deb_name],
-     ['Original Amount', ':', number_format($loan->nbal, 2)],
-     ['Original Loan Date', ':', date('d-m-Y', strtotime($loan->org_date))],
-     ['Term', ':', $loan->term . ' Month'],
-     ['Maturity Loan Date', ':',  date('d-m-Y', strtotime($loan->mtr_date))],
-     ['Interest Rate', ':', number_format($loan->rate*100, 5) . '%'],
- ];
+     ['Entity Name', $entitiyname],
+     ['No. Account', $teksnoacc],
+     ['Debtor Name', $teksdebname],
+     ['Original Balance', $teksorgbal],
+     ['Original Date', $teksorgdate],
+     ['Term', $teksterm . ' Months'],
+     ['Maturity Date', $teksmtrdate],
+     ['Interest Rate', $teksrate . '%'],
+];
 
+
+ //$infoRows = [
+ //    ['Account Number', ':', "'" . $loan->no_acc],
+ //    ['Debitor Name', ':', $loan->deb_name],
+ //    ['Original Amount', ':', number_format($loan->nbal, 2)],
+ //    ['Original Loan Date', ':', date('d-m-Y', strtotime($loan->org_date))],
+ //    ['Term', ':', $loan->term . ' Month'],
+ //    ['Maturity Loan Date', ':',  date('d-m-Y', strtotime($loan->mtr_date))],
+ //    ['Interest Rate', ':', number_format($loan->rate*100, 5) . '%'],
+ //];
 
  $currentRow = 3;
  foreach ($infoRows as $info) {
-     $sheet->setCellValue('A' . $currentRow, $info[0]);
-     $sheet->setCellValue('B' . $currentRow, $info[1]);
-     $sheet->setCellValue('C' . $currentRow, $info[2]);
-     $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getStyle('B' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getStyle('C' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getRowDimension($currentRow)->setRowHeight(25);
-     $currentRow++;
+    $sheet->mergeCells('A' . $currentRow . ':B' . $currentRow); // Menggabungkan sel untuk judul tabel
+    $sheet->setCellValue('A' . $currentRow, $info[0]);
+    $sheet->mergeCells('C' . $currentRow . ':D' . $currentRow); // Menggabungkan sel untuk judul tabel
+    $sheet->setCellValue('C' . $currentRow, $info[1]);
+    //$sheet->setCellValue('F' . $currentRow, $info[2]);
+    $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+    $sheet->getStyle('C' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+    //$sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+    $sheet->getRowDimension($currentRow)->setRowHeight(14);
+    $currentRow++;
  }
- $sheet->getColumnDimension('F')->setWidth(20);
- $sheet->getColumnDimension('G')->setWidth(5);
- $sheet->getColumnDimension('H')->setWidth(30);
+ 
+ $sheet->getColumnDimension('A')->setWidth(8);
+ $sheet->getColumnDimension('B')->setWidth(12);
+ $sheet->getColumnDimension('C')->setWidth(10);
+ $sheet->getColumnDimension('D')->setWidth(18);
+ $sheet->getColumnDimension('E')->setWidth(18);
+ $sheet->getColumnDimension('F')->setWidth(18);
+ $sheet->getColumnDimension('G')->setWidth(20);
+ $sheet->getColumnDimension('H')->setWidth(18);
+ $sheet->getColumnDimension('I')->setWidth(18);
+ $sheet->getColumnDimension('J')->setWidth(18);
+ $sheet->getColumnDimension('K')->setWidth(18);
+ $sheet->getColumnDimension('L')->setWidth(18);
+ $sheet->getColumnDimension('L')->setWidth(18);
+
+ $sheet->getStyle('A13:L13')->getAlignment()->setHorizontal('center');
+ $sheet->getStyle('A13:L13')->getAlignment()->setVertical('center');
+ $sheet->getStyle('A13:L13')->getAlignment()->setWrapText(true);
+
  // Menghitung nilai org amount
  $upfrontFee = round(-($loan->org_bal * 0.01), 0);
  $CarryingAmount = $loan->org_bal+$upfrontFee;
+
+ $teksbilint = number_format($loan->bilint, 0);
+ $teksbilint = ": $teksbilint";
+ $teksprov = number_format($loan->prov, 0);
+ $teksprov = ":- $teksprov";
+ $tekstrxcost = number_format($loan->trxcost, 0);
+ $tekstrxcost = ":- $tekstrxcost";
+ $tekscarryingamount = number_format($CarryingAmount, 0);
+ $tekscarryingamount = ": $tekscarryingamount";
+ $tekseirex = number_format($loan->eirex, 14);
+ $tekseirex = ": $tekseirex";
+ $tekseircalc = number_format($loan->eircalc, 14);
+ $tekseircalc = ": $tekseircalc";
+
  $infoRows = [
- ['Outstanding Interest', ':', number_format($loan->bilint ?? 0)],
- ['Up Front Fee', ':', number_format($loan->prov ?? 0, 2) ],
- ['Transaction Cost', ':', number_format($loan->trxcost ?? 0, 2)],
- ['Carrying Amount', ':', number_format($CarryingAmount, 2)],
- ['EIR Exposure', ':', number_format($loan->eirex * 100, 14) . '%'],
- ['EIR Calculated', ':',  number_format($loan->eircalc * 100, 14) . '%'],
+ ['Outstanding Interest', $teksbilint],
+ ['Up Front Fee', $teksprov],
+ ['Transaction Cost', $tekstrxcost],
+ ['Carrying Amount', $tekscarryingamount],
+ ['EIR Exposure', $tekseirex . '%'],
+ ['EIR Calculated', $tekseircalc . '%'],
  ];
  $currentRow = 3;
  foreach ($infoRows as $info) {
-     $sheet->setCellValue('F' . $currentRow, $info[0]);
-     $sheet->setCellValue('G' . $currentRow, $info[1]);
-     $sheet->setCellValue('H' . $currentRow, $info[2]);
-     $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+     $sheet->setCellValue('G' . $currentRow, $info[0]);
+     $sheet->setCellValue('H' . $currentRow, $info[1]);
      $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getRowDimension($currentRow)->setRowHeight(25);
+     $sheet->getRowDimension($currentRow)->setRowHeight(14);
      $currentRow++;
  }
         // Set judul tabel laporan
-        $sheet->setCellValue('A11', 'Amortised Cost Simple Interest Report - Report Details');
-        $sheet->mergeCells('A11:L11'); // Menggabungkan sel untuk judul tabel
-        $sheet->getStyle('A11')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A11')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A11')->getFill()->setFillType(Fill::FILL_SOLID);
-        $sheet->getStyle('A11')->getFill()->getStartColor()->setARGB('FF006600'); // Warna latar belakang
-        $sheet->getStyle('A11')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+        $sheet->setCellValue('A12', 'Amortised Cost Simple Interest Report - Report Details');
+        $sheet->mergeCells('A12:L12'); // Menggabungkan sel untuk judul tabel
+        $sheet->getStyle('A12')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A12')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A12')->getFill()->setFillType(Fill::FILL_SOLID);
+        $sheet->getStyle('A12')->getFill()->getStartColor()->setARGB('FF006600'); // Warna latar belakang
+        $sheet->getStyle('A12')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
         // Set judul kolom tabel
         $headers = [
@@ -255,9 +310,9 @@ class simpleinterestController extends Controller
           $sheet->setCellValue('L' . $row, null);
           
   
-          foreach (range('A', 'L') as $columnID) {
-              $sheet->getColumnDimension($columnID)->setAutoSize(true);
-          }
+//          foreach (range('A', 'L') as $columnID) {
+//              $sheet->getColumnDimension($columnID)->setAutoSize(true);
+//          }
 
         // Mengatur border untuk tabel
         $styleArray = [
@@ -276,9 +331,9 @@ class simpleinterestController extends Controller
         $sheet->getStyle('A13:L' . $row)->applyFromArray($styleArray);
 
         // Mengatur lebar kolom agar lebih rapi
-        foreach (range('A', 'L') as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true);
-        }
+//        foreach (range('A', 'L') as $columnID) {
+//            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+//        }
 
         // Siapkan nama file
         $filename = "ReportAmortisedCostCorporateLoan_$no_acc.xlsx";
@@ -300,6 +355,11 @@ class simpleinterestController extends Controller
     // Ambil data loan dan reports
     $loan = report_simpleinterest::getLoanDetails(trim($no_acc), trim($id_pt));
     $reports = report_simpleinterest::getReportsByNoAcc(trim($no_acc), trim($id_pt));
+    $entityName = DB::table('public.tblobalcorporateloan')
+        ->join('public.tbl_pt', 'tblobalcorporateloan.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobalcorporateloan.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
 
     // Cek apakah data loan dan reports ada
     if (!$loan || $reports->isEmpty()) {
@@ -320,12 +380,12 @@ class simpleinterestController extends Controller
  $sheet->getPageMargins()->setLeft(0.5);
  $sheet->getPageMargins()->setBottom(0.5);
 
- $sheet->getColumnDimension('A')->setWidth(20);
- $sheet->getColumnDimension('B')->setWidth(5);
- $sheet->getColumnDimension('C')->setWidth(30);
- $entityName = "PT PRAMATECH";
+ //$sheet->getColumnDimension('A')->setWidth(20);
+ //$sheet->getColumnDimension('B')->setWidth(5);
+ //$sheet->getColumnDimension('C')->setWidth(30);
 
  $infoRows = [
+     ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
      ['Account Number', ':', "'" . $loan->no_acc],
      ['Debitor Name', ':', $loan->deb_name],
      ['Original Amount', ':', number_format($loan->nbal, 2)],
@@ -344,7 +404,7 @@ class simpleinterestController extends Controller
      $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getStyle('B' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getStyle('C' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getRowDimension($currentRow)->setRowHeight(25);
+     $sheet->getRowDimension($currentRow)->setRowHeight(14);
      $currentRow++;
  }
  $sheet->getColumnDimension('F')->setWidth(20);
@@ -369,17 +429,17 @@ class simpleinterestController extends Controller
      $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getRowDimension($currentRow)->setRowHeight(25);
+     $sheet->getRowDimension($currentRow)->setRowHeight(14);
      $currentRow++;
  }
         // Set judul tabel laporan
-        $sheet->setCellValue('A11', 'Amortised Cost Simple Interest Report - Report Details');
-        $sheet->mergeCells('A11:L11'); // Menggabungkan sel untuk judul tabel
-        $sheet->getStyle('A11')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A11')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A11')->getFill()->setFillType(Fill::FILL_SOLID);
-        $sheet->getStyle('A11')->getFill()->getStartColor()->setARGB('FF006600'); // Warna latar belakang
-        $sheet->getStyle('A11')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+        $sheet->setCellValue('A12', 'Amortised Cost Simple Interest Report - Report Details');
+        $sheet->mergeCells('A12:L12'); // Menggabungkan sel untuk judul tabel
+        $sheet->getStyle('A12')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A12')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A12')->getFill()->setFillType(Fill::FILL_SOLID);
+        $sheet->getStyle('A12')->getFill()->getStartColor()->setARGB('FF006600'); // Warna latar belakang
+        $sheet->getStyle('A12')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
         // Set judul kolom tabel
         $headers = [
@@ -502,9 +562,9 @@ class simpleinterestController extends Controller
           $sheet->setCellValue('L' . $row, null);
           
   
-          foreach (range('A', 'L') as $columnID) {
-              $sheet->getColumnDimension($columnID)->setAutoSize(true);
-          }
+//          foreach (range('A', 'L') as $columnID) {
+//              $sheet->getColumnDimension($columnID)->setAutoSize(true);
+//          }
 
 
     // Mengatur border untuk tabel
@@ -524,9 +584,9 @@ class simpleinterestController extends Controller
     $sheet->getStyle('A13:L' . $row)->applyFromArray($styleArray);
 
     // Mengatur lebar kolom agar lebih rapi
-    foreach (range('A', 'L') as $columnID) {
-        $sheet->getColumnDimension($columnID)->setAutoSize(true);
-    }
+//    foreach (range('A', 'L') as $columnID) {
+//        $sheet->getColumnDimension($columnID)->setAutoSize(true);
+//    }
 
     // Siapkan nama file
     $filename = "ReportAmortisedCostCorporateLoan_$no_acc.pdf";

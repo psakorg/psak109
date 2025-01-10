@@ -55,6 +55,11 @@ class effectiveController extends Controller
         $loan = report_effective::getLoanDetails($no_acc, $id_pt);
         $reports = report_effective::getReportsByNoAcc($no_acc, $id_pt);
         $master = report_effective::getMasterDataByNoAcc($no_acc, $id_pt);
+        $entityName = DB::table('public.tblobaleffective')
+        ->join('public.tbl_pt', 'tblobaleffective.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobaleffective.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
 
         if (!$loan || $reports->isEmpty()) {
             return response()->json(['message' => 'No data found for the given account number.'], 404);
@@ -69,8 +74,8 @@ class effectiveController extends Controller
         $sheet->getColumnDimension('A')->setWidth(20);
         $sheet->getColumnDimension('B')->setWidth(5);
         $sheet->getColumnDimension('C')->setWidth(30);
-        $entityName = "PT PRAMATECH";
         $infoRows = [
+            ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
             ['Account Number', ':', "'" . $loan->no_acc],
             ['Debitor Name', ':', $loan->deb_name],
             ['Original Amount', ':', number_format($loan->org_bal, 2)],
@@ -227,6 +232,11 @@ class effectiveController extends Controller
         $loan = report_effective::getLoanDetails($no_acc, $id_pt);
         $reports = report_effective::getReportsByNoAcc($no_acc, $id_pt);
         $master = report_effective::getMasterDataByNoAcc($no_acc, $id_pt);
+        $entityName = DB::table('public.tblobaleffective')
+        ->join('public.tbl_pt', 'tblobaleffective.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobaleffective.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
 
         if (!$loan || $reports->isEmpty()) {
             return response()->json(['message' => 'No data found for the given account number.'], 404);
@@ -245,8 +255,8 @@ class effectiveController extends Controller
         $sheet->getColumnDimension('A')->setWidth(20);
         $sheet->getColumnDimension('B')->setWidth(5);
         $sheet->getColumnDimension('C')->setWidth(30);
-        $entityName = "PT. PACIFIC MULTI FINANCE";
         $infoRows = [
+            ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
             ['Account Number', ':', "'" . $loan->no_acc],
             ['Debitor Name', ':', $loan->deb_name],
             ['Original Amount', ':', number_format($loan->org_bal, 2)],

@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use Illuminate\Support\Facades\DB;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -53,6 +54,11 @@ class simpleinterestController extends Controller
         // Ambil data loan dan reports
         $loan = report_simpleinterest::getLoanDetails(trim($no_acc), trim($id_pt));
         $reports = report_simpleinterest::getReportsByNoAcc(trim($no_acc), trim($id_pt));
+        $entityName = DB::table('public.tblobalcorporateloan')
+        ->join('public.tbl_pt', 'tblobalcorporateloan.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobalcorporateloan.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
 
         // Cek apakah data loan dan reports ada
         if (!$loan || $reports->isEmpty()) {
@@ -74,9 +80,10 @@ class simpleinterestController extends Controller
  $sheet->getColumnDimension('A')->setWidth(20);
  $sheet->getColumnDimension('B')->setWidth(5);
  $sheet->getColumnDimension('C')->setWidth(30);
- $entityName = "PT PRAMATECH";
+
 
  $infoRows = [
+     ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
      ['Account Number', ':', "'" . $loan->no_acc],
      ['Debitor Name', ':', $loan->deb_name],
      ['Original Amount', ':', number_format($loan->org_bal, 2)],
@@ -280,6 +287,11 @@ class simpleinterestController extends Controller
     // Ambil data loan dan reports
     $loan = report_simpleinterest::getLoanDetails(trim($no_acc), trim($id_pt));
     $reports = report_simpleinterest::getReportsByNoAcc(trim($no_acc), trim($id_pt));
+    $entityName = DB::table('public.tblobalcorporateloan')
+        ->join('public.tbl_pt', 'tblobalcorporateloan.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobalcorporateloan.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
 
     // Cek apakah data loan dan reports ada
     if (!$loan || $reports->isEmpty()) {
@@ -303,9 +315,9 @@ class simpleinterestController extends Controller
  $sheet->getColumnDimension('A')->setWidth(20);
  $sheet->getColumnDimension('B')->setWidth(5);
  $sheet->getColumnDimension('C')->setWidth(30);
- $entityName = "PT PRAMATECH";
 
  $infoRows = [
+     ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
      ['Account Number', ':', "'" . $loan->no_acc],
      ['Debitor Name', ':', $loan->deb_name],
      ['Original Amount', ':', number_format($loan->org_bal, 2)],

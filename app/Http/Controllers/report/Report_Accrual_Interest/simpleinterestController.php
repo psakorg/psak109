@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use Illuminate\Support\Facades\DB;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -54,6 +55,11 @@ class simpleinterestController extends Controller
         // Ambil data loan dan reports
         $loan = report_simpleinterest::getLoanDetails(trim($no_acc), trim($id_pt));
         $reports = report_simpleinterest::getReportsByNoAcc(trim($no_acc), trim($id_pt));
+        $entityName = DB::table('public.tblobalcorporateloan')
+        ->join('public.tbl_pt', 'tblobalcorporateloan.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobalcorporateloan.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
 
         // Cek apakah data loan dan reports ada
         if (!$loan || $reports->isEmpty()) {
@@ -65,10 +71,10 @@ class simpleinterestController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set informasi pinjaman
-        //$sheet->setCellValue('A2', 'Entitiy Name');
-        //$sheet->getStyle('A2')->getFont()->setBold(true);
-        //$entitiyName = 'PT. PACIFIC MULTI FINANCE';
-        //$sheet->setCellValue('B2', $entitiyName); 
+        $sheet->setCellValue('A2', 'Entitiy Name');
+        $sheet->getStyle('A2')->getFont()->setBold(true);
+        $entitiyname = $entityName->nama_pt;
+        $sheet->setCellValue('B2', $entitiyname); 
 
         $sheet->setCellValue('A2', 'Account Number');
         $sheet->getStyle('A2')->getFont()->setBold(true);
@@ -106,7 +112,7 @@ class simpleinterestController extends Controller
         $sheet->getStyle('F2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         $sheet->setCellValue('E3', 'EIR Conversion Calculated');
         $sheet->getStyle('E3')->getFont()->setBold(true); // Set bold untuk EIR Conversion Calculated
-        $sheet->setCellValue('F3', number_format($loan->eirex*100,14). "%" ?? 0);
+        $sheet->setCellValue('F3', number_format($loan->eircalc_conv*100,14). "%" ?? 0);
         $sheet->getStyle('F3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         $sheet->setCellValue('E4', 'Original Loan Date');
         $sheet->getStyle('E4')->getFont()->setBold(true); // Set bold untuk Original Loan Date
@@ -242,6 +248,11 @@ class simpleinterestController extends Controller
         // Ambil data loan dan reports
         $loan = report_simpleinterest::getLoanDetails(trim($no_acc), trim($id_pt));
         $reports = report_simpleinterest::getReportsByNoAcc(trim($no_acc), trim($id_pt));
+        $entityName = DB::table('public.tblobalcorporateloan')
+        ->join('public.tbl_pt', 'tblobalcorporateloan.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobalcorporateloan.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
 
         // Cek apakah data loan dan reports ada
         if (!$loan || $reports->isEmpty()) {
@@ -262,7 +273,7 @@ class simpleinterestController extends Controller
         $sheet->getColumnDimension('B')->setWidth(5);
         $sheet->getColumnDimension('C')->setWidth(30);
 
-        $entitiyName = 'PT. PACIFIC MULTI FINANCE';
+        $entitiyName = ": $entityName ? $entityName->nama_pt";
         $teksnoacc = ": $loan->no_acc";
         $teksdebname = ": $loan->deb_name";
         $teksorgbal = number_format($loan->org_bal, 2);

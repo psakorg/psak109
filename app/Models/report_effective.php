@@ -44,9 +44,10 @@ class Report_effective extends Model
     public static function getReportsByNoAcc($no_acc, $id_pt)
     {
         return DB::table('public.tblcfobaleffective')
-            ->where('no_acc', $no_acc)
-            ->where('id_pt', $id_pt)
-            ->select('*')
+        ->join('tbl_pt', 'tblcfobaleffective.id_pt', '=', 'tbl_pt.id_pt')
+            ->where('tblcfobaleffective.no_acc', $no_acc)
+            ->where('tblcfobaleffective.id_pt', $id_pt)
+            ->select('tblcfobaleffective.*', 'tbl_pt.*')  // Specify the columns you need from both tables
             ->get();
     }
 

@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use Illuminate\Support\Facades\DB;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -55,6 +56,11 @@ class effectiveController extends Controller
         $loan = report_effective::getLoanDetails(trim($no_acc), trim($id_pt));
         $reports = report_effective::getReportsByNoAcc(trim($no_acc), trim($id_pt));
         $master=report_effective::getMasterDataByNoAcc(trim($no_acc),trim($id_pt));
+        $entityName = DB::table('public.tblobaleffective')
+        ->join('public.tbl_pt', 'tblobaleffective.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobaleffective.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
 
         // Cek apakah data loan dan reports ada
         if (!$loan || $reports->isEmpty()) {
@@ -76,12 +82,12 @@ class effectiveController extends Controller
         $sheet->getColumnDimension('A')->setWidth(20);
         $sheet->getColumnDimension('B')->setWidth(5);
         $sheet->getColumnDimension('C')->setWidth(30);
-        $entityName = "PT PRAMATECH";
         $infoRows = [
-    ['Account Number', ':', "'" . $loan->no_acc],
-    ['Original Amount', ':', number_format($loan->org_bal, 2)],
-    ['Term', ':', $master->term . ' Month'],
-    ['Interest Rate', ':',  number_format($master->rate  * 100, 5). '%'],
+        ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
+        ['Account Number', ':', "'" . $loan->no_acc],
+        ['Original Amount', ':', number_format($loan->org_bal, 2)],
+        ['Term', ':', $master->term . ' Month'],
+        ['Interest Rate', ':',  number_format($master->rate  * 100, 5). '%'],
 ];
 
 
@@ -257,6 +263,11 @@ foreach ($infoRows as $info) {
     $loan = report_effective::getLoanDetails(trim($no_acc), trim($id_pt));
     $reports = report_effective::getReportsByNoAcc(trim($no_acc), trim($id_pt));
     $master=report_effective::getMasterDataByNoAcc(trim($no_acc),trim($id_pt));
+    $entityName = DB::table('public.tblobaleffective')
+        ->join('public.tbl_pt', 'tblobaleffective.id_pt', '=', 'tbl_pt.id_pt')
+        ->where('tblobaleffective.no_branch', $id_pt)
+        ->select('tbl_pt.nama_pt')
+        ->first();
 
     // Cek apakah data loan dan reports ada
     if (!$loan || $reports->isEmpty()) {
@@ -280,8 +291,8 @@ foreach ($infoRows as $info) {
     $sheet->getColumnDimension('A')->setWidth(20);
     $sheet->getColumnDimension('B')->setWidth(5);
     $sheet->getColumnDimension('C')->setWidth(30);
-    $entityName = "PT PRAMATECH";
     $infoRows = [
+['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
 ['Account Number', ':', "'" . $loan->no_acc],
 ['Original Amount', ':', number_format($loan->org_bal, 2)],
 ['Term', ':', $master->term . ' Month'],
