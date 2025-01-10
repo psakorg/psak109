@@ -112,7 +112,7 @@ $sheet->getColumnDimension('I')->setWidth(30);
   $outinitfee = $org_bal+$provFloat;
 
 $infoRows = [
-['UpFront Fee', ':', number_format($master->prov, 2)],
+['UpFront Fee', ':', '-' .number_format($master->prov, 2)],
 ['Outstanding Initial Fee', ':', number_format($outinitfee ?? 0, 2) ],
 ['EIR Fee Calculated', ':', number_format($loan->eircalc_fee * 100, 14) . '%'],
 ['Term', ':', $master->term . ' Month'],
@@ -333,7 +333,7 @@ $sheet->getColumnDimension('I')->setWidth(30);
   $outinitfee = $org_bal+$provFloat;
 
 $infoRows = [
-['UpFront Fee', ':', number_format($master->prov, 2)],
+['UpFront Fee', ':', '-' .number_format($master->prov, 2)],
 ['Outstanding Initial Fee', ':', number_format($outinitfee ?? 0, 2) ],
 ['EIR Fee Calculated', ':', number_format($loan->eircalc_fee * 100, 14) . '%'],
 ['Term', ':', $master->term . ' Month'],

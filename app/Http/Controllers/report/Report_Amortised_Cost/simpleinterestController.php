@@ -126,13 +126,13 @@ class simpleinterestController extends Controller
      $currentRow++;
  }
         // Set judul tabel laporan
-        $sheet->setCellValue('A12', 'Amortised Cost Simple Interest Report - Report Details');
-        $sheet->mergeCells('A12:L12'); // Menggabungkan sel untuk judul tabel
-        $sheet->getStyle('A12')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A12')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A12')->getFill()->setFillType(Fill::FILL_SOLID);
-        $sheet->getStyle('A12')->getFill()->getStartColor()->setARGB('FF006600'); // Warna latar belakang
-        $sheet->getStyle('A12')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+        $sheet->setCellValue('A11', 'Amortised Cost Simple Interest Report - Report Details');
+        $sheet->mergeCells('A11:L11'); // Menggabungkan sel untuk judul tabel
+        $sheet->getStyle('A11')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A11')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A11')->getFill()->setFillType(Fill::FILL_SOLID);
+        $sheet->getStyle('A11')->getFill()->getStartColor()->setARGB('FF006600'); // Warna latar belakang
+        $sheet->getStyle('A11')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
         // Set judul kolom tabel
         $headers = [
@@ -373,13 +373,13 @@ class simpleinterestController extends Controller
      $currentRow++;
  }
         // Set judul tabel laporan
-        $sheet->setCellValue('A12', 'Amortised Cost Simple Interest Report - Report Details');
-        $sheet->mergeCells('A12:L12'); // Menggabungkan sel untuk judul tabel
-        $sheet->getStyle('A12')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A12')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A12')->getFill()->setFillType(Fill::FILL_SOLID);
-        $sheet->getStyle('A12')->getFill()->getStartColor()->setARGB('FF006600'); // Warna latar belakang
-        $sheet->getStyle('A12')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+        $sheet->setCellValue('A11', 'Amortised Cost Simple Interest Report - Report Details');
+        $sheet->mergeCells('A11:L11'); // Menggabungkan sel untuk judul tabel
+        $sheet->getStyle('A11')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A11')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A11')->getFill()->setFillType(Fill::FILL_SOLID);
+        $sheet->getStyle('A11')->getFill()->getStartColor()->setARGB('FF006600'); // Warna latar belakang
+        $sheet->getStyle('A11')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
         // Set judul kolom tabel
         $headers = [

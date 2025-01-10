@@ -35,7 +35,7 @@
                                             $org_bal = $loan->org_bal;
                                             $outinitfee = $org_bal+$provFloat;
                                         @endphp
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ number_format($master->prov ?? 0, 2)}}" readonly>
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="-{{ number_format($master->prov ?? 0, 2)}}" readonly>
                                     </div>
                                 </div>
                             </div>
