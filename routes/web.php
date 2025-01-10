@@ -432,10 +432,16 @@ Route::middleware(['auth'])->group(function () {
 
 Route::prefix('report-initial-recognition')->group(function () {
     Route::get('/', [initialRecognitionEffectiveController::class, 'index'])->name('report-initial-recognition.index');
-    Route::get('/export-pdf/effective/{id_pt}', [initialRecognitionEffectiveController::class, 'exportPdf'])->name('report.initial.recognition.effective.export.pdf');
+    Route::get('/export-excel/effective/{id_pt}', [initialRecognitionEffectiveController::class, 'exportExcel'])->name('report.initial.recognition.effective.export.excel');
+    Route::get('/export-pdf/effective/{id_pt}', [
+       initialRecognitionEffectiveController::class, 
+        'exportPdf'
+    ])->name('report.initial.recognition.effective.export.pdf');
 
     // Route::get('/effective', [InitialRecognitionController::class, 'effective'])->name('report-initial-recognition.effective');
     Route::get('/simple-interest', [initialRecognitionSimpleInterestController::class, 'index'])->name('report-initial-recognition.simple-interest');
+    Route::get('/export-excel/simple-interest/{id_pt}', [initialRecognitionSimpleInterestController::class, 'exportExcel'])->name('report.initial.recognition.simple.export.excel');
+    Route::get('/export-pdf/simple-interest/{id_pt}', [initialRecognitionSimpleInterestController::class, 'exportPdf'])->name('report.initial.recognition.simple.export.pdf');
 });
 
 Route::middleware(['auth'])->group(function () {

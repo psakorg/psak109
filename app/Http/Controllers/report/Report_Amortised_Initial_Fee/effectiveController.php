@@ -78,7 +78,6 @@ $sheet->getColumnDimension('B')->setWidth(5);
 $sheet->getColumnDimension('C')->setWidth(30);
 $entityName = "PT PRAMATECH";
 $infoRows = [
-    ['Entity Name', ':', $entityName],
     ['Account Number', ':', "'" . $loan->no_acc],
     ['Debitor Name', ':', $loan->deb_name],
     ['Original Amount', ':', number_format($loan->org_bal, 2)],
@@ -300,7 +299,6 @@ $sheet->getColumnDimension('B')->setWidth(5);
 $sheet->getColumnDimension('C')->setWidth(30);
 $entityName = "PT PRAMATECH";
 $infoRows = [
-    ['Entity Name', ':', $entityName],
     ['Account Number', ':', "'" . $loan->no_acc],
     ['Debitor Name', ':', $loan->deb_name],
     ['Original Amount', ':', number_format($loan->org_bal, 2)],

@@ -102,8 +102,10 @@
                     -->
                     </div>
 
+                    
+
                     <!-- Tambahan input bulan dan tahun -->
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center ms-2">
                         <select class="form-select me-2" style="width: 120px;" id="monthSelect">
                             <option value="1">January</option>
                             <option value="2">February</option>
@@ -125,6 +127,16 @@
                                min="2000" 
                                max="2099">
                     </div>
+
+                    <button type="button" class="btn btn-danger ms-2" onclick="exportPdf()">
+                        <i class="fas fa-file-pdf"></i> Export to PDF
+                    </button>
+
+                    <button type="button" class="btn btn-success ms-2" onclick="exportExcel()">
+                        <i class="fas fa-file-excel"></i> Export to Excel
+                    </button>
+
+                    
                 </div>
                 
                 <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
@@ -1257,4 +1269,73 @@ function showModalWithAccount(accountNumber, type) {
     const event = new Event('blur');
     accountNumberInput.dispatchEvent(event);
     entityNumberInput.dispatchEvent(event);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+
+<script>
+function exportExcel() {
+    const month = document.getElementById('monthSelect').value;
+    const year = document.getElementById('yearInput').value;
+    const id_pt = '{{ Auth::user()->id_pt }}';
+    
+    fetch(`/report-initial-recognition/export-excel/simple-interest/${id_pt}?bulan=${month}&tahun=${year}`)
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ReportInitialRecognitionCorporateLoan_${id_pt}_${month}_${year}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Export Gagal',
+                text: error.message || 'Tidak ada data yang sesuai dengan kriteria yang dipilih',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+}
+
+function exportPdf() {
+    const month = document.getElementById('monthSelect').value;
+    const year = document.getElementById('yearInput').value;
+    const id_pt = '{{ Auth::user()->id_pt }}';
+    
+    fetch(`/report-initial-recognition/export-pdf/simple-interest/${id_pt}?bulan=${month}&tahun=${year}`)
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ReportInitialRecognitionCorporateLoan_${id_pt}_${month}_${year}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Export Gagal',
+                text: error.message || 'Tidak ada data yang sesuai dengan kriteria yang dipilih',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+}
 </script>

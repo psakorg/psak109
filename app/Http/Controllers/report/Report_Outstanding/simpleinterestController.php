@@ -73,6 +73,7 @@ class simpleinterestController extends Controller
         ->where('tblpsaklbucorporateloan.no_branch', $id_pt)
         ->where('tblpsaklbucorporateloan.bulan', $bulan)
         ->where('tblpsaklbucorporateloan.tahun', $tahun)
+        ->orderBy('tblpsaklbucorporateloan.no_acc', 'asc')
         ->get();
 
 
@@ -111,6 +112,7 @@ class simpleinterestController extends Controller
         ->where('tblpsaklbucorporateloan.no_branch', $id_pt)
         ->where('bulan', $bulan)
         ->where('tahun', $tahun)
+        ->orderBy('tblpsaklbucorporateloan.no_acc', 'asc')
         ->get();
     
         $bulan = $namaBulan[$bulan];
@@ -389,6 +391,7 @@ class simpleinterestController extends Controller
     ->where('tblpsaklbucorporateloan.no_branch', $id_pt)
     ->where('bulan', $bulan)
     ->where('tahun', $tahun)
+    ->orderBy('tblpsaklbucorporateloan.no_acc', 'asc')
     ->get();
 
     $bulan = $namaBulan[$bulan];
@@ -702,6 +705,7 @@ public function exportCsv(Request $request, $id_pt)
     ->where('tblpsaklbucorporateloan.no_branch', $id_pt)
     ->where('bulan', $bulan)
     ->where('tahun', $tahun)
+    ->orderBy('tblpsaklbucorporateloan.no_acc', 'asc')
     ->get();
 
     $bulan = $namaBulan[$bulan];

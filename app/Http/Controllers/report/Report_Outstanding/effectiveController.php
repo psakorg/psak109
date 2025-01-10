@@ -66,6 +66,7 @@ class effectiveController extends Controller
         ->where('no_branch', $id_pt)
         ->where('bulan', $bulan)
         ->where('tahun', $tahun)
+        ->orderBy('tblpsaklbueffective.no_acc', 'asc')
         ->get();
 
         // dd($master);
@@ -103,6 +104,7 @@ class effectiveController extends Controller
         ->where('tblpsaklbueffective.no_branch', $id_pt)
         ->where('bulan', $bulan)
         ->where('tahun', $tahun)
+        ->orderBy('tblpsaklbueffective.no_acc', 'asc')
         ->get();
     
         $bulan = $namaBulan[$bulan];
@@ -392,6 +394,7 @@ class effectiveController extends Controller
     ->where('tblpsaklbueffective.no_branch', $id_pt)
     ->where('bulan', $bulan)
     ->where('tahun', $tahun)
+    ->orderBy('tblpsaklbueffective.no_acc', 'asc')
     ->get();
 
     $bulan = $namaBulan[$bulan];
@@ -685,6 +688,7 @@ public function exportCsv(Request $request,$id_pt)
     ->where('tblpsaklbueffective.no_branch', $id_pt)
     ->where('bulan', $bulan)
     ->where('tahun', $tahun)
+    ->orderBy('tblpsaklbueffective.no_acc', 'asc')
     ->get();
 
     $bulan = $namaBulan[$bulan];

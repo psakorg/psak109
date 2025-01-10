@@ -78,7 +78,6 @@ class effectiveController extends Controller
   $sheet->getColumnDimension('C')->setWidth(30);
   $entityName = "PT PRAMATECH";
   $infoRows = [
-      ['Entity Name', ':', $entityName],
       ['Account Number', ':', "'" . $loan->no_acc],
       ['Debitor Name', ':', $loan->deb_name],
       ['Original Amount', ':', number_format($loan->org_bal, 2)],
@@ -312,7 +311,6 @@ foreach ($reports as $report) {
   $sheet->getColumnDimension('C')->setWidth(30);
   $entityName = "PT PRAMATECH";
   $infoRows = [
-      ['Entity Name', ':', $entityName],
       ['Account Number', ':', "'" . $loan->no_acc],
       ['Debitor Name', ':', $loan->deb_name],
       ['Original Amount', ':', number_format($loan->org_bal, 2)],
