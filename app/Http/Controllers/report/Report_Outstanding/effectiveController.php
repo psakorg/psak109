@@ -348,7 +348,8 @@ class effectiveController extends Controller
         }
 
         // Siapkan nama file
-        $filename = "{$id_pt}_PSAKLBUEffective_{$tahun}_{$bulanAngka}.xlsx";
+        //$filename = "{$id_pt}_PSAKLBUEffective_{$tahun}_{$bulanAngka}.xlsx";
+        $filename = "ReportOutstandingBalanceEffective_{$id_pt}_{$bulan}_{$tahun}.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -640,7 +641,8 @@ class effectiveController extends Controller
     }
 
     // Siapkan nama file
-    $filename = "{$id_pt}_PSAKLBUEffective_{$tahun}_{$bulanAngka}.pdf";
+    //$filename = "{$id_pt}_PSAKLBUEffective_{$tahun}_{$bulanAngka}.pdf";
+    $filename = "ReportOutstandingBalanceEffective_{$bulan}_{$tahun}.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
@@ -761,7 +763,7 @@ public function exportCsv(Request $request,$id_pt)
     }
 
     // Siapkan nama file
-    $filename = "{$id_pt}_PSAKLBUEffective_{$tahun}_{$bulanAngka}.csv";
+    $filename = "PSAKLBUEffective_{$bulan}_{$tahun}.csv";
 
     // Buat file CSV
     $handle = fopen('php://output', 'w');

@@ -7,7 +7,7 @@
                     <a href="{{ route('report-acc-eff.exportExcel', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt]) }}" class="btn btn-success ">Export to Excel</a>
                 </div>
 
-                <!-- Loan Details Form -->
+                <!-- Loan Details Formm -->
                 <div class="card mb-2" style="font-size: 12px;">
                     <div class="card-header">
                         <h5 class="card-title" style="font-size: 16px;">REPORT ACCRUAL INTEREST - EFFECTIVE</h5>

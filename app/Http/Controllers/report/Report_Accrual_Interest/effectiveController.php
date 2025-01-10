@@ -214,7 +214,7 @@ class effectiveController extends Controller
         // Set border untuk semua data laporan
         $sheet->getStyle('A13:H' . $row)->applyFromArray($styleArray);
 
-        $filename = "accrual_interest_effective_report_$no_acc.xlsx";
+        $filename = "ReportCalculatedAccrualInterestEffective_$no_acc.xlsx";
         $writer = new Xlsx($spreadsheet);
         $temp_file = tempnam(sys_get_temp_dir(), 'phpspreadsheet');
         $writer->save($temp_file);
@@ -246,7 +246,7 @@ class effectiveController extends Controller
         $sheet->getColumnDimension('A')->setWidth(20);
         $sheet->getColumnDimension('B')->setWidth(5);
         $sheet->getColumnDimension('C')->setWidth(30);
-        $entityName = "PT PRAMATECH";
+        $entityName = "PT. PACIFIC MULTI FINANCE";
         $infoRows = [
             ['Entity Name', ':', $entityName],
             ['Account Number', ':', "'" . $loan->no_acc],
@@ -392,7 +392,7 @@ class effectiveController extends Controller
         // Set border untuk semua data laporann
         $sheet->getStyle('A13:H' . $row)->applyFromArray($styleArray);
 
-        $filename = "accrual_interest_effective_report_$no_acc.pdf";
+        $filename = "ReportCalculatedAccrualInterestEffective_$no_acc.pdf";
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
         $temp_file = tempnam(sys_get_temp_dir(), 'phpspreadsheet_pdf');
         $writer->save($temp_file);

@@ -171,7 +171,7 @@ class effectiveController extends Controller
         }
 
         // Mengisi data laporan ke dalam tabel
-        $row = 14; // Mulai dari baris 13 untuk data laporan
+        $row = 14; // Mulai dari baris 14 untuk data laporan
         $cumulativeAmortized = 0; // Inisialisasi variabel kumulatif
         foreach ($reports as $report) {
             $amortized = $report->amortized; // Ambil nilai amortized dari laporan
@@ -227,6 +227,8 @@ class effectiveController extends Controller
           $sheet->setCellValue('G' . $row, null);
           $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
           $sheet->setCellValue('H' . $row, null);
+          $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+          $sheet->setCellValue('I' . $row, null);
   
           foreach (range('A', 'I') as $columnID) {
               $sheet->getColumnDimension($columnID)->setAutoSize(true);
@@ -254,7 +256,7 @@ class effectiveController extends Controller
         }
 
         // Siapkan nama file
-        $filename = "amortised_cost_effective_report_$no_acc.xlsx";
+        $filename = "ReportAmortisedCostEffective_$no_acc.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -443,6 +445,8 @@ class effectiveController extends Controller
       $sheet->setCellValue('G' . $row, null);
       $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
       $sheet->setCellValue('H' . $row, null);
+      $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('I' . $row, null);
 
       foreach (range('A', 'I') as $columnID) {
           $sheet->getColumnDimension($columnID)->setAutoSize(true);
@@ -470,7 +474,7 @@ class effectiveController extends Controller
     }
 
     // Siapkan nama file
-    $filename = "amortised_cost_effective_report_$no_acc.pdf";
+    $filename = "ReportAmortisedCostEffective_$no_acc.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);

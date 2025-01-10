@@ -1,7 +1,7 @@
 <head>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap Bundle with Popper -->
+    <!-- Bootstrap Bundle with Poppeer -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -124,6 +124,11 @@
                                min="2000" 
                                max="2099">
                     </div>
+
+                    <!-- Add this button -->
+                    <button type="button" class="btn btn-success ms-2" onclick="exportPdf()">
+                        <i class="fas fa-file-pdf"></i> Export to PDF
+                    </button>
                 </div>
                 
                 <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
@@ -1269,4 +1274,36 @@ function showModalWithAccount(accountNumber, type) {
     const event = new Event('blur');
     accountNumberInput.dispatchEvent(event);
     entityNumberInput.dispatchEvent(event);
+
+function exportPdf() {
+    const month = document.getElementById('monthSelect').value;
+    const year = document.getElementById('yearInput').value;
+    const id_pt = '{{ Auth::user()->id_pt }}';
+    
+    fetch(`/report-initial-recognition/export-pdf/effective/${id_pt}?bulan=${month}&tahun=${year}`)
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ReportInitialRecognitionEffective_${id_pt}_${month}_${year}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Export Gagal',
+                text: error.message || 'Tidak ada data yang sesuai dengan kriteria yang dipilih',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+}
 </script>

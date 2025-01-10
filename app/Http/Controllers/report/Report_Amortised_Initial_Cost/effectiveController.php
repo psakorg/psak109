@@ -267,7 +267,7 @@ foreach ($reports as $report) {
         }
 
         // Siapkan nama file
-        $filename = "amortised_initial_cost_report_effective_$no_acc.xlsx";
+        $filename = "ReportAmortisedInitialCostEffective_$no_acc.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -500,7 +500,7 @@ foreach ($reports as $report) {
     }
 
     // Siapkan nama file
-    $filename = "amortised_initial_cost_report-effective_$no_acc.pdf";
+    $filename = "ReportAmortisedInitialCostEffective_$no_acc.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);

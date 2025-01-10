@@ -432,6 +432,8 @@ Route::middleware(['auth'])->group(function () {
 
 Route::prefix('report-initial-recognition')->group(function () {
     Route::get('/', [initialRecognitionEffectiveController::class, 'index'])->name('report-initial-recognition.index');
+    Route::get('/export-pdf/effective/{id_pt}', [initialRecognitionEffectiveController::class, 'exportPdf'])->name('report.initial.recognition.effective.export.pdf');
+
     // Route::get('/effective', [InitialRecognitionController::class, 'effective'])->name('report-initial-recognition.effective');
     Route::get('/simple-interest', [initialRecognitionSimpleInterestController::class, 'index'])->name('report-initial-recognition.simple-interest');
 });

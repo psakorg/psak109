@@ -170,7 +170,7 @@ $sheet->setCellValue('B2', $entitiyName);
         }
 
         // Siapkan nama file
-        $filename = "amortised_initial_fee_report_$no_acc.xlsx";
+        $filename = "ReportAmortisedInitialFeeCorporateLoan_$no_acc.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -307,7 +307,7 @@ $sheet->setCellValue('B2', $entitiyName);
     }
 
     // Siapkan nama file
-    $filename = "amortised_initial_fee_report_$no_acc.pdf";
+    $filename = "ReportAmortisedInitialFeeCorporateLoan_$no_acc.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);

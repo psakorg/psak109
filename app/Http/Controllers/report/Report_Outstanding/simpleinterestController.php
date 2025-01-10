@@ -346,7 +346,8 @@ class simpleinterestController extends Controller
         }
 
         // Siapkan nama file
-        $filename = "{$id_pt}_PSAKLBUCorporateloan_{$tahun}_{$bulanAngka}.xlsx";
+        //$filename = "{$id_pt}_PSAKLBUCorporateloan_{$tahun}_{$bulanAngka}.xlsx";
+        $filename = "ReportOutstandingBalanceCorporateLoan_{$id_pt}_{$bulan}_{$tahun}.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -621,7 +622,8 @@ class simpleinterestController extends Controller
     }
 
     // Siapkan nama file
-    $filename = "{$id_pt}_PSAKLBUCorporateloan_{$tahun}_{$bulanAngka}.pdf";
+    //$filename = "{$id_pt}_PSAKLBUCorporateloan_{$tahun}_{$bulanAngka}.pdf";
+    $filename = "ReportOutstandingBalanceCorporateLoan_{$id_pt}_{$bulan}_{$tahun}.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
@@ -779,7 +781,7 @@ public function exportCsv(Request $request, $id_pt)
     }
 
     // Siapkan nama file
-    $filename = "{$id_pt}_PSAKLBUCorporateloan_{$tahun}_{$bulanAngka}.csv";
+    $filename = "PSAKLBUCorporateloan_{$bulan}_{$tahun}.csv";
 
     // Buat file CSV
     $handle = fopen('php://output', 'w');

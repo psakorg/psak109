@@ -238,7 +238,7 @@ foreach ($infoRows as $info) {
         }
 
         // Siapkan nama file
-        $filename = "expected_cash_flow_effective_report_$no_acc.xlsx";
+        $filename = "ReportExpectedCashFlowEffective_$no_acc.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -442,7 +442,7 @@ $sheet->setCellValue('G' . $row, number_format($interestIncome ?? 0));
     }
 
     // Siapkan nama file
-    $filename = "expected_cash_flow_effective_report_$no_acc.pdf";
+    $filename = "ReportExpectedCashFlowEffective_$no_acc.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
