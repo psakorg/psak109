@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use Illuminate\Support\Facades\DB;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -24,12 +25,27 @@ class simpleinterestController extends Controller
     // Method untuk menampilkan semua data pinjaman korporat
     public function index(Request $request)
     {
-        $id_pt = Auth::user()->id_pt;
-         // Ambil jumlah item per halaman dari query string, default 10
-         $perPage = $request->input('per_page', 10);
-         // Ambil data dengan pagination
-         $loans = report_simpleinterest::fetchAll($id_pt, $perPage);
-        return view('report.journal.simple_interest.master', compact('loans'));
+        $user = Auth::user();
+        $id_pt = $user->id_pt;
+        
+        // Get parameters from request
+        $perPage = $request->input('per_page', 10);
+        $bulan = $request->input('bulan', date('m'));
+        $tahun = $request->input('tahun', date('Y'));
+        $jenis = $request->input('jenis', 'Initial Recognition'); // Default value sesuai DB
+
+        $isSuperAdmin = $user->role === 'superadmin';
+        
+        // Query menggunakan whereRaw untuk case-insensitive matching
+        $master = DB::table('tbljournal_corporateloan')
+            ->where('branch_no', $id_pt)
+            ->where('tahun', $tahun)
+            ->where('bulan', $bulan)
+            ->whereRaw('LOWER(TRIM(jenis)) = ?', [strtolower(trim($jenis))])
+            ->paginate($perPage);
+
+        return view('report.journal.simple_interest.master', 
+            compact('master', 'bulan', 'tahun', 'jenis', 'isSuperAdmin', 'user', 'jenis'));
     }
 
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akun

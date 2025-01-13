@@ -281,7 +281,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-interest-deferred-effective/export-excel/{no_acc}/{id_pt}', [interestdeffeffControler::class, 'exportExcel'])->name('report-interestdeff-eff.exportExcel');
 });
 
-// Rute untuk report journal simple interest
+// Rute untuk report journal simple interestt
 Route::middleware(['auth'])->group(function () {
     Route::get('/report-journal-simple-interest', [journalsiControler::class, 'index'])->name('report-journal-si.index');
     Route::get('/report-journal-simple-interest/view/{no_acc}/{id_pt}', [journalsiControler::class, 'view'])->name('report-journal-si.view');

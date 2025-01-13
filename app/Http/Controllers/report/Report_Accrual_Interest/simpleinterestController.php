@@ -71,10 +71,10 @@ class simpleinterestController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set informasi pinjaman
-        $sheet->setCellValue('A2', 'Entitiy Name');
-        $sheet->getStyle('A2')->getFont()->setBold(true);
-        $entitiyname = $entityName->nama_pt;
-        $sheet->setCellValue('B2', $entitiyname); 
+        //$sheet->setCellValue('A2', 'Entitiy Name');
+        //$sheet->getStyle('A2')->getFont()->setBold(true);
+        //$entitiyname = $entityName->nama_pt;
+        //$sheet->setCellValue('B2', $entitiyname); 
 
         $sheet->setCellValue('A2', 'Account Number');
         $sheet->getStyle('A2')->getFont()->setBold(true);
@@ -273,7 +273,7 @@ class simpleinterestController extends Controller
         $sheet->getColumnDimension('B')->setWidth(5);
         $sheet->getColumnDimension('C')->setWidth(30);
 
-        $entitiyName = ": $entityName ? $entityName->nama_pt";
+        //$entitiyName = ": $entityName ? $entityName->nama_pt";
         $teksnoacc = ": $loan->no_acc";
         $teksdebname = ": $loan->deb_name";
         $teksorgbal = number_format($loan->org_bal, 2);

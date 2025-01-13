@@ -40,9 +40,9 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label d-flex justify-content-end">Up Front Fee</label>
                                     <div class="col-sm-8">
-                                    @php
+                                        @php
                                         // Menghitung nilai org amount
-                                            $upfrontFee = round(-($loan->org_bal * 0.01), 0);
+                                        //    $upfrontFee = round(-($loan->org_bal * 0.01), 0);
                                         @endphp
                                         <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="-{{ number_format($loan->prov ?? 0, 2) }}" readonly>
                                     </div>
@@ -53,7 +53,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Original Amount</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->nbal, 2) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->oldbal, 2) }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
@@ -76,7 +76,8 @@
                                     <div class="col-sm-8">
                                         @php
                                         // Menghitung nilai org amount
-                                            $CarryingAmount=$loan->org_bal+$upfrontFee
+                                            //$CarryingAmount=$loan->nbal-$upfrontFee;
+                                            $CarryingAmount=$loan->nbal-$loan->prov;
                                         @endphp
                                         <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($CarryingAmount?? 0, 2) }}" readonly>
                                     </div>

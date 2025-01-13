@@ -128,15 +128,14 @@
                                max="2099">
                     </div>
 
-                    <button type="button" class="btn btn-danger ms-2" onclick="exportPdf()">
-                        <i class="fas fa-file-pdf"></i> Export to PDF
-                    </button>
-
-                    <button type="button" class="btn btn-success ms-2" onclick="exportExcel()">
-                        <i class="fas fa-file-excel"></i> Export to Excel
-                    </button>
-
-                    
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-danger" id="exportPdf">
+                            <i class="fas fa-file-pdf"></i> Export to PDF
+                        </a>
+                        <a href="#" id="exportExcel" class="btn btn-success">
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </a>
+                    </div>
                 </div>
                 
                 <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
@@ -271,9 +270,9 @@
                                         <td>{{ $loan->term }}</td>
                                         <td>{{ number_format($loan->rate*100, 5) }}%</td>
                                         <td>{{ $loan->mtrdtconv }}</td>
-                                        <td class="text-right">{{ number_format($loan->org_bal ?? 0, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->oldbal ?? 0, 2) }}</td>
-                                        <td class="text-right">{{ number_format($loan->baleir ?? 0, 2) }}</td>
+                                        <td class="text-right">{{ number_format($loan->org_bal ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($loan->oldbal ?? 0) }}</td>
+                                        <td class="text-right">{{ number_format($loan->baleir ?? 0) }}</td>
                                         <td>{{ number_format($loan->eirex*100, 14) }}%</td>
                                         <td>{{ number_format($loan->eircalc*100, 14) }}%</td>
                                         <td>{{ number_format($loan->eircalc_conv*100, 14) }}%</td>
@@ -969,6 +968,24 @@ function updateReport() {
     
     window.location.href = `${reportUrl}?bulan=${month}&tahun=${year}&branch=${branch}`;
 }
+// Update export URL dynamically based on selected month and year
+document.getElementById('exportExcel').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report.initial.recognition.simple.export.excel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
+
+    document.getElementById('exportPdf').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report.initial.recognition.simple.export.pdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
 
 // Event listener untuk document ready
 document.addEventListener('DOMContentLoaded', function() {

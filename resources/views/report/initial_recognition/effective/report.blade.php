@@ -125,15 +125,14 @@
                                max="2099">
                     </div>
                     
-                    <button type="button" class="btn btn-danger ms-2" onclick="exportPdf()">
-                        <i class="fas fa-file-pdf"></i> Export to PDF
-                    </button>
-
-                    <!-- Add this button -->
-                    <button type="button" class="btn btn-success ms-2" onclick="exportExcel()">
-                        <i class="fas fa-file-excel"></i> Export to Excel
-                    </button>
-
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-danger" id="exportPdf">
+                            <i class="fas fa-file-pdf"></i> Export to PDF
+                        </a>
+                        <a href="#" id="exportExcel" class="btn btn-success">
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </a>
+                    </div>
                 </div>
                 
                 <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
@@ -979,6 +978,25 @@ function updateReport() {
     
     window.location.href = `${reportUrl}?bulan=${month}&tahun=${year}&branch=${branch}`;
 }
+    // Update export URL dynamically based on selected month and year
+    document.getElementById('exportExcel').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report.initial.recognition.effective.export.excel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
+
+    document.getElementById('exportPdf').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report.initial.recognition.effective.export.pdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
+
 
 // Event listener untuk document ready
 document.addEventListener('DOMContentLoaded', function() {
@@ -1280,67 +1298,4 @@ function showModalWithAccount(accountNumber, type) {
     accountNumberInput.dispatchEvent(event);
     entityNumberInput.dispatchEvent(event);
 
-function exportExcel() {
-    const month = document.getElementById('monthSelect').value;
-    const year = document.getElementById('yearInput').value;
-    const id_pt = '{{ Auth::user()->id_pt }}';
-    
-    fetch(`/report-initial-recognition/export-excel/effective/${id_pt}?bulan=${month}&tahun=${year}`)
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => Promise.reject(err));
-            }
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `ReportInitialRecognitionEffective_${id_pt}_${month}_${year}.xlsx`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Export Gagal',
-                text: error.message || 'Tidak ada data yang sesuai dengan kriteria yang dipilih',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'OK'
-            });
-        });
-}
-
-function exportPdf() {
-    const month = document.getElementById('monthSelect').value;
-    const year = document.getElementById('yearInput').value;
-    const id_pt = '{{ Auth::user()->id_pt }}';
-    
-    fetch(`/report-initial-recognition/export-pdf/effective/${id_pt}?bulan=${month}&tahun=${year}`)
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => Promise.reject(err));
-            }
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `ReportInitialRecognitionCorporateLoan_${id_pt}_${month}_${year}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Export Gagal',
-                text: error.message || 'Tidak ada data yang sesuai dengan kriteria yang dipilih',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'OK'
-            });
-        });
-}
 </script>

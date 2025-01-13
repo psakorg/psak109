@@ -93,7 +93,7 @@
                                 </a>
                                 <div class="sidebar-dropdown-menu">
                                     <a href="{{ route('report-journal-eff.index') }}" class="dropdown-link">Effective</a>
-                                    <a href="{{ route('report-outstanding-si.index') }}" class="dropdown-link">Simple Interest</a>
+                                    <a href="{{ route('report-journal-si.index') }}" class="dropdown-link">Simple Interest</a>
                                 </div>
                             </div>
                         </li>

@@ -84,10 +84,10 @@ class simpleinterestController extends Controller
  $teksdebname = ": $loan->deb_name";
  $teksorgbal = number_format($loan->nbal, 2);
  $teksorgbal = ": $teksorgbal";
- $teksorgdate = date('d/m/Y', strtotime($loan->org_date));
+ $teksorgdate = date('d-m-Y', strtotime($loan->org_date));
  $teksorgdate = ": $teksorgdate";
  $teksterm = ": $loan->term";
- $teksmtrdate = date('d/m/Y', strtotime($loan->mtr_date));
+ $teksmtrdate = date('d-m-Y', strtotime($loan->mtr_date));
  $teksmtrdate = ": $teksmtrdate";
  $teksrate = number_format($loan->rate*100, 5);
  $teksrate = ": $teksrate";
@@ -118,7 +118,7 @@ class simpleinterestController extends Controller
  foreach ($infoRows as $info) {
     $sheet->mergeCells('A' . $currentRow . ':B' . $currentRow); // Menggabungkan sel untuk judul tabel
     $sheet->setCellValue('A' . $currentRow, $info[0]);
-    $sheet->mergeCells('C' . $currentRow . ':D' . $currentRow); // Menggabungkan sel untuk judul tabel
+    $sheet->mergeCells('C' . $currentRow . ':E' . $currentRow); // Menggabungkan sel untuk judul tabel
     $sheet->setCellValue('C' . $currentRow, $info[1]);
     //$sheet->setCellValue('F' . $currentRow, $info[2]);
     $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
@@ -147,21 +147,22 @@ class simpleinterestController extends Controller
  $sheet->getStyle('A13:L13')->getAlignment()->setWrapText(true);
 
  // Menghitung nilai org amount
- $upfrontFee = round(-($loan->org_bal * 0.01), 0);
- $CarryingAmount = $loan->org_bal+$upfrontFee;
+ //$upfrontFee = round(-($loan->org_bal * 0.01), 0);
+ $upfrontFee = round(-($loan->prov), 0);
+ $CarryingAmount = $loan->nbal+$upfrontFee;
 
  $teksbilint = number_format($loan->bilint, 0);
- $teksbilint = ": $teksbilint";
+ $teksbilint = ":   $teksbilint";
  $teksprov = number_format($loan->prov, 0);
- $teksprov = ":- $teksprov";
+ $teksprov = ":   - $teksprov";
  $tekstrxcost = number_format($loan->trxcost, 0);
- $tekstrxcost = ":- $tekstrxcost";
+ $tekstrxcost = ":   $tekstrxcost";
  $tekscarryingamount = number_format($CarryingAmount, 0);
- $tekscarryingamount = ": $tekscarryingamount";
- $tekseirex = number_format($loan->eirex, 14);
- $tekseirex = ": $tekseirex";
- $tekseircalc = number_format($loan->eircalc, 14);
- $tekseircalc = ": $tekseircalc";
+ $tekscarryingamount = ":   $tekscarryingamount";
+ $tekseirex = number_format($loan->eirex*100, 14);
+ $tekseirex = ":   $tekseirex";
+ $tekseircalc = number_format($loan->eircalc*100, 14);
+ $tekseircalc = ":   $tekseircalc";
 
  $infoRows = [
  ['Outstanding Interest', $teksbilint],
@@ -383,50 +384,81 @@ class simpleinterestController extends Controller
  //$sheet->getColumnDimension('A')->setWidth(20);
  //$sheet->getColumnDimension('B')->setWidth(5);
  //$sheet->getColumnDimension('C')->setWidth(30);
+ $teksbilint = number_format($loan->bilint, 0);
+ $teksbilint = ":   $teksbilint";
+ $entitiyname = ": $entityName->nama_pt";
+ $teksnoacc = ": $loan->no_acc";
+ $teksdebname = ": $loan->deb_name";
+ $teksorgbal = number_format($loan->nbal, 2);
+ $teksorgbal = ": $teksorgbal";
+ $teksorgdate = date('d-m-Y', strtotime($loan->org_date));
+ $teksorgdate = ": $teksorgdate";
+ $teksterm = ": $loan->term";
+ $teksmtrdate = date('d-m-Y', strtotime($loan->mtr_date));
+ $teksmtrdate = ": $teksmtrdate";
+ $teksrate = number_format($loan->rate*100, 5);
+ $teksrate = ": $teksrate";
 
  $infoRows = [
-     ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
-     ['Account Number', ':', "'" . $loan->no_acc],
-     ['Debitor Name', ':', $loan->deb_name],
-     ['Original Amount', ':', number_format($loan->nbal, 2)],
-     ['Original Loan Date', ':', date('d-m-Y', strtotime($loan->org_date))],
-     ['Term', ':', $loan->term . ' Month'],
-     ['Maturity Loan Date', ':',  date('d-m-Y', strtotime($loan->mtr_date))],
-     ['Interest Rate', ':', number_format($loan->rate*100, 5) . '%'],
- ];
+    ['Entity Name', $entitiyname],
+    ['No. Account', $teksnoacc],
+    ['Debtor Name', $teksdebname],
+    ['Original Balance', $teksorgbal],
+    ['Original Date', $teksorgdate],
+    ['Term', $teksterm . ' Months'],
+    ['Maturity Date', $teksmtrdate],
+    ['Interest Rate', $teksrate . '%'],
+];
 
+$currentRow = 3;
+foreach ($infoRows as $info) {
+   $sheet->mergeCells('A' . $currentRow . ':B' . $currentRow); // Menggabungkan sel untuk judul tabel
+   $sheet->setCellValue('A' . $currentRow, $info[0]);
+   $sheet->mergeCells('C' . $currentRow . ':E' . $currentRow); // Menggabungkan sel untuk judul tabel
+   $sheet->setCellValue('C' . $currentRow, $info[1]);
+   //$sheet->setCellValue('F' . $currentRow, $info[2]);
+   $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+   $sheet->getStyle('C' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+   //$sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+   $sheet->getRowDimension($currentRow)->setRowHeight(14);
+   $currentRow++;
+}
 
- $currentRow = 3;
- foreach ($infoRows as $info) {
-     $sheet->setCellValue('A' . $currentRow, $info[0]);
-     $sheet->setCellValue('B' . $currentRow, $info[1]);
-     $sheet->setCellValue('C' . $currentRow, $info[2]);
-     $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getStyle('B' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getStyle('C' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getRowDimension($currentRow)->setRowHeight(14);
-     $currentRow++;
- }
- $sheet->getColumnDimension('F')->setWidth(20);
+ //$sheet->getColumnDimension('F')->setWidth(20);
  $sheet->getColumnDimension('G')->setWidth(5);
  $sheet->getColumnDimension('H')->setWidth(30);
  // Menghitung nilai org amount
- $upfrontFee = round(-($loan->org_bal * 0.01), 0);
- $CarryingAmount = $loan->org_bal+$upfrontFee;
+ //$upfrontFee = round(-($loan->org_bal * 0.01), 0);
+ //$CarryingAmount = $loan->org_bal-$upfrontFee;
+ $upfrontFee = round(-($loan->prov), 0);
+ $CarryingAmount = $loan->nbal+$upfrontFee; $teksbilint = number_format($loan->bilint, 0);
+ $teksbilint = ":   $teksbilint";
+ $teksprov = number_format($loan->prov, 0);
+ $teksprov = ":  - $teksprov";
+ $tekstrxcost = number_format($loan->trxcost, 0);
+ $tekstrxcost = ":  $tekstrxcost";
+ $tekscarryingamount = number_format($CarryingAmount, 0);
+ $tekscarryingamount = ":   $tekscarryingamount";
+ $tekseirex = number_format($loan->eirex*100, 14);
+ $tekseirex = ":   $tekseirex";
+ $tekseircalc = number_format($loan->eircalc*100, 14);
+ $tekseircalc = ":   $tekseircalc";
+
  $infoRows = [
- ['Outstanding Interest', ':', number_format($loan->bilint ?? 0)],
- ['Up Front Fee', ':', number_format($loan->prov ?? 0, 2) ],
- ['Transaction Cost', ':', number_format($loan->trxcost ?? 0, 2)],
- ['Carrying Amount', ':', number_format($CarryingAmount, 2)],
- ['EIR Exposure', ':', number_format($loan->eirex * 100, 14) . '%'],
- ['EIR Calculated', ':',  number_format($loan->eircalc * 100, 14) . '%'],
+ ['Outstanding Interest', $teksbilint],
+ ['Up Front Fee', $teksprov],
+ ['Transaction Cost', $tekstrxcost],
+ ['Carrying Amount', $tekscarryingamount],
+ ['EIR Exposure', $tekseirex . '%'],
+ ['EIR Calculated', $tekseircalc . '%'],
  ];
+ 
  $currentRow = 3;
  foreach ($infoRows as $info) {
-     $sheet->setCellValue('F' . $currentRow, $info[0]);
-     $sheet->setCellValue('G' . $currentRow, $info[1]);
-     $sheet->setCellValue('H' . $currentRow, $info[2]);
-     $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+//     $sheet->setCellValue('F' . $currentRow, $info[0]);
+     $sheet->setCellValue('G' . $currentRow, $info[0]);
+     $sheet->setCellValue('H' . $currentRow, $info[1]);
+//     $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getRowDimension($currentRow)->setRowHeight(14);

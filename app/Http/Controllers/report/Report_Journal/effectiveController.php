@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use Illuminate\Support\Facades\DB;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -24,12 +25,25 @@ class effectiveController extends Controller
     // Method untuk menampilkan semua data pinjaman korporat
     public function index(Request $request)
     {
-        $id_pt = Auth::user()->id_pt;
+        $user = Auth::user();
+        $id_pt = $user->id_pt;
            // Ambil jumlah item per halaman dari query string, default 10
            $perPage = $request->input('per_page', 10);
+           $bulan = $request->input('bulan', date('m'));
+           $tahun = $request->input('tahun', date('Y'));
+
+           $isSuperAdmin = $user->role === 'superadmin';
+           
            // Ambil data dengan pagination
-           $loans = report_effective::fetchAll($id_pt, $perPage);
-           return view('report.journal.effective.master', compact('loans'));
+           $master = DB::table('tbljournal')
+           ->where('branch_no', $id_pt)
+           ->where('tahun', $tahun)
+           ->where('bulan', $bulan)
+           ->paginate($perPage); 
+
+        //    dd($master);
+
+           return view('report.journal.effective.master', compact('master', 'bulan', 'tahun', 'isSuperAdmin', 'user'));
     }
 
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
