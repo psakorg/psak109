@@ -79,18 +79,18 @@ class simpleinterestController extends Controller
  $sheet->getPageMargins()->setLeft(0.5);
  $sheet->getPageMargins()->setBottom(0.5);
 
- $entitiyname = ": $entityName->nama_pt";
- $teksnoacc = ": $loan->no_acc";
- $teksdebname = ": $loan->deb_name";
- $teksorgbal = number_format($loan->nbal, 2);
- $teksorgbal = ": $teksorgbal";
+ $entitiyname = ":  $entityName->nama_pt";
+ $teksnoacc = ":  $loan->no_acc";
+ $teksdebname = ":  $loan->deb_name";
+ $teksorgbal = number_format($loan->org_bal, 0);
+ $teksorgbal = ":  $teksorgbal";
  $teksorgdate = date('d-m-Y', strtotime($loan->org_date));
- $teksorgdate = ": $teksorgdate";
- $teksterm = ": $loan->term";
+ $teksorgdate = ":  $teksorgdate";
+ $teksterm = ":  $loan->term";
  $teksmtrdate = date('d-m-Y', strtotime($loan->mtr_date));
- $teksmtrdate = ": $teksmtrdate";
+ $teksmtrdate = ":  $teksmtrdate";
  $teksrate = number_format($loan->rate*100, 5);
- $teksrate = ": $teksrate";
+ $teksrate = ":  $teksrate";
 
  $infoRows = [
      ['Entity Name', $entitiyname],
@@ -134,12 +134,11 @@ class simpleinterestController extends Controller
  $sheet->getColumnDimension('D')->setWidth(18);
  $sheet->getColumnDimension('E')->setWidth(18);
  $sheet->getColumnDimension('F')->setWidth(18);
- $sheet->getColumnDimension('G')->setWidth(20);
- $sheet->getColumnDimension('H')->setWidth(18);
- $sheet->getColumnDimension('I')->setWidth(18);
+ $sheet->getColumnDimension('G')->setWidth(16);
+ $sheet->getColumnDimension('H')->setWidth(15);
+ $sheet->getColumnDimension('I')->setWidth(15);
  $sheet->getColumnDimension('J')->setWidth(18);
  $sheet->getColumnDimension('K')->setWidth(18);
- $sheet->getColumnDimension('L')->setWidth(18);
  $sheet->getColumnDimension('L')->setWidth(18);
 
  $sheet->getStyle('A13:L13')->getAlignment()->setHorizontal('center');
@@ -174,10 +173,11 @@ class simpleinterestController extends Controller
  ];
  $currentRow = 3;
  foreach ($infoRows as $info) {
-     $sheet->setCellValue('G' . $currentRow, $info[0]);
-     $sheet->setCellValue('H' . $currentRow, $info[1]);
-     $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+     $sheet->setCellValue('H' . $currentRow, $info[0]);
+     $sheet->setCellValue('J' . $currentRow, $info[1]);
      $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+     $sheet->getStyle('J' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+     $sheet->mergeCells('H' . $currentRow . ':I' . $currentRow); // Menggabungkan sel untuk judul tabel
      $sheet->getRowDimension($currentRow)->setRowHeight(14);
      $currentRow++;
  }
@@ -389,7 +389,7 @@ class simpleinterestController extends Controller
  $entitiyname = ": $entityName->nama_pt";
  $teksnoacc = ": $loan->no_acc";
  $teksdebname = ": $loan->deb_name";
- $teksorgbal = number_format($loan->nbal, 2);
+ $teksorgbal = number_format($loan->org_bal, 0);
  $teksorgbal = ": $teksorgbal";
  $teksorgdate = date('d-m-Y', strtotime($loan->org_date));
  $teksorgdate = ": $teksorgdate";
@@ -425,8 +425,8 @@ foreach ($infoRows as $info) {
 }
 
  //$sheet->getColumnDimension('F')->setWidth(20);
- $sheet->getColumnDimension('G')->setWidth(5);
- $sheet->getColumnDimension('H')->setWidth(30);
+// $sheet->getColumnDimension('G')->setWidth(5);
+// $sheet->getColumnDimension('H')->setWidth(30);
  // Menghitung nilai org amount
  //$upfrontFee = round(-($loan->org_bal * 0.01), 0);
  //$CarryingAmount = $loan->org_bal-$upfrontFee;
@@ -455,12 +455,12 @@ foreach ($infoRows as $info) {
  
  $currentRow = 3;
  foreach ($infoRows as $info) {
-//     $sheet->setCellValue('F' . $currentRow, $info[0]);
-     $sheet->setCellValue('G' . $currentRow, $info[0]);
-     $sheet->setCellValue('H' . $currentRow, $info[1]);
-//     $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+     $sheet->setCellValue('H' . $currentRow, $info[0]);
+     $sheet->setCellValue('J' . $currentRow, $info[1]);
      $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+     $sheet->getStyle('J' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+     $sheet->mergeCells('H' . $currentRow . ':I' . $currentRow); // Menggabungkan sel untuk judul tabel
+     $sheet->mergeCells('J' . $currentRow . ':K' . $currentRow); // Menggabungkan sel untuk judul tabel
      $sheet->getRowDimension($currentRow)->setRowHeight(14);
      $currentRow++;
  }

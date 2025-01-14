@@ -16,120 +16,13 @@
                     <div class="card-header">
                         <h5 class="card-title"style="font-size: 16px;">REPORT JOURNAL - SIMPLE INTEREST</h5>
                     </div>
-
-                    
-                    <!-- <div class="card-body">
-                        <form>
-                            <div class="form-row">
-                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label">Branch Number</label>
-                                    <div class="col-sm-6">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label">Branch Name</label>
-                                    <div class="col-sm-6">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label">GL Group</label>
-                                    <div class="col-sm-6">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label">Date Of Report</label>
-                                    <div class="col-sm-6">
-                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div> -->
                 </div>
                  <div class="d-flex justify-content-start mb-3 align-items-center">
                      <div class="dropdown me-1">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-file-import"></i> Bulan/Tahun
                         </button>
-                     <!--</div> 
-
-                       
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                    Accrual Interest <i class="fas fa-chevron-right float-end"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('accrual_interest_effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('accrual_interest_simple')">Simple Interest</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                    Amortised Cost <i class="fas fa-chevron-right float-end"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_cost_effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_cost_simple')">Simple Interest</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                    Amortised Initial Cost <i class="fas fa-chevron-right float-end"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_cost_effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_cost_simple')">Simple Interest</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                    Amortised Initial Fee <i class="fas fa-chevron-right float-end"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_fee_effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_fee_simple')">Simple Interest</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                    Expected Cash Flow <i class="fas fa-chevron-right float-end"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('expected_cashflow_effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('expected_cashflow_simple')">Simple Interest</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                    Outstanding <i class="fas fa-chevron-right float-end"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('outstanding_effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('outstanding_simple')">Simple Interest</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                    Journal <i class="fas fa-chevron-right float-end"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-submenu">
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('journal_effective')">Effective</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showModal('journal_simple')">Simple Interest</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                        -->
-                    </div> 
+                     </div> 
 
                     <div class="d-flex align-items-center ">
                         <select class="form-select me-2" style="width: 120px;" id="monthSelect">
@@ -153,11 +46,11 @@
                                min="2000" 
                                max="2099">
 
-                        <select class="form-select me-2" style="width: 200px;" id="jenisSelect">
+                        <!-- <select class="form-select me-2" style="width: 200px;" id="jenisSelect">
                             <option value="Initial Recognition">Initial Recognition</option>
                             <option value="Amortised Up Front Fee">Amortised Up Front Fee</option>
                             <option value="Amortised Transaction Cost">Amortised Transaction Cost</option>
-                        </select>
+                        </select> -->
                     </div>
 
                     <!-- Tombol Export -->
@@ -179,14 +72,14 @@
                     <table class="table table-striped table-bordered table-hover" style="font-size: 12px;">
                         <thead class="thead-dark">
                             <tr>
-                                <th style="white-space: nowrap;">No.</th>
-                                <th style="white-space: nowrap;">Entity Number</th>
-                                <th style="white-space: nowrap;">GL Account</th>
-                                <th style="white-space: nowrap;">Description</th>
-                                <th style="white-space: nowrap;">Post</th>
-                                <th style="white-space: nowrap;">Debit</th>
-                                <th style="white-space: nowrap;">Credit</th>
-                                <th style="white-space: nowrap;">Posting Date</th>
+                                <th style="white-space: nowrap;" class="text-center">No.</th>
+                                <th style="white-space: nowrap;" class="text-center">Entity Number</th>
+                                <th style="white-space: nowrap;" class="text-center">GL Account</th>
+                                <th style="white-space: nowrap;" class="text-center">Description</th>
+                                <th style="white-space: nowrap;" class="text-center">Post</th>
+                                <th style="white-space: nowrap;" class="text-center">Debit</th>
+                                <th style="white-space: nowrap;" class="text-center">Credit</th>
+                                <th style="white-space: nowrap;" class="text-center">Posting Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -210,9 +103,9 @@
                                     }
                                     @endphp
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
+                                        <td class="text-center">{{ $index + 1 }}</td>
                                         <td class="text-center">{{ $loan->branch_no ?? 'Data tidak ditemukan' }}</td>
-                                        <td style="white-space: nowrap;">{{ $loan->id_coa ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->id_coa ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ $loan->deskripsi ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ $loan->post ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-end">{{ $loan->post == 'D' ? number_format($loan->amount, 2) : '' }}</td>
@@ -876,45 +769,44 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set nilai default untuk bulan dan tahun dari parameter URL atau data yang dikirim dari controller
     const selectedMonth = "{{ $bulan ?? date('n') }}";
     const selectedYear = "{{ $tahun ?? date('Y') }}";
-    const selectedJenis = "{{ $jenis ?? 'Initial Recognition' }}";
+//    const selectedJenis = "{{ $jenis ?? 'Initial Recognition' }}";
     
     // Set nilai default untuk select bulan dan input tahun
     document.getElementById('monthSelect').value = selectedMonth;
     document.getElementById('yearInput').value = selectedYear;
-    document.getElementById('jenisSelect').value = selectedJenis;
+ //   document.getElementById('jenisSelect').value = selectedJenis;
 });
 
 // Event listener untuk perubahan bulan atau tahun
 document.getElementById('monthSelect').addEventListener('change', updateReport);
 document.getElementById('yearInput').addEventListener('change', updateReport);
-document.getElementById('jenisSelect').addEventListener('change', updateReport);
+//document.getElementById('jenisSelect').addEventListener('change', updateReport);
 
 function updateReport() {
     const month = document.getElementById('monthSelect').value;
     const year = document.getElementById('yearInput').value;
-    const jenis = document.getElementById('jenisSelect').value;
+//    const jenis = document.getElementById('jenisSelect').value;
     const id_pt = "{{ Auth::user()->id_pt ?? '' }}";
     
     // Sesuaikan dengan route yang benar
-    window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}&jenis=${jenis}`;
+    //window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}&jenis=${jenis}`;
+    window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}`;
 }
-    // Update export URL dynamically based on selected month and year
     document.getElementById('exportExcel').addEventListener('click', function (e) {
         e.preventDefault();
         const month = document.getElementById('monthSelect').value;
         const year = document.getElementById('yearInput').value;
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-outstanding-eff.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+        window.location.href = `{{ route('report-journal-si.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
     });
-
     document.getElementById('exportPdf').addEventListener('click', function (e) {
         e.preventDefault();
         const month = document.getElementById('monthSelect').value;
         const year = document.getElementById('yearInput').value;
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-outstanding-eff.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+        window.location.href = `{{ route('report-journal-si.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
     });
     document.getElementById('exportCsv').addEventListener('click', function (e) {
         e.preventDefault();
@@ -922,7 +814,19 @@ function updateReport() {
         const year = document.getElementById('yearInput').value;
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-outstanding-eff.exportCsv', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+        window.location.href = `{{ route('report-journal-si.exportCsv', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if there's an error message in the session
+        @if(Session::has('error'))
+            Swal.fire({
+                title: 'Error',
+                text: "{{ Session::get('error') }}",
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        @endif
     });
 </script>
 

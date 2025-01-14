@@ -38,7 +38,7 @@ class tblcorporateController extends Controller
     private function validateData($data) {
         \Log::info('Memulai validasi data:', ['data' => $data]);
         
-        // Cek nilai-nilai penting
+        // Cek nilai-nilai pentingg
         $criticalFields = ['id_ktr_cabang', 'cif_bank', 'no_rekening'];
         foreach ($criticalFields as $field) {
             if (empty($data[$field])) {

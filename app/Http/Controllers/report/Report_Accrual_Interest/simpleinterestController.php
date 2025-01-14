@@ -77,52 +77,60 @@ class simpleinterestController extends Controller
         //$sheet->setCellValue('B2', $entitiyname); 
 
         $sheet->setCellValue('A2', 'Account Number');
-        $sheet->getStyle('A2')->getFont()->setBold(true);
-        //$sheet->setCellValue('B3', ':');
-        $sheet->setCellValue('B2', $loan->no_acc);
-        $sheet->getStyle('B2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->getStyle('B2')->getAlignment()->setWrapText(false);
-
+        $sheet->setCellValue('C2', $loan->no_acc);
         $sheet->setCellValue('A3', 'Debitor Name');
-        $sheet->getStyle('A3')->getFont()->setBold(true);
-        //$sheet->setCellValue('B3', ':');
-        $sheet->setCellValue('B3', $loan->deb_name);
-        $sheet->getStyle('B3')->getAlignment()->setWrapText(false);
-
+        $sheet->setCellValue('C3', $loan->deb_name);
         $sheet->setCellValue('A4', 'Original Amount');
-        $sheet->getStyle('A4')->getFont()->setBold(true);
-        //$sheet->setCellValue('B5', ':');
-        $sheet->setCellValue('B4', number_format($loan->org_bal ?? 0,0));
-        $sheet->getStyle('B4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-
+        $sheet->setCellValue('C4', number_format($loan->org_bal ?? 0,0));
         $sheet->setCellValue('A5', 'Term');
-        $sheet->getStyle('A5')->getFont()->setBold(true);
-        //$sheet->setCellValue('B6', ':');
-        $sheet->setCellValue('B5', $loan->term . ' Months');
-        $sheet->getStyle('B5')->getAlignment()->setWrapText(false);
-
+        $sheet->setCellValue('C5', $loan->term . ' Months');
         $sheet->setCellValue('A6', 'Interest Rate');
-        $sheet->getStyle('A6')->getFont()->setBold(true); // Set bol untuk  Interest Rate
-        $sheet->setCellValue('B6', number_format($loan->rate*100,5). "%" ?? 0);
-        $sheet->getStyle('B6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     
-        $sheet->setCellValue('E2', 'Outstanding Amount');
-        $sheet->getStyle('E2')->getFont()->setBold(true); // Set bold untuk  Outstanding Amount
-        $sheet->setCellValue('F2', number_format($loan->nbal ?? 0));
-        $sheet->getStyle('F2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->setCellValue('E3', 'EIR Conversion Calculated');
-        $sheet->getStyle('E3')->getFont()->setBold(true); // Set bold untuk EIR Conversion Calculated
-        $sheet->setCellValue('F3', number_format($loan->eircalc_conv*100,14). "%" ?? 0);
-        $sheet->getStyle('F3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->setCellValue('E4', 'Original Loan Date');
-        $sheet->getStyle('E4')->getFont()->setBold(true); // Set bold untuk Original Loan Date
-        $sheet->setCellValue('F4', date('d-M-Y', strtotime($loan->org_date)));
-        $sheet->getStyle('F4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->setCellValue('E5', 'Maturity Date');
-        $sheet->getStyle('E5')->getFont()->setBold(true); // Set bold untuk Maturity Date
-        $sheet->setCellValue('F5', date('d-M-Y', strtotime($loan->mtr_date)));
-        $sheet->getStyle('F5')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->setCellValue('C6', number_format($loan->rate*100,5). "%" ?? 0);
 
+        $sheet->getStyle('A2:A6')->getFont()->setBold(true); // Set bold untuk  Outstanding Amount
+        $sheet->getStyle('C2:C6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('C2:C6')->getAlignment()->setWrapText(false);
+        $sheet->mergeCells('A2:B2'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('A3:B3'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('A4:B4'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('A5:B5'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('A6:B6'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('C2:D2'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('C3:D3'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('C4:D4'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('C5:D5'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('C6:D6'); // Menggabungkan sel untuk judul tabel
+
+        $sheet->setCellValue('H2', 'Outstanding Amount');
+        $sheet->setCellValue('J2', number_format($loan->nbal ?? 0));
+        $sheet->setCellValue('H3', 'EIR Conversion Calculated');
+        $sheet->setCellValue('J3', number_format($loan->eircalc_conv*100,14). "%" ?? 0);
+        $sheet->setCellValue('H4', 'Original Loan Date');
+        $sheet->setCellValue('J4', date('d-M-Y', strtotime($loan->org_date)));
+        $sheet->setCellValue('H5', 'Maturity Date');
+        $sheet->setCellValue('J5', date('d-M-Y', strtotime($loan->mtr_date)));
+        $sheet->getStyle('H2:H5')->getFont()->setBold(true); // Set bold untuk  Outstanding Amount
+        $sheet->getStyle('J2:J5')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->mergeCells('H2:I2'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('H3:I3'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('H4:I4'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('H2:I2'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('H3:I3'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('H4:I4'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('H5:I5'); // Menggabungkan sel untuk judul tabel
+
+        $sheet->getColumnDimension('A')->setWidth(8);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(12);
+        $sheet->getColumnDimension('D')->setWidth(18);
+        $sheet->getColumnDimension('E')->setWidth(18);
+        $sheet->getColumnDimension('F')->setWidth(18);
+        $sheet->getColumnDimension('G')->setWidth(18);
+        $sheet->getColumnDimension('H')->setWidth(18);
+        $sheet->getColumnDimension('I')->setWidth(18);
+        $sheet->getColumnDimension('J')->setWidth(18);
+        $sheet->getColumnDimension('K')->setWidth(18);
+       
         // Set judul tabel laporan
         $sheet->setCellValue('A8', 'Accrual Interest Report - Report Details');
         $sheet->mergeCells('A8:K8'); // Menggabungkan sel untuk judul tabel
@@ -131,6 +139,7 @@ class simpleinterestController extends Controller
         $sheet->getStyle('A8')->getFill()->setFillType(Fill::FILL_SOLID);
         $sheet->getStyle('A8')->getFill()->getStartColor()->setARGB('FF006600'); // Warna latar belakang
         $sheet->getStyle('A8')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+        $sheet->getRowDimension(9)->setRowHeight(5);
 
         // Set judul kolom tabel
         $headers = ['Month', 'Transaction Date', 'Days Interest', 'Payment Amount', 'Withdrawal', 'Reimbursement', 'Accrued Interest', 'Interest Payment', 'Time Gap', 'Outstanding Amount', 'Cummulative Time Gap'];
@@ -139,11 +148,14 @@ class simpleinterestController extends Controller
             $sheet->setCellValue($columnIndex . '10', $header);
             $sheet->getStyle($columnIndex . '10')->getFont()->setBold(true);
             $sheet->getStyle($columnIndex . '10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle($columnIndex . '10')->getAlignment()->setVertical(Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle($columnIndex . '10')->getFill()->setFillType(Fill::FILL_SOLID);
             $sheet->getStyle($columnIndex . '10')->getFill()->getStartColor()->setARGB('FF4F81BD'); // Warna latar belakang header
             $sheet->getStyle($columnIndex . '10')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
             $columnIndex++;
         }
+
+        $sheet->getStyle('A10:K10')->getAlignment()->setWrapText(true);
 
         // Mengisi data laporan ke dalam tabel
         $row = 11; // Mulai dari baris 13 untuk data laporan
@@ -213,9 +225,9 @@ class simpleinterestController extends Controller
         $sheet->getStyle('A10:K' . ($row))->applyFromArray($styleArray);
 
         // Mengatur lebar kolom agar lebih rapi
-        foreach (range('A', 'K') as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true);
-        }
+        //foreach (range('A', 'K') as $columnID) {
+        //    $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        //}
         
         //TOTAL EXCEL
         $sheet->setCellValue('A' . $row, "TOTAL:");
@@ -269,36 +281,61 @@ class simpleinterestController extends Controller
         $sheet->getPageMargins()->setLeft(0.5);
         $sheet->getPageMargins()->setBottom(0.5);
 
-        $sheet->getColumnDimension('A')->setWidth(20);
-        $sheet->getColumnDimension('B')->setWidth(5);
-        $sheet->getColumnDimension('C')->setWidth(30);
+        //$sheet->getColumnDimension('A')->setWidth(20);
+        //$sheet->getColumnDimension('B')->setWidth(5);
+        //$sheet->getColumnDimension('C')->setWidth(30);
 
         //$entitiyName = ": $entityName ? $entityName->nama_pt";
         $teksnoacc = ": $loan->no_acc";
         $teksdebname = ": $loan->deb_name";
-        $teksorgbal = number_format($loan->org_bal, 2);
+        $teksorgbal = number_format($loan->org_bal, 0);
         $teksorgbal = ": $teksorgbal";
-        $teksorgdate = date('d/M/Y', strtotime($loan->org_date));
-        $teksorgdate = ": $teksorgdate";
         $teksterm = ": $loan->term";
-        $teksmtrdate = date('d/M/Y', strtotime($loan->mtr_date));
+        $teksmtrdate = date('d-M-Y', strtotime($loan->mtr_date));
         $teksmtrdate = ": $teksmtrdate";
+        $teksrate = number_format($loan->rate*100, 5);
+        $teksrate = ": $teksrate";
 
         $infoRows = [
             ['No. Account', $teksnoacc],
             ['Debtor Name', $teksdebname],
-            ['Original Balance', $teksorgbal],
-            ['Original Date', $teksorgdate],
+            ['Original Amount', $teksorgbal],
             ['Term', $teksterm . ' Months'],
-            ['Maturity Date', $teksmtrdate]
+            ['Interest Rate', $teksrate]
         ];
 
         $currentRow = 3;
         foreach ($infoRows as $info) {
             $sheet->setCellValue('A' . $currentRow, $info[0]);
-            $sheet->setCellValue('B' . $currentRow, $info[1]);
-        //    $sheet->setCellValue('C' . $currentRow, $info[2]);
+            $sheet->setCellValue('C' . $currentRow, $info[1]);
+            $sheet->mergeCells('A' . $currentRow . ':B' . $currentRow); // Menggabungkan sel untuk judul tabel
             $sheet->getRowDimension($currentRow)->setRowHeight(15);
+            $currentRow++;
+        }
+
+        $teksnbal = number_format($loan->nbal, 0);
+        $teksnbal = ": $teksnbal";
+        $tekseircalc = number_format($loan->eircalc_conv*100, 14);
+        $tekseircalc = ": $tekseircalc %";
+        $teksorgdate = date('d-M-Y', strtotime($loan->org_date));
+        $teksorgdate = ": $teksorgdate";
+        $teksterm = ": $loan->term";
+        $teksmtrdate = date('d-M-Y', strtotime($loan->mtr_date));
+        $teksmtrdate = ": $teksmtrdate";
+
+        $infoRows = [
+            ['Outstanding Amount', $teksnbal],
+            ['EIR Conversion Calculated', $tekseircalc],
+            ['Original Loan Date', $teksorgdate],
+            ['Maturity Date', $teksmtrdate]
+        ];
+
+        $currentRow = 3;
+        foreach ($infoRows as $info) {
+            $sheet->setCellValue('H' . $currentRow, $info[0]);
+            $sheet->setCellValue('J' . $currentRow, $info[1]);
+            $sheet->mergeCells('H' . $currentRow . ':I' . $currentRow); // Menggabungkan sel untuk judul tabel
+            $sheet->mergeCells('J' . $currentRow . ':K' . $currentRow); // Menggabungkan sel untuk judul tabel
             $currentRow++;
         }
 

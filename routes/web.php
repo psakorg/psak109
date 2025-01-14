@@ -285,8 +285,10 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/report-journal-simple-interest', [journalsiControler::class, 'index'])->name('report-journal-si.index');
     Route::get('/report-journal-simple-interest/view/{no_acc}/{id_pt}', [journalsiControler::class, 'view'])->name('report-journal-si.view');
-    Route::get('/report-journal-simple-interest/export-pdf/{no_acc}/{id_pt}', [journalsiControler::class, 'exportPdf'])->name('report-journal-si.exportPdf');
-    Route::get('/report-journal-simple-interest/export-excel/{no_acc}/{id_pt}', [journalsiControler::class, 'exportExcel'])->name('report-journal-si.exportExcel');
+    Route::get('/report-journal-simple-interest/export-pdf/{id_pt}', [journalsiControler::class, 'exportPdf'])->name('report-journal-si.exportPdf');
+    Route::get('/report-journal-simple-interest/export-excel/{id_pt}', [journalsiControler::class, 'exportExcel'])->name('report-journal-si.exportExcel');
+    Route::get('/report-journal-simple-interest/export-report-excel', [journalsiControler::class, 'exportReportExcel'])->name('report-journal-si.exportReportExcel');
+    Route::get('/report-journal-simple-interest/export-csv/{id_pt}', [journalsiControler::class, 'exportCsv'])->name('report-journal-si.exportCsv');
 
     Route::get('/check-report-journal-simple/{no_acc}/{id_pt}', 
         [journalsiControler::class, 'checkData'])
@@ -298,6 +300,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-journal-effective/view/{no_acc}/{id_pt}', [journaleffControler::class, 'view'])->name('report-journal-eff.view');
     Route::get('/report-journal-effective/export-pdf/{no_acc}/{id_pt}', [journaleffControler::class, 'exportPdf'])->name('report-journal-eff.exportPdf');
     Route::get('/report-journal-effective/export-excel/{no_acc}/{id_pt}', [journaleffControler::class, 'exportExcel'])->name('report-journal-eff.exportExcel');
+    
 
     Route::get('/check-report-journal-effective/{no_acc}/{id_pt}', 
         [journaleffControler::class, 'checkData'])

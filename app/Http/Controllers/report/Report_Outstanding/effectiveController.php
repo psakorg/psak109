@@ -410,7 +410,6 @@ class effectiveController extends Controller
             ]
         ], 404);
     }
-
     $loanFirst = $master->first();
     $bulanAngka =  $request->input('bulan', date('n'));
 
@@ -659,7 +658,7 @@ class effectiveController extends Controller
     // Kembalikan response PDF
     return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
 }
-public function exportCsv(Request $request,$id_pt)
+public function exportCsv(Request $request, $id_pt)
 {
     // Ambil data loan dan reports
     $user_id_pt = Auth::user()->id_pt;
