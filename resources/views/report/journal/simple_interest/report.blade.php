@@ -76,7 +76,7 @@
                                 <th style="white-space: nowrap;" class="text-center">Entity Number</th>
                                 <th style="white-space: nowrap;" class="text-center">GL Account</th>
                                 <th style="white-space: nowrap;" class="text-center">Description</th>
-                                <th style="white-space: nowrap;" class="text-center">Post</th>
+                                <!-- <th style="white-space: nowrap;" class="text-center">Post</th> -->
                                 <th style="white-space: nowrap;" class="text-center">Debit</th>
                                 <th style="white-space: nowrap;" class="text-center">Credit</th>
                                 <th style="white-space: nowrap;" class="text-center">Posting Date</th>
@@ -107,7 +107,7 @@
                                         <td class="text-center">{{ $loan->branch_no ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ $loan->id_coa ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ $loan->deskripsi ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->post ?? 'Data tidak ditemukan' }}</td>
+                                        <!-- <td class="text-center">{{ $loan->post ?? 'Data tidak ditemukan' }}</td> -->
                                         <td class="text-end">{{ $loan->post == 'D' ? number_format($loan->amount, 2) : '' }}</td>
                                         <td class="text-end">{{ $loan->post == 'C' ? number_format($loan->amount, 2) : '' }}</td>
                                         <td class="text-center">{{ date('d/m/Y', strtotime($loan->post_date))  }}</td>
@@ -116,7 +116,7 @@
 
                                 <!-- Row Total -->
                                 <tr class="table-secondary font-weight-normal">
-                                    <td colspan="5" class="text-center">TOTAL:</td>
+                                    <td colspan="4" class="text-center">TOTAL:</td>
                                     <td class="text-end">{{ number_format($totalDebit, 2) }}</td>
                                     <td class="text-end">{{ number_format($totalCredit, 2) }}</td>
                                     <td></td>
@@ -788,7 +788,7 @@ function updateReport() {
 //    const jenis = document.getElementById('jenisSelect').value;
     const id_pt = "{{ Auth::user()->id_pt ?? '' }}";
     
-    // Sesuaikan dengan route yang benar
+    // Sesuaikan dengan route yang benarr
     //window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}&jenis=${jenis}`;
     window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}`;
 }

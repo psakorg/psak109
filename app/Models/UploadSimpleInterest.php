@@ -18,9 +18,9 @@ class UploadSimpleInterest extends Model
      *
      * @return array
      */
-    public function fetchTblmaster()
+    public function fetchTblmaster($id_pt)
     {
-        return DB::table($this->table)->get()->toArray();
+        return DB::table($this->table)->where('id_pt', $id_pt)->get()->toArray();
     }
 
     /**
@@ -73,9 +73,9 @@ class UploadSimpleInterest extends Model
      *
      * @return array
      */
-    public function fetchTblCorporateLoanCabangDetail()
+    public function fetchTblCorporateLoanCabangDetail($id_pt)
     {
-        return DB::table($this->tblCorporateLoanCabangDetail)->get()->toArray();
+        return DB::table($this->tblCorporateLoanCabangDetail)->where('id_pt', $id_pt)->get()->toArray();
     }
 
     /**

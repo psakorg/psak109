@@ -132,12 +132,12 @@ class effectiveController extends Controller
         // Set informasi pinjaman
         $sheet->setCellValue('A2', 'Entity Number');
         $sheet->getStyle('A2')->getFont()->setBold(true); 
-        $sheet->getStyle('B2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->setCellValue('B2', $loanFirst->no_branch);
+        $sheet->getStyle('C2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->setCellValue('C2', $loanFirst->no_branch);
         $sheet->setCellValue('A3', 'Entitiy Name');
         $sheet->getStyle('A3')->getFont()->setBold(true);
         // $entitiyName = 'PT. PACIFIC MULTI FINANCE';
-        $sheet->setCellValue('B3', $loanFirst->jdname);
+        $sheet->setCellValue('C3', $loanFirst->jdname);
         // $sheet->setCellValue('A4', 'Branch Number');
         // $sheet->getStyle('A4')->getFont()->setBold(true); // Set bold untuk Branch Number
         // $sheet->setCellValue('B4', " ".$loanFirst->no_acc );
@@ -161,6 +161,12 @@ class effectiveController extends Controller
         $sheet->getStyle('A6')->getFill()->setFillType(Fill::FILL_SOLID);
         $sheet->getStyle('A6')->getFill()->getStartColor()->setARGB('FF006600'); // Warna latar belakang
         $sheet->getStyle('A6')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+
+        $sheet->mergeCells('A2:B2');
+        $sheet->mergeCells('A3:B3');
+        $sheet->mergeCells('A4:B4');
+  
+        $sheet->getRowDimension(7)->setRowHeight(5);
 
         // Set judul kolom tabel
         $headers = ['No', 'Branch Number', 'Account Number','Debitor Name ','GL Account','Loan Type','GL Group','Original Date', 'Term (Months)', 'Maturity Date','Interest Rate','Payment Amount','EIR Amortised Cost Exposure','EIR Amortised Cost Calculated','Current Balance', 'Carrying Amount', 'Outstanding Receivable','Outstanding Interest','Cumulative Time Gap','Unamortized Transaction Cost','Unamortized UpFront Fee', 'Unearned Interest Income'];
@@ -338,16 +344,39 @@ class effectiveController extends Controller
             ],
         ];
 
+        $sheet->getColumnDimension('A')->setWidth(8);
+        $sheet->getColumnDimension('B')->setWidth(12);
+        $sheet->getColumnDimension('C')->setWidth(16);
+        $sheet->getColumnDimension('D')->setWidth(24);
+        $sheet->getColumnDimension('E')->setWidth(12);
+        $sheet->getColumnDimension('F')->setWidth(12);
+        $sheet->getColumnDimension('G')->setWidth(12);
+        $sheet->getColumnDimension('H')->setWidth(12);
+        $sheet->getColumnDimension('I')->setWidth(12);
+        $sheet->getColumnDimension('J')->setWidth(12);
+        $sheet->getColumnDimension('K')->setWidth(14);
+        $sheet->getColumnDimension('L')->setWidth(18);
+        $sheet->getColumnDimension('M')->setWidth(18);
+        $sheet->getColumnDimension('N')->setWidth(18);
+        $sheet->getColumnDimension('O')->setWidth(18);
+        $sheet->getColumnDimension('P')->setWidth(18);
+        $sheet->getColumnDimension('Q')->setWidth(18);
+        $sheet->getColumnDimension('R')->setWidth(18);
+        $sheet->getColumnDimension('S')->setWidth(18);
+        $sheet->getColumnDimension('T')->setWidth(18);
+        $sheet->getColumnDimension('U')->setWidth(18);
+        $sheet->getColumnDimension('V')->setWidth(18);
+
         // Set border untuk header tabel
         $sheet->getStyle('A6:V6')->applyFromArray($styleArray);
 
         // Set border untuk semua data laporan
         $sheet->getStyle('A8:V' . $row )->applyFromArray($styleArray);
 
-        // Mengatur lebar kolom agar lebih rapi
-        foreach (range('A', 'V') as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true);
-        }
+        // // Mengatur lebar kolom agar lebih rapi
+        // foreach (range('A', 'V') as $columnID) {
+        //     $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        // }
 
         // Siapkan nama file
         //$filename = "{$id_pt}_PSAKLBUEffective_{$tahun}_{$bulanAngka}.xlsx";
@@ -460,6 +489,7 @@ class effectiveController extends Controller
         $sheet->setCellValue($columnIndex . '8', $header);
         $sheet->getStyle($columnIndex . '8')->getFont()->setBold(true);
         $sheet->getStyle($columnIndex . '8')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle($columnIndex . '8')->getAlignment()->setVertical(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle($columnIndex . '8')->getFill()->setFillType(Fill::FILL_SOLID);
         $sheet->getStyle($columnIndex . '8')->getFill()->getStartColor()->setARGB('FF4F81BD'); // Warna latar belakang header
         $sheet->getStyle($columnIndex . '8')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
@@ -468,6 +498,7 @@ class effectiveController extends Controller
 
      // Mengisi data laporan ke dalam tabel
      $row = 11; // Mulai dari baris 13 untuk data laporan
+     $sheet->getStyle('A8:V8')->getAlignment()->setWrapText(true);
 
      $totalOutstandingReceivable = 0;
      $totalOutstandingInterest = 0;
@@ -532,6 +563,7 @@ class effectiveController extends Controller
          $sheet->setCellValue('B' . $row, $loan->no_branch);
          $sheet->getStyle('C' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
          $sheet->setCellValue('C' . $row, " " . $loan->no_acc);
+         $sheet->getStyle('D' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
          $sheet->setCellValue('D' . $row, $loan->deb_name);
          $sheet->getStyle('E' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
          $sheet->setCellValue('E' . $row, $loan->coa);
@@ -638,9 +670,9 @@ class effectiveController extends Controller
     $sheet->getStyle('A8:V' . $row)->applyFromArray($styleArray);
 
     // Mengatur lebar kolom agar lebih rapi
-    foreach (range('A', 'V') as $columnID) {
-        $sheet->getColumnDimension($columnID)->setAutoSize(true);
-    }
+    // foreach (range('A', 'V') as $columnID) {
+    //     $sheet->getColumnDimension($columnID)->setAutoSize(true);
+    // }
 
     // Siapkan nama file
     //$filename = "{$id_pt}_PSAKLBUEffective_{$tahun}_{$bulanAngka}.pdf";

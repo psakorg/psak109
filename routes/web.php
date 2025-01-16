@@ -298,8 +298,10 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/report-journal-effective', [journaleffControler::class, 'index'])->name('report-journal-eff.index');
     Route::get('/report-journal-effective/view/{no_acc}/{id_pt}', [journaleffControler::class, 'view'])->name('report-journal-eff.view');
-    Route::get('/report-journal-effective/export-pdf/{no_acc}/{id_pt}', [journaleffControler::class, 'exportPdf'])->name('report-journal-eff.exportPdf');
-    Route::get('/report-journal-effective/export-excel/{no_acc}/{id_pt}', [journaleffControler::class, 'exportExcel'])->name('report-journal-eff.exportExcel');
+    Route::get('/report-journal-effective/export-pdf/{id_pt}', [journaleffControler::class, 'exportPdf'])->name('report-journal-eff.exportPdf');
+    Route::get('/report-journal-effective/export-excel/{id_pt}', [journaleffControler::class, 'exportExcel'])->name('report-journal-eff.exportExcel');
+    Route::get('/report-journal-effective/export-csv/{id_pt}', [journaleffControler::class, 'exportCsv'])->name('report-journal-eff.exportCsv');
+    Route::get('/report-journal-effective/export-report-excel', [journaleffControler::class, 'exportReportExcel'])->name('report-journal-eff.exportReportExcel');
     
 
     Route::get('/check-report-journal-effective/{no_acc}/{id_pt}', 

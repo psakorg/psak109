@@ -103,25 +103,31 @@ class effectiveController extends Controller
         // $sheet->getPageMargins()->setLeft(0.5);
         // $sheet->getPageMargins()->setBottom(0.5);
 
-    if (is_array($loans) && count($loans) > 0) {
-        $loanFirst = $loans[0];
-    // Set informasi pinjaman
-    $sheet->setCellValue('A2', 'Entity Number');
-    $sheet->getStyle('A2')->getFont()->setBold(true); 
-    $sheet->getStyle('B2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-    $sheet->setCellValue('B2', $loanFirst->no_branch);
-    $sheet->setCellValue('A3', 'Entitiy Name');
-    $sheet->getStyle('A3')->getFont()->setBold(true);
-    $sheet->getStyle('B3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-    $sheet->setCellValue('B3', $loanFirst->jdname);
-    $sheet->setCellValue('A4', 'Date Of Report');
-    $sheet->getStyle('A4')->getFont()->setBold(true);
-    $sheet->getStyle('B4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-    $sheet->setCellValue('B4', $bulanNama . ' - ' . $tahun);
-    }else{
-    $sheet->setCellValue('B2', 'Tidak ada data');
-    $sheet->setCellValue('B3', 'Tidak ada data');
-    }
+        if (is_array($loans) && count($loans) > 0) {
+            $loanFirst = $loans[0];
+            // Set informasi pinjaman
+            $sheet->setCellValue('A2', 'Entity Number');
+            $sheet->getStyle('A2')->getFont()->setBold(true); 
+            $sheet->getStyle('C2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->setCellValue('C2', $loanFirst->no_branch);
+            $sheet->setCellValue('A3', 'Entitiy Name');
+            $sheet->getStyle('A3')->getFont()->setBold(true);
+            $sheet->getStyle('C3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->setCellValue('C3', $loanFirst->jdname);
+            $sheet->setCellValue('A4', 'Date Of Report');
+            $sheet->getStyle('A4')->getFont()->setBold(true);
+            $sheet->getStyle('C4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->setCellValue('C4', $bulanNama . ' - ' . $tahun);
+        }else{
+            $sheet->setCellValue('C2', 'Tidak ada data');
+            $sheet->setCellValue('C3', 'Tidak ada data');
+        }
+        $sheet->mergeCells('A2:B2'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('A3:B3'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('A4:B4'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('C2:D2'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('C3:D3'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('C4:D4'); // Menggabungkan sel untuk judul tabel
 
         // Set title
         $sheet->setCellValue('A6', 'REPORT INITIAL RECOGNITION NEW LOAN BY ENTITY - CONTRACTUAL EFFECTIVE');
@@ -164,8 +170,8 @@ class effectiveController extends Controller
             $sheet->getStyle('B' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('B' . $row, $loan->no_branch);
             $sheet->getStyle('C' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('C' . $row,"'" . $loan->no_acc);
-            $sheet->getStyle('D' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->setCellValue('C' . $row, $loan->no_acc);
+            $sheet->getStyle('D' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
             $sheet->setCellValue('D' . $row, $loan->deb_name);
             $sheet->getStyle('E' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('E' . $row, $loan->coa);
@@ -211,22 +217,22 @@ class effectiveController extends Controller
             if ($row % 2 == 0) {
                 $sheet->getStyle('A' . $row . ':W' . $row)->getFill()->setFillType(Fill::FILL_SOLID);
                 $sheet->getStyle('A' . $row . ':W' . $row)->getFill()->getStartColor()->setARGB('FFEFEFEF');
+            }
+            $row++;
         }
-        $row++;
-    }
-    $loansCollection = new Collection($loans);
-    $averageRate = $loansCollection->avg('rate'); 
-    $averageEirex = $loansCollection->avg('eirex'); 
-    $averageEircalc = $loansCollection->avg('eircalc'); 
-    $averageEircalcConv = $loansCollection->avg('eircalc_conv'); 
-    $averageRateEircalcCost = $loansCollection->avg('eircalc_cost'); 
-    $averageEircalcFee = $loansCollection->avg('eircalc_fee');
-    $totalPmtamt = $loansCollection->sum('pmtamt');
-    $totalOrgBal = $loansCollection->sum('org_bal');
-    $totalOldbal = $loansCollection->sum('oldbal');
-    $totalOutsamtconv = $loansCollection->sum('outsamtconv');
-    $totalOutsamtcost = $loansCollection->sum('outsamtcost');
-    $totalOutsamtfee = $loansCollection->sum('outsamtfee');
+        $loansCollection = new Collection($loans);
+        $averageRate = $loansCollection->avg('rate'); 
+        $averageEirex = $loansCollection->avg('eirex'); 
+        $averageEircalc = $loansCollection->avg('eircalc'); 
+        $averageEircalcConv = $loansCollection->avg('eircalc_conv'); 
+        $averageRateEircalcCost = $loansCollection->avg('eircalc_cost'); 
+        $averageEircalcFee = $loansCollection->avg('eircalc_fee');
+        $totalPmtamt = $loansCollection->sum('pmtamt');
+        $totalOrgBal = $loansCollection->sum('org_bal');
+        $totalOldbal = $loansCollection->sum('oldbal');
+        $totalOutsamtconv = $loansCollection->sum('outsamtconv');
+        $totalOutsamtcost = $loansCollection->sum('outsamtcost');
+        $totalOutsamtfee = $loansCollection->sum('outsamtfee');
    
         $sheet->setCellValue('A' . $row, "TOTAL:");
         $sheet->mergeCells('A' . $row . ':I' . $row); 
@@ -280,16 +286,42 @@ class effectiveController extends Controller
         ],
     ];
 
-    // Set border untuk header tabel
+    $sheet->getStyle('A8:W8')->getAlignment()->setWrapText(true);
+    $sheet->getStyle('A8:W8')->getAlignment()->setVertical(Alignment::HORIZONTAL_CENTER);
+    $sheet->getColumnDimension('A')->setWidth(8);
+    $sheet->getColumnDimension('B')->setWidth(12);
+    $sheet->getColumnDimension('C')->setWidth(18);
+    $sheet->getColumnDimension('D')->setWidth(30);
+    $sheet->getColumnDimension('E')->setWidth(12);
+    $sheet->getColumnDimension('F')->setWidth(12);
+    $sheet->getColumnDimension('G')->setWidth(12);
+    $sheet->getColumnDimension('H')->setWidth(12);
+    $sheet->getColumnDimension('I')->setWidth(12);
+    $sheet->getColumnDimension('J')->setWidth(12);
+    $sheet->getColumnDimension('K')->setWidth(12);
+    $sheet->getColumnDimension('L')->setWidth(18);
+    $sheet->getColumnDimension('M')->setWidth(18);
+    $sheet->getColumnDimension('N')->setWidth(18);
+    $sheet->getColumnDimension('O')->setWidth(18);
+    $sheet->getColumnDimension('P')->setWidth(24);
+    $sheet->getColumnDimension('Q')->setWidth(24);
+    $sheet->getColumnDimension('R')->setWidth(24);
+    $sheet->getColumnDimension('S')->setWidth(24);
+    $sheet->getColumnDimension('T')->setWidth(24);
+    $sheet->getColumnDimension('U')->setWidth(18);
+    $sheet->getColumnDimension('V')->setWidth(24);
+    $sheet->getColumnDimension('W')->setWidth(24);
+
+// Set border untuk header tabel
     $sheet->getStyle('A6:W6')->applyFromArray($styleArray);
 
     // Set border untuk semua data laporan
     $sheet->getStyle('A8:W' . $row)->applyFromArray($styleArray);
 
     // Mengatur lebar kolom agar lebih rapi
-    foreach (range('A', 'W') as $columnID) {
-        $sheet->getColumnDimension($columnID)->setAutoSize(true);
-    }
+    // foreach (range('A', 'W') as $columnID) {
+    //     $sheet->getColumnDimension($columnID)->setAutoSize(true);
+    // }
 
 
         // Set filename
@@ -306,8 +338,8 @@ class effectiveController extends Controller
 
     public function exportPdf(Request $request, $id_pt)
     {
-        Auth::user()->id_pt;
-
+        $user = Auth::user();
+        
         $namaBulan = [
             1 => 'January',
             2 => 'February',
@@ -357,23 +389,28 @@ class effectiveController extends Controller
         // $sheet->getPageMargins()->setLeft(0.5);
         // $sheet->getPageMargins()->setBottom(0.5);
 
-    if (is_array($loans) && count($loans) > 0) {
-        $loanFirst = $loans[0];
-    // Set informasi pinjaman
-    $sheet->setCellValue('A2', 'Entity Number');
-    $sheet->getStyle('A2')->getFont()->setBold(true); 
-    $sheet->getStyle('B2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-    $sheet->setCellValue('B2', $loanFirst->no_branch);
-    $sheet->setCellValue('A3', 'Entitiy Name');
-    $sheet->getStyle('A3')->getFont()->setBold(true);
-    $sheet->setCellValue('B3', $loanFirst->jdname);
-    $sheet->setCellValue('A4', 'Date Of Report');
-    $sheet->getStyle('A4')->getFont()->setBold(true);
-    $sheet->setCellValue('B4', $bulanNama . ' - ' . $tahun);
-    }else{
-    $sheet->setCellValue('B2', 'Tidak ada data');
-    $sheet->setCellValue('B3', 'Tidak ada data');
-    }
+        if (is_array($loans) && count($loans) > 0) {
+            $loanFirst = $loans[0];
+            // Set informasi pinjaman
+            $sheet->setCellValue('A2', 'Entity Number');
+            $sheet->getStyle('A2')->getFont()->setBold(true); 
+            $sheet->getStyle('C2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->setCellValue('C2', $loanFirst->no_branch);
+            $sheet->setCellValue('A3', 'Entitiy Name');
+            $sheet->getStyle('A3')->getFont()->setBold(true);
+            $sheet->getStyle('C3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->setCellValue('C3', $loanFirst->jdname);
+            $sheet->setCellValue('A4', 'Date Of Report');
+            $sheet->getStyle('A4')->getFont()->setBold(true);
+            $sheet->getStyle('C4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->setCellValue('C4', $bulanNama . ' - ' . $tahun);
+        }else{
+            $sheet->setCellValue('C2', 'Tidak ada data');
+            $sheet->setCellValue('C3', 'Tidak ada data');
+        }
+        $sheet->mergeCells('A2:B2'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('A3:B3'); // Menggabungkan sel untuk judul tabel
+        $sheet->mergeCells('A4:B4'); // Menggabungkan sel untuk judul tabel
 
         // Set title
         $sheet->setCellValue('A6', 'REPORT INITIAL RECOGNITION NEW LOAN BY ENTITY - CONTRACTUAL EFFECTIVE');
@@ -417,7 +454,7 @@ class effectiveController extends Controller
             $sheet->setCellValue('B' . $row, $loan->no_branch);
             $sheet->getStyle('C' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('C' . $row, $loan->no_acc);
-            $sheet->getStyle('D' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('D' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
             $sheet->setCellValue('D' . $row, $loan->deb_name);
             $sheet->getStyle('E' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('E' . $row, $loan->coa);
@@ -463,22 +500,22 @@ class effectiveController extends Controller
             if ($row % 2 == 0) {
                 $sheet->getStyle('A' . $row . ':W' . $row)->getFill()->setFillType(Fill::FILL_SOLID);
                 $sheet->getStyle('A' . $row . ':W' . $row)->getFill()->getStartColor()->setARGB('FFEFEFEF');
+            }
+            $row++;
         }
-        $row++;
-    }
-    $loansCollection = new Collection($loans);
-    $averageRate = $loansCollection->avg('rate'); 
-    $averageEirex = $loansCollection->avg('eirex'); 
-    $averageEircalc = $loansCollection->avg('eircalc'); 
-    $averageEircalcConv = $loansCollection->avg('eircalc_conv'); 
-    $averageRateEircalcCost = $loansCollection->avg('eircalc_cost'); 
-    $averageEircalcFee = $loansCollection->avg('eircalc_fee');
-    $totalPmtamt = $loansCollection->sum('pmtamt');
-    $totalOrgBal = $loansCollection->sum('org_bal');
-    $totalOldbal = $loansCollection->sum('oldbal');
-    $totalOutsamtconv = $loansCollection->sum('outsamtconv');
-    $totalOutsamtcost = $loansCollection->sum('outsamtcost');
-    $totalOutsamtfee = $loansCollection->sum('outsamtfee');
+        $loansCollection = new Collection($loans);
+        $averageRate = $loansCollection->avg('rate'); 
+        $averageEirex = $loansCollection->avg('eirex'); 
+        $averageEircalc = $loansCollection->avg('eircalc'); 
+        $averageEircalcConv = $loansCollection->avg('eircalc_conv'); 
+        $averageRateEircalcCost = $loansCollection->avg('eircalc_cost'); 
+        $averageEircalcFee = $loansCollection->avg('eircalc_fee');
+        $totalPmtamt = $loansCollection->sum('pmtamt');
+        $totalOrgBal = $loansCollection->sum('org_bal');
+        $totalOldbal = $loansCollection->sum('oldbal');
+        $totalOutsamtconv = $loansCollection->sum('outsamtconv');
+        $totalOutsamtcost = $loansCollection->sum('outsamtcost');
+        $totalOutsamtfee = $loansCollection->sum('outsamtfee');
    
         $sheet->setCellValue('A' . $row, "TOTAL:");
         $sheet->mergeCells('A' . $row . ':I' . $row); 
@@ -532,16 +569,42 @@ class effectiveController extends Controller
         ],
     ];
 
-    // Set border untuk header tabel
+    $sheet->getStyle('A8:W8')->getAlignment()->setWrapText(true);
+    $sheet->getStyle('A8:W8')->getAlignment()->setVertical(Alignment::HORIZONTAL_CENTER);
+    $sheet->getColumnDimension('A')->setWidth(8);
+    $sheet->getColumnDimension('B')->setWidth(12);
+    $sheet->getColumnDimension('C')->setWidth(18);
+    $sheet->getColumnDimension('D')->setWidth(30);
+    $sheet->getColumnDimension('E')->setWidth(12);
+    $sheet->getColumnDimension('F')->setWidth(12);
+    $sheet->getColumnDimension('G')->setWidth(12);
+    $sheet->getColumnDimension('H')->setWidth(12);
+    $sheet->getColumnDimension('I')->setWidth(12);
+    $sheet->getColumnDimension('J')->setWidth(12);
+    $sheet->getColumnDimension('K')->setWidth(12);
+    $sheet->getColumnDimension('L')->setWidth(18);
+    $sheet->getColumnDimension('M')->setWidth(18);
+    $sheet->getColumnDimension('N')->setWidth(18);
+    $sheet->getColumnDimension('O')->setWidth(18);
+    $sheet->getColumnDimension('P')->setWidth(24);
+    $sheet->getColumnDimension('Q')->setWidth(24);
+    $sheet->getColumnDimension('R')->setWidth(24);
+    $sheet->getColumnDimension('S')->setWidth(24);
+    $sheet->getColumnDimension('T')->setWidth(24);
+    $sheet->getColumnDimension('U')->setWidth(18);
+    $sheet->getColumnDimension('V')->setWidth(24);
+    $sheet->getColumnDimension('W')->setWidth(24);
+
+// Set border untuk header tabel
     $sheet->getStyle('A6:W6')->applyFromArray($styleArray);
 
     // Set border untuk semua data laporan
     $sheet->getStyle('A8:W' . $row)->applyFromArray($styleArray);
 
-    // Mengatur lebar kolom agar lebih rapi
-    foreach (range('A', 'W') as $columnID) {
-        $sheet->getColumnDimension($columnID)->setAutoSize(true);
-    }
+    // // Mengatur lebar kolom agar lebih rapi
+    // foreach (range('A', 'W') as $columnID) {
+    //     $sheet->getColumnDimension($columnID)->setAutoSize(true);
+    // }
 
         // Set pengaturan untuk PDF
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);

@@ -29,8 +29,11 @@ class tblcorporateController extends Controller
 
     public function index()
     {
+        $user = Auth::user();
+        $id_pt = $user->id_pt;
+
         $data['title'] = 'Laravel 11 - PHPSpreadsheet';
-        $data['tblcorporateloancabangdetail'] = $this->homeModel->fetchTblCorporateLoanCabangDetail();
+        $data['tblcorporateloancabangdetail'] = $this->homeModel->fetchTblCorporateLoanCabangDetail($id_pt);
         return view('upload.simple_interest.layouts.appcorporate', $data);
         dd($data);
     }

@@ -173,17 +173,13 @@
                     <table class="table table-striped table-bordered table-hover" style="font-size: 12px;">
                         <thead class="thead-dark">
                             <tr>
-                                <th style="white-space: nowrap;">No.</th>
-                                <th style="white-space: nowrap;">Entity Number</th>
-                                <th style="white-space: nowrap;">No Acc</th>
-                                <th style="white-space: nowrap;">GL Account</th>
-                                <th style="white-space: nowrap;">Description</th>
-                                <th style="white-space: nowrap;">Event</th>
-                                <th style="white-space: nowrap;">Jenis</th>
-                                <th style="white-space: nowrap;">Post</th>
-                                <th style="white-space: nowrap;">Debit</th>
-                                <th style="white-space: nowrap;">Credit</th>
-                                <th style="white-space: nowrap;">Posting Date</th>
+                                <th style="white-space: nowrap;" class="text-center">No.</th>
+                                <th style="white-space: nowrap;" class="text-center">Entity Number</th>
+                                <th style="white-space: nowrap;" class="text-center">GL Account</th>
+                                <th style="white-space: nowrap;" class="text-center">Description</th>
+                                <th style="white-space: nowrap;" class="text-center">Debit</th>
+                                <th style="white-space: nowrap;" class="text-center">Credit</th>
+                                <th style="white-space: nowrap;" class="text-center">Posting Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -193,178 +189,37 @@
                                 </tr>
                             @else
                             @php
-
-                            $totalOutstandingReceivable = 0;
-                            $totalOutstandingInterest = 0;
-                            $outstandingReceivable = 0;
-                            $outstandingInterest = 0;
-                            $totalUnamortCost = 0;
-                            $totalUnamortFee = 0;
-                            $totalInterestIncome = 0;
-                            $nourut = 0;
-                            @endphp
-                                @foreach ($master as $index => $loan)
-                                @php
-                                $trxcost = $loan->trxcost; 
-                                $trxcost = preg_replace('/[^\d.]/', '', $trxcost);
-                                $trxcostFloat = (float)$trxcost;
-                                $outstandingInterest = $loan->bilint ?? 0;
-                                $totalOutstandingInterest += $outstandingInterest;
-                                $amortized = $loan->cum_amortisecost; // Ambil nilai amortized dari laporan
-                                    // Hitung nilai unamortized
-                                    if ($loop->first) {
-                                        // Untuk baris pertama, gunakan nilai trxcost
-                                        $unamortCost = $trxcostFloat;
-                                    } else {
-                                        // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
-                                        $unamortCost = $trxcostFloat - $amortized;
-                                    }
-                                $totalUnamortCost += $unamortCost;
-
-                                $prov = $loan->prov; // Ambil nilai dari database
-                                // Hapus simbol mata uang dan pemisah ribuan
-                                $prov = preg_replace('/[^\d.]/', '', $prov);
-                                // Konversi ke float
-                                $provFloat = (float)$prov* -1;
-                                $amortizedUpFrontFee = $loan->cum_amortisefee;
-
-                                //Berubah dari pak darwis. 
-                                // Hitung nilai unamortized Fee
-                                $unamortFee = $loan->prov * -1 + $loan->cum_amortisefee;
-                                $totalUnamortFee += $unamortFee;
-
-
-                                $bunga = $loan->cum_bunga;
-                                $totalInterestIncome += $loan->cum_bunga;                             
-                                // hitung nilai unaerned interest income
-                                //    if ($loop->first) {
-                                //        $interestIncome = $totalInterestIncome;
-                                //    } else {
-                                //        $totalInterestIncome -= $bunga;
-                                //        $interestIncome = $totalInterestIncome;
-                                //}  
-                                
-
-                                $bilint = $loan->bilint;
-                                $bilprn = $loan->bilprn;
-                                $outstandingReceivable = $bilprn + $bilint;
-                                $totalOutstandingReceivable += $outstandingReceivable;
-                                $nourut += 1;
+                                $totalDebit = 0;
+                                $totalCredit = 0;
                                 @endphp
-                                    <tr>
-                                        <td>{{ $nourut }}</td>
+                                
+                                @foreach ($master as $index => $loan)
+                                    @php
+                                    // Hitung total debit dan credit
+                                    if ($loan->post == 'D') {
+                                        $totalDebit += $loan->amount;
+                                    } else if ($loan->post == 'C') {
+                                        $totalCredit += $loan->amount;
+                                    }
+                                    @endphp
+                                        <tr>
+                                        <td class="text-center">{{ $index + 1 }}</td>
                                         <td class="text-center">{{ $loan->branch_no ?? 'Data tidak ditemukan' }}</td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <span class="clickable-account" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    {{ $loan->acct_no }}
-                                                </span>
-                                                
-                                                <ul class="dropdown-menu">
-                                                    <li>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                                            Accrued Interest <i class="fas fa-chevron-right float-end"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu dropdown-submenu">
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'accrual_interest_effective')">Effective</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'accrual_interest_simple')">Simple Interest</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                                            Amortised Cost <i class="fas fa-chevron-right float-end"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu dropdown-submenu">
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_cost_effective')">Effective</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_cost_simple')">Simple Interest</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                                            Amortised Initial Cost <i class="fas fa-chevron-right float-end"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu dropdown-submenu">
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_cost_effective')">Effective</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_cost_simple')">Simple Interest</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                                            Amortised Initial Fee <i class="fas fa-chevron-right float-end"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu dropdown-submenu">
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_fee_effective')">Effective</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'amortised_initial_fee_simple')">Simple Interest</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                                            Expected Cash Flow <i class="fas fa-chevron-right float-end"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu dropdown-submenu">
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'expected_cashflow_effective')">Effective</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'expected_cashflow_simple')">Simple Interest</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <!-- <li>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                                            Outstanding <i class="fas fa-chevron-right float-end"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu dropdown-submenu">
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'outstanding_effective')">Effective</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'outstanding_simple')">Simple Interest</a></li>
-                                                        </ul>
-                                                    </li> -->
-                                                    <!-- <li>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
-                                                            Journal <i class="fas fa-chevron-right float-end"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu dropdown-submenu">
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'journal_effective')">Effective</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="showModalWithAccount('{{ $loan->no_acc }}', 'journal_simple')">Simple Interest</a></li>
-                                                        </ul>
-                                                    </li> -->
-                                                </ul>
-                                            </div>
-                                        </td>
-                                        <td style="white-space: nowrap;">{{ $loan->id_coa ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->coa ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->ln_type ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->GROUP ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ isset($loan->org_date_dt) ? date('d/m/Y', strtotime($loan->org_date_dt)) : 'Belum di-generate' }}</td>
-                                        <td class="text-center">{{ $loan->term ?? 0 }}</td>
-                                        <td class="text-center">{{ isset($loan->mtr_date_dt) ? date('d/m/Y', strtotime($loan->mtr_date_dt)) : 'Belum di-generate' }}</td>
-                                        <td class="text-right">{{ number_format($loan->rate * 100?? 0, 5) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->pmtamt ?? 0) }}</td>
-                                        <td class="text-right">{{ number_format($loan->eirex*100 ?? 0, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->eircalc*100 ?? 0, 14) }}%</td>
-                                        <td class="text-right">{{ number_format($loan->cbal ?? 0) }}</td>
-                                        <td class="text-right">{{ number_format($loan->carrying_amount ?? 0) }}</td>
-                                        <td class="text-right">{{ number_format($outstandingReceivable ?? 0) }}</td> 
-                                        <td class="text-right">{{ number_format($loan->bilint ?? 0) }}</td>
-                                        <td class="text-right">{{ number_format($loan->cum_timegap ?? 0) }}</td>
-                                        <td class="text-right">{{ number_format($unamortCost ?? 0) }}</td>
-                                        <td class="text-right">{{ number_format($unamortFee ?? 0) }}</td>
-                                        <td class="text-right">{{ number_format($loan->cum_bunga ?? 0) }}</td>
+                                        <td class="text-center">{{ $loan->id_coa ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->deskripsi ?? 'Data tidak ditemukan' }}</td>
+                                        <!-- <td class="text-center">{{ $loan->post ?? 'Data tidak ditemukan' }}</td> -->
+                                        <td class="text-end">{{ $loan->post == 'D' ? number_format($loan->amount, 2) : '' }}</td>
+                                        <td class="text-end">{{ $loan->post == 'C' ? number_format($loan->amount, 2) : '' }}</td>
+                                        <td class="text-center">{{ date('d/m/Y', strtotime($loan->post_date))  }}</td>
                                     </tr>
                                 @endforeach
 
                                 <!-- Row Total / Average -->
                                 <tr class="table-secondary font-weight-normal">
-                                    <td colspan="10" class="text-center"><strong>TOTAL:</strong></td>
-                                    <td class="text-right"><strong>{{ number_format($master->avg('rate')*100 ?? 0, 5) }}%</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('pmtamt') ?? 0) }}</strong></td>
-                                    <td class="text-right"><strong>{{ number_format(($master->avg('eirex')*100) ?? 0, 14) }}%</strong></td>
-                                    <td class="text-right"><strong>{{ number_format(($master->avg('eircalc')*100) ?? 0, 14) }}%</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('cbal') ?? 0) }}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('carrying_amount') ?? 0) }}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($totalOutstandingReceivable ?? 0) }}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('bilint') ?? 0) }}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($master->sum('cum_timegap') ?? 0)}}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($totalUnamortCost ?? 0)}}</strong></td>
-                                    <td class="text-end"><strong>{{ number_format($totalUnamortFee ?? 0)}}</strong></td>
-                                    <td class="text-end"><strong>{{number_format($totalInterestIncome ?? 0)}}</strong></td>
-                                    <!-- <td class="text-end"><strong></strong>{{number_format($interestIncome ?? 0)}}</td> -->
+                                    <td colspan="4" class="text-center">TOTAL:</td>
+                                    <td class="text-end">{{ number_format($totalDebit, 2) }}</td>
+                                    <td class="text-end">{{ number_format($totalCredit, 2) }}</td>
+                                    <td></td>
                                 </tr>
                             @endif
                         </tbody>
@@ -1023,32 +878,33 @@ document.addEventListener('DOMContentLoaded', function() {
 // Event listener untuk perubahan bulan atau tahun
 document.getElementById('monthSelect').addEventListener('change', updateReport);
 document.getElementById('yearInput').addEventListener('change', updateReport);
+//document.getElementById('jenisSelect').addEventListener('change', updateReport);
 
 function updateReport() {
     const month = document.getElementById('monthSelect').value;
     const year = document.getElementById('yearInput').value;
+//    const jenis = document.getElementById('jenisSelect').value;
     const id_pt = "{{ Auth::user()->id_pt ?? '' }}";
     
-    // Sesuaikan dengan route yang benar
-    window.location.href = `/report-outstanding-effective/view/${id_pt}?bulan=${month}&tahun=${year}`;
+    // Sesuaikan dengan route yang benarr
+    //window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}&jenis=${jenis}`;
+    window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}`;
 }
-    // Update export URL dynamically based on selected month and year
     document.getElementById('exportExcel').addEventListener('click', function (e) {
         e.preventDefault();
         const month = document.getElementById('monthSelect').value;
         const year = document.getElementById('yearInput').value;
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-outstanding-eff.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+        window.location.href = `{{ route('report-journal-eff.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
     });
-
     document.getElementById('exportPdf').addEventListener('click', function (e) {
         e.preventDefault();
         const month = document.getElementById('monthSelect').value;
         const year = document.getElementById('yearInput').value;
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-outstanding-eff.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+        window.location.href = `{{ route('report-journal-eff.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
     });
     document.getElementById('exportCsv').addEventListener('click', function (e) {
         e.preventDefault();
@@ -1056,7 +912,19 @@ function updateReport() {
         const year = document.getElementById('yearInput').value;
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-outstanding-eff.exportCsv', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+        window.location.href = `{{ route('report-journal-eff.exportCsv', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if there's an error message in the session
+        @if(Session::has('error'))
+            Swal.fire({
+                title: 'Error',
+                text: "{{ Session::get('error') }}",
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        @endif
     });
 </script>
 

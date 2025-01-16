@@ -26,8 +26,11 @@ class tblmasterController extends Controller
 
     public function index()
     {
+        $user = Auth::user();
+        $id_pt = $user->id_pt;
+
         $data['title'] = 'Laravel - PHPSpreadsheet';
-        $data['tblmaster'] = $this->homeModel->fetchTblmaster();
+        $data['tblmaster'] = $this->homeModel->fetchTblmaster($id_pt);
 
         return view('upload.simple_interest.layouts.appmaster', $data);
     }
