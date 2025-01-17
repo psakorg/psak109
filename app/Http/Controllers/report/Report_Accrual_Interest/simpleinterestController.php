@@ -81,7 +81,7 @@ class simpleinterestController extends Controller
         $sheet->setCellValue('A3', 'Debitor Name');
         $sheet->setCellValue('C3', $loan->deb_name);
         $sheet->setCellValue('A4', 'Original Amount');
-        $sheet->setCellValue('C4', number_format($loan->org_bal ?? 0,0));
+        $sheet->setCellValue('C4', number_format($loan->org_bal ?? 0, 2));
         $sheet->setCellValue('A5', 'Term');
         $sheet->setCellValue('C5', $loan->term . ' Months');
         $sheet->setCellValue('A6', 'Interest Rate');
@@ -102,13 +102,13 @@ class simpleinterestController extends Controller
         $sheet->mergeCells('C6:D6'); // Menggabungkan sel untuk judul tabel
 
         $sheet->setCellValue('H2', 'Outstanding Amount');
-        $sheet->setCellValue('J2', number_format($loan->nbal ?? 0));
+        $sheet->setCellValue('J2', number_format($loan->nbal ?? 0, 2));
         $sheet->setCellValue('H3', 'EIR Conversion Calculated');
         $sheet->setCellValue('J3', number_format($loan->eircalc_conv*100,14). "%" ?? 0);
         $sheet->setCellValue('H4', 'Original Loan Date');
-        $sheet->setCellValue('J4', date('d-M-Y', strtotime($loan->org_date)));
+        $sheet->setCellValue('J4', date('d-m-Y', strtotime($loan->org_date)));
         $sheet->setCellValue('H5', 'Maturity Date');
-        $sheet->setCellValue('J5', date('d-M-Y', strtotime($loan->mtr_date)));
+        $sheet->setCellValue('J5', date('d-m-Y', strtotime($loan->mtr_date)));
         $sheet->getStyle('H2:H5')->getFont()->setBold(true); // Set bold untuk  Outstanding Amount
         $sheet->getStyle('J2:J5')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         $sheet->mergeCells('H2:I2'); // Menggabungkan sel untuk judul tabel
@@ -288,12 +288,12 @@ class simpleinterestController extends Controller
         //$entitiyName = ": $entityName ? $entityName->nama_pt";
         $teksnoacc = ": $loan->no_acc";
         $teksdebname = ": $loan->deb_name";
-        $teksorgbal = number_format($loan->org_bal, 0);
+        $teksorgbal = number_format($loan->org_bal, 2);
         $teksorgbal = ": $teksorgbal";
         $teksterm = ": $loan->term";
-        $teksmtrdate = date('d-M-Y', strtotime($loan->mtr_date));
+        $teksmtrdate = date('d-m-Y', strtotime($loan->mtr_date));
         $teksmtrdate = ": $teksmtrdate";
-        $teksrate = number_format($loan->rate*100, 5);
+        $teksrate = number_format($loan->rate*100, 5) . "%" ?? 0;
         $teksrate = ": $teksrate";
 
         $infoRows = [
@@ -313,14 +313,14 @@ class simpleinterestController extends Controller
             $currentRow++;
         }
 
-        $teksnbal = number_format($loan->nbal, 0);
+        $teksnbal = number_format($loan->nbal, 2);
         $teksnbal = ": $teksnbal";
         $tekseircalc = number_format($loan->eircalc_conv*100, 14);
         $tekseircalc = ": $tekseircalc %";
-        $teksorgdate = date('d-M-Y', strtotime($loan->org_date));
+        $teksorgdate = date('d-m-Y', strtotime($loan->org_date));
         $teksorgdate = ": $teksorgdate";
         $teksterm = ": $loan->term";
-        $teksmtrdate = date('d-M-Y', strtotime($loan->mtr_date));
+        $teksmtrdate = date('d-m-Y', strtotime($loan->mtr_date));
         $teksmtrdate = ": $teksmtrdate";
 
         $infoRows = [

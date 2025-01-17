@@ -888,7 +888,7 @@ function updateReport() {
     
     // Sesuaikan dengan route yang benarr
     //window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}&jenis=${jenis}`;
-    window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}`;
+    window.location.href = `/report-journal-effective?bulan=${month}&tahun=${year}`;
 }
     document.getElementById('exportExcel').addEventListener('click', function (e) {
         e.preventDefault();

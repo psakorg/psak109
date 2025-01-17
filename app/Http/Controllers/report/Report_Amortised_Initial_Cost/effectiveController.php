@@ -83,8 +83,8 @@ class effectiveController extends Controller
       ['Entity Name', ': ' . $entityName->nama_pt],
       ['Account Number', ': ' . $loan->no_acc],
       ['Debitor Name', ': ' . $loan->deb_name],
-      ['Original Amount', ': ' . number_format($loan->org_bal, 0)],
-      ['Original Loan Date', ': ' . date('d-M-Y', strtotime($loan->org_date))],
+      ['Original Amount', ': ' . number_format($loan->org_bal, 2)],
+      ['Original Loan Date', ': ' . date('d/m/Y', strtotime($loan->org_date))],
       ['Term', ': ' . $loan->term . ' Month'],
   ];
  
@@ -119,8 +119,8 @@ class effectiveController extends Controller
    // Konversi ke float
    $trxcostFloat = (float)$trxcost;
   $infoRows = [
-  ['Transaction Cost', ': ' . number_format($trxcostFloat ?? 0, 0)],
-  ['Outstanding Initial Cost', ': ' . number_format($loan->org_bal ?? 0, 0) ],
+  ['Transaction Cost', ': ' . number_format($trxcostFloat ?? 0, 2)],
+  ['Outstanding Initial Cost', ': ' . number_format($loan->org_bal ?? 0, 2) ],
   ['EIR Cost Calculated', ': ' . number_format($loan->eircalc_cost * 100, 14) . '%'],
   ['Maturity Loan Date', ': ' . date('d/m/Y', strtotime($loan->mtr_date))],
   ['Interest Rate', ': ' . number_format($master->rate  * 100, 5) . '%'],
@@ -324,20 +324,20 @@ foreach ($reports as $report) {
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-  // Set informasi pinjaman
-  $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
-  $sheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
-  $sheet->getPageMargins()->setTop(0.5);
-  $sheet->getPageMargins()->setRight(0.5);
-  $sheet->getPageMargins()->setLeft(0.5);
-  $sheet->getPageMargins()->setBottom(0.5);
+       // Set informasi pinjaman
+       $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+       $sheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+       $sheet->getPageMargins()->setTop(0.5);
+       $sheet->getPageMargins()->setRight(0.5);
+       $sheet->getPageMargins()->setLeft(0.5);
+       $sheet->getPageMargins()->setBottom(0.5);
  
   $infoRows = [
       ['Entity Name', ': ' . $entityName->nama_pt],
       ['Account Number', ': ' . $loan->no_acc],
       ['Debitor Name', ': ' . $loan->deb_name],
-      ['Original Amount', ': ' . number_format($loan->org_bal, 0)],
-      ['Original Loan Date', ': ' . date('d-M-Y', strtotime($loan->org_date))],
+      ['Original Amount', ': ' . number_format($loan->org_bal, 2)],
+      ['Original Loan Date', ': ' . date('d/m/Y', strtotime($loan->org_date))],
       ['Term', ': ' . $loan->term . ' Month'],
   ];
  
@@ -364,6 +364,7 @@ foreach ($reports as $report) {
   $sheet->mergeCells('C5:D5');
   $sheet->mergeCells('C6:D6');
   $sheet->mergeCells('C7:D7');
+  $sheet->mergeCells('C8:D8');
 
   // Misalkan trxcost adalah string dengan simbol mata uang
    $trxcost = $master->trxcost; // Ambil nilai dari database
@@ -372,8 +373,8 @@ foreach ($reports as $report) {
    // Konversi ke float
    $trxcostFloat = (float)$trxcost;
   $infoRows = [
-  ['Transaction Cost', ': ' . number_format($trxcostFloat ?? 0, 0)],
-  ['Outstanding Initial Cost', ': ' . number_format($loan->org_bal ?? 0, 0) ],
+  ['Transaction Cost', ': ' . number_format($trxcostFloat ?? 0, 2)],
+  ['Outstanding Initial Cost', ': ' . number_format($loan->org_bal ?? 0, 2) ],
   ['EIR Cost Calculated', ': ' . number_format($loan->eircalc_cost * 100, 14) . '%'],
   ['Maturity Loan Date', ': ' . date('d/m/Y', strtotime($loan->mtr_date))],
   ['Interest Rate', ': ' . number_format($master->rate  * 100, 5) . '%'],
@@ -387,6 +388,14 @@ foreach ($reports as $report) {
       $sheet->getRowDimension($currentRow)->setRowHeight(15);
       $currentRow++;
   }
+        $sheet->mergeCells('I2:J2');
+        $sheet->mergeCells('I3:J3');
+        $sheet->mergeCells('I4:J4');
+        $sheet->mergeCells('I5:J5');
+        $sheet->mergeCells('I6:J6');
+        $sheet->mergeCells('I7:J7');
+        $sheet->mergeCells('I8:J8');
+
 
         // Set judul tabel laporan
         $sheet->setCellValue('A10', 'Amortised Initial Cost Effective - Report Details');

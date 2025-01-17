@@ -318,7 +318,7 @@ class simpleinterestController extends Controller
 
  $infoRows = [
      ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
-     ['Account Number', ':', "'" . $loan->no_acc],
+     ['Account Number', ':', $loan->no_acc],
      ['Debitor Name', ':', $loan->deb_name],
      ['Original Amount', ':', number_format($loan->org_bal, 2)],
      ['Original Loan Date', ':', date('d-m-Y', strtotime($loan->org_date))],

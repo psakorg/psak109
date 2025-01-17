@@ -82,7 +82,7 @@ class simpleinterestController extends Controller
  $entitiyname = ":  $entityName->nama_pt";
  $teksnoacc = ":  $loan->no_acc";
  $teksdebname = ":  $loan->deb_name";
- $teksorgbal = number_format($loan->org_bal, 0);
+ $teksorgbal = number_format($loan->org_bal, 2);
  $teksorgbal = ":  $teksorgbal";
  $teksorgdate = date('d-m-Y', strtotime($loan->org_date));
  $teksorgdate = ":  $teksorgdate";
@@ -152,11 +152,11 @@ class simpleinterestController extends Controller
 
  $teksbilint = number_format($loan->bilint, 0);
  $teksbilint = ":   $teksbilint";
- $teksprov = number_format($loan->prov, 0);
+ $teksprov = number_format($loan->prov, 2);
  $teksprov = ":   - $teksprov";
- $tekstrxcost = number_format($loan->trxcost, 0);
+ $tekstrxcost = number_format($loan->trxcost, 2);
  $tekstrxcost = ":   $tekstrxcost";
- $tekscarryingamount = number_format($CarryingAmount, 0);
+ $tekscarryingamount = number_format($CarryingAmount, 2);
  $tekscarryingamount = ":   $tekscarryingamount";
  $tekseirex = number_format($loan->eirex*100, 14);
  $tekseirex = ":   $tekseirex";
@@ -384,12 +384,12 @@ class simpleinterestController extends Controller
  //$sheet->getColumnDimension('A')->setWidth(20);
  //$sheet->getColumnDimension('B')->setWidth(5);
  //$sheet->getColumnDimension('C')->setWidth(30);
- $teksbilint = number_format($loan->bilint, 0);
+ $teksbilint = number_format($loan->bilint, 2);
  $teksbilint = ":   $teksbilint";
  $entitiyname = ": $entityName->nama_pt";
  $teksnoacc = ": $loan->no_acc";
  $teksdebname = ": $loan->deb_name";
- $teksorgbal = number_format($loan->org_bal, 0);
+ $teksorgbal = number_format($loan->org_bal, 2);
  $teksorgbal = ": $teksorgbal";
  $teksorgdate = date('d-m-Y', strtotime($loan->org_date));
  $teksorgdate = ": $teksorgdate";
@@ -433,11 +433,11 @@ foreach ($infoRows as $info) {
  $upfrontFee = round(-($loan->prov), 0);
  $CarryingAmount = $loan->nbal+$upfrontFee; $teksbilint = number_format($loan->bilint, 0);
  $teksbilint = ":   $teksbilint";
- $teksprov = number_format($loan->prov, 0);
+ $teksprov = number_format($loan->prov, 2);
  $teksprov = ":  - $teksprov";
- $tekstrxcost = number_format($loan->trxcost, 0);
+ $tekstrxcost = number_format($loan->trxcost, 2);
  $tekstrxcost = ":  $tekstrxcost";
- $tekscarryingamount = number_format($CarryingAmount, 0);
+ $tekscarryingamount = number_format($CarryingAmount, 2);
  $tekscarryingamount = ":   $tekscarryingamount";
  $tekseirex = number_format($loan->eirex*100, 14);
  $tekseirex = ":   $tekseirex";

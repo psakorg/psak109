@@ -81,11 +81,11 @@ $sheet->getPageMargins()->setBottom(0.5);
 
 $infoRows = [
     ['Entity Name', ': ' . $entityName->nama_pt],
-    ['Account Number', ': ' . $loan->no_acc],
+    ['Account Number', ': ' . "'" . $loan->no_acc],
     ['Debitor Name', ': ' . $loan->deb_name],
     ['Original Amount', ': ' . number_format($loan->org_bal, 2)],
-    ['Original Loan Date', ': ' . date('d-M-Y', strtotime($loan->org_date))],
-    ['Maturity Loan Date', ': ' .  date('d-M-Y', strtotime($loan->mtr_date))],
+    ['Original Loan Date', ': ' . date('d/m/Y', strtotime($loan->org_date))],
+    ['Maturity Loan Date', ': ' .  date('d/m/Y', strtotime($loan->mtr_date))],
 ];
 
 $currentRow = 2;
@@ -108,12 +108,12 @@ foreach ($infoRows as $info) {
   $outinitfee = $org_bal+$provFloat;
 
 $infoRows = [
-['UpFront Fee', ': -' . number_format($master->prov, 0)],
-['Outstanding Initial Fee', ': ' . number_format($outinitfee ?? 0, 0) ],
+['UpFront Fee', ': -' . number_format($master->prov, 2)],
+['Outstanding Initial Fee', ': ' . number_format($outinitfee ?? 0, 2) ],
 ['EIR Fee Calculated', ': ' . number_format($loan->eircalc_fee * 100, 14) . '%'],
 ['Term', ': ' . $master->term . ' Month'],
 ['Interest Rate', ': ' . number_format($master->rate * 100, 5) . '%'],
-['Payment Amount', ': ' . number_format($master->pmtamt, 0)],
+['Payment Amount', ': ' . number_format($master->pmtamt, 2)],
 ];
 $currentRow = 2;
 foreach ($infoRows as $info) {
@@ -324,12 +324,12 @@ $sheet->getPageMargins()->setLeft(0.5);
 $sheet->getPageMargins()->setBottom(0.5);
 
 $sheet->getColumnDimension('A')->setWidth(20);
-$sheet->getColumnDimension('B')->setWidth(5);
+$sheet->getColumnDimension('B')->setWidth(10);
 $sheet->getColumnDimension('C')->setWidth(30);
 
 $infoRows = [
     ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
-    ['Account Number', ':', "'" . $loan->no_acc],
+    ['Account Number', ':',$loan->no_acc],
     ['Debitor Name', ':', $loan->deb_name],
     ['Original Amount', ':', number_format($loan->org_bal, 2)],
     ['Original Loan Date', ':', date('d/m/Y', strtotime($loan->org_date))],
@@ -350,7 +350,7 @@ foreach ($infoRows as $info) {
     $currentRow++;
 }
 $sheet->getColumnDimension('G')->setWidth(20);
-$sheet->getColumnDimension('H')->setWidth(5);
+$sheet->getColumnDimension('H')->setWidth(10);
 $sheet->getColumnDimension('I')->setWidth(30);
 
   // Misalkan trxcost adalah string dengan simbol mata uang

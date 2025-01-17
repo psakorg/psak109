@@ -82,7 +82,7 @@ class effectiveController extends Controller
         $infoRows = [
         ['Entity Name', ': ' . $entityName->nama_pt ],
         ['Account Number', ': ' . $loan->no_acc],
-        ['Debitor Name', ': ' . $loan->deb_name],
+        ['Original Amount', ': ' . number_format($loan->org_bal, 2)],
         ['Term', ': ' . $master->term . ' Month'],
         ['Interest Rate', ': ' .  number_format($master->rate  * 100, 5). '%'],
         ];
@@ -98,10 +98,10 @@ class effectiveController extends Controller
         }
 
 $infoRows = [
-    ['Original Amount', ': ' . number_format($loan->org_bal, 0)],
-    ['Original Loan Date', ': ' .  date('d-M-Y', strtotime($loan->org_date))],
-    ['Maturity Loan Date', ': ' . date('d-M-Y', strtotime($loan->mtr_date))],
-    ['Payment Amount', ': ' . number_format($master->pmtamt, 0)],
+    ['Debitor Name', ': ' . $loan->deb_name],
+    ['Original Loan Date', ': ' .  date('d-m-Y', strtotime($loan->org_date))],
+    ['Maturity Loan Date', ': ' . date('d-m-Y', strtotime($loan->mtr_date))],
+    ['Payment Amount', ': ' . number_format($master->pmtamt, 2)],
 ];
 $currentRow = 2;
 foreach ($infoRows as $info) {
@@ -300,7 +300,7 @@ foreach ($infoRows as $info) {
         $infoRows = [
         ['Entity Name', ': ' . $entityName->nama_pt ],
         ['Account Number', ': ' . $loan->no_acc],
-        ['Debitor Name', ': ' . $loan->deb_name],
+        ['Original Amount', ': ' . number_format($loan->org_bal, 2)],
         ['Term', ': ' . $master->term . ' Month'],
         ['Interest Rate', ': ' .  number_format($master->rate  * 100, 5). '%'],
         ];
@@ -316,10 +316,10 @@ foreach ($infoRows as $info) {
         }
 
 $infoRows = [
-    ['Original Amount', ': ' . number_format($loan->org_bal, 0)],
-    ['Original Loan Date', ': ' .  date('d-M-Y', strtotime($loan->org_date))],
-    ['Maturity Loan Date', ': ' . date('d-M-Y', strtotime($loan->mtr_date))],
-    ['Payment Amount', ': ' . number_format($master->pmtamt, 0)],
+    ['Debitor Name', ': ' . $loan->deb_name],
+    ['Original Loan Date', ': ' .  date('d-m-Y', strtotime($loan->org_date))],
+    ['Maturity Loan Date', ': ' . date('d-m-Y', strtotime($loan->mtr_date))],
+    ['Payment Amount', ': ' . number_format($master->pmtamt, 2)],
 ];
 $currentRow = 2;
 foreach ($infoRows as $info) {

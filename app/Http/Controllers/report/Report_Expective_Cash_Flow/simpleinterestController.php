@@ -334,7 +334,7 @@ $sheet->getColumnDimension($columnID)->setAutoSize(true);
 
  $infoRows = [
      ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
-     ['Account Number', ':', "'" . $loan->no_acc],
+     ['Account Number', ':', $loan->no_acc],
      ['Original Amount', ':', number_format($loan->org_bal, 2)],
      ['Term', ':', $loan->term . ' Month'],
      ['Interest Rate', ':',  number_format($loan->rate * 100, 5) . '%'],

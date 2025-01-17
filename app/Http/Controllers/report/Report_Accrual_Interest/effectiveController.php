@@ -75,7 +75,7 @@ class effectiveController extends Controller
             ['Entity Name', ': ' . $entityName->nama_pt],
             ['Account Number', ': ' . $loan->no_acc],
             ['Debitor Name', ': ' . $loan->deb_name],
-            ['Original Amount', ': ' . number_format($loan->org_bal, 0)],
+            ['Original Amount', ': ' . number_format($loan->org_bal, 2)],
             ['Term', ': ' . $master->term . ' Month'],
             ['Interest Rate', ': ' . number_format($master->rate*100, 5) . '%'],
         ];
@@ -102,11 +102,11 @@ class effectiveController extends Controller
         $sheet->mergeCells('C8:D8');
 
         $infoRows = [
-        ['Outstanding Amount', ': ' . number_format($loan->org_bal, 0)],
+        ['Outstanding Amount', ': ' . number_format($loan->org_bal, 2)],
         ['EIR Conversion Calculated', ': ' . number_format($loan->eircalc_conv * 100, 14) . '%'],
-        ['Original Loan Date', ': ' . date('d-M-Y', strtotime($master->org_date_dt))],
-        ['Maturity Loan Date', ': ' . date('d-M-Y', strtotime($master->mtr_date_dt))],
-        ['Payment Amount', ': ' . number_format($master->pmtamt, 0)],
+        ['Original Loan Date', ': ' . date('d/m/Y', strtotime($master->org_date_dt))],
+        ['Maturity Loan Date', ': ' . date('d/m/Y', strtotime($master->mtr_date_dt))],
+        ['Payment Amount', ': ' . number_format($master->pmtamt, 2)],
         ];
         $currentRow = 3;
         foreach ($infoRows as $info) {
@@ -274,7 +274,7 @@ class effectiveController extends Controller
             ['Entity Name', ': ' . $entityName->nama_pt],
             ['Account Number', ': ' . $loan->no_acc],
             ['Debitor Name', ': ' . $loan->deb_name],
-            ['Original Amount', ': ' . number_format($loan->org_bal, 0)],
+            ['Original Amount', ': ' . number_format($loan->org_bal, 2)],
             ['Term', ': ' . $master->term . ' Month'],
             ['Interest Rate', ': ' . number_format($master->rate*100, 5) . '%'],
         ];
@@ -301,11 +301,11 @@ class effectiveController extends Controller
         $sheet->mergeCells('C8:D8');
 
         $infoRows = [
-        ['Outstanding Amount', ': ' . number_format($loan->org_bal, 0)],
+        ['Outstanding Amount', ': ' . number_format($loan->org_bal, 2)],
         ['EIR Conversion Calculated', ': ' . number_format($loan->eircalc_conv * 100, 14) . '%'],
-        ['Original Loan Date', ': ' . date('d-M-Y', strtotime($master->org_date_dt))],
-        ['Maturity Loan Date', ': ' . date('d-M-Y', strtotime($master->mtr_date_dt))],
-        ['Payment Amount', ': ' . number_format($master->pmtamt, 0)],
+        ['Original Loan Date', ': ' . date('d/m/Y', strtotime($master->org_date_dt))],
+        ['Maturity Loan Date', ': ' . date('d/m/Y', strtotime($master->mtr_date_dt))],
+        ['Payment Amount', ': ' . number_format($master->pmtamt, 2)],
         ];
         $currentRow = 3;
         foreach ($infoRows as $info) {

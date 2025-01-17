@@ -85,10 +85,10 @@ class effectiveController extends Controller
             ['Entity Name', ': ' . $entityName->nama_pt],
             ['Account Number', ': ' . $loan->no_acc],
             ['Debitor Name', ': ' . $loan->deb_name],
-            ['Original Amount', ': ' . number_format($loan->org_bal, 0)],
-            ['Original Loan Date', ': ' . date('d-M-Y', strtotime($loan->org_date))],
+            ['Original Amount', ': ' . number_format($loan->org_bal, 2)],
+            ['Original Loan Date', ': ' . date('d/m/Y', strtotime($loan->org_date))],
             ['Term', ': ' . $loan->term . ' Month'],
-            ['Maturity Loan Date', ': ' .  date('d-M-Y', strtotime($loan->mtr_date))],
+            ['Maturity Loan Date', ': ' .  date('d/m/Y', strtotime($loan->mtr_date))],
         ];
 
 
@@ -128,12 +128,12 @@ class effectiveController extends Controller
          // Konversi ke float
          $trxcostFloat = (float)$trxcost;
         $infoRows = [
-        ['UpFront Fee', ': -' . number_format($master->prov, 0)],
-        ['Transaction Cost', ': ' . number_format($trxcostFloat ?? 0, 0) ],
-        ['Carrying Amount', ': ' . number_format($CarryingAmount, 0)],
+        ['UpFront Fee', ': -' . number_format($master->prov, 2)],
+        ['Transaction Cost', ': ' . number_format($trxcostFloat ?? 0, 2) ],
+        ['Carrying Amount', ': ' . number_format($CarryingAmount, 2)],
         ['EIR Exposure', ': ' . number_format($loan->eirex * 100, 14) . '%'],
         ['EIR Calculated', ': ' . number_format($loan->eircalc * 100, 14) . '%'],
-        ['Payment Amount', ': ' . number_format($master->pmtamt, 0)],
+        ['Payment Amount', ': ' . number_format($master->pmtamt, 2)],
         ['Interest Rate', ': ' . number_format($master->rate*100, 5) . '%'],
         //        ['Ibase (Year Base)', ':', '360'],
         ];
@@ -331,10 +331,10 @@ class effectiveController extends Controller
             ['Entity Name', ': ' . $entityName->nama_pt],
             ['Account Number', ': ' . $loan->no_acc],
             ['Debitor Name', ': ' . $loan->deb_name],
-            ['Original Amount', ': ' . number_format($loan->org_bal, 0)],
-            ['Original Loan Date', ': ' . date('d-M-Y', strtotime($loan->org_date))],
+            ['Original Amount', ': ' . number_format($loan->org_bal, 2)],
+            ['Original Loan Date', ': ' . date('d/m/Y', strtotime($loan->org_date))],
             ['Term', ': ' . $loan->term . ' Month'],
-            ['Maturity Loan Date', ': ' .  date('d-M-Y', strtotime($loan->mtr_date))],
+            ['Maturity Loan Date', ': ' .  date('d/m/Y', strtotime($loan->mtr_date))],
         ];
 
 
@@ -374,12 +374,12 @@ class effectiveController extends Controller
          // Konversi ke float
          $trxcostFloat = (float)$trxcost;
         $infoRows = [
-        ['UpFront Fee', ': -' . number_format($master->prov, 0)],
-        ['Transaction Cost', ': ' . number_format($trxcostFloat ?? 0, 0) ],
-        ['Carrying Amount', ': ' . number_format($CarryingAmount, 0)],
+        ['UpFront Fee', ': -' . number_format($master->prov, 2)],
+        ['Transaction Cost', ': ' . number_format($trxcostFloat ?? 0, 2) ],
+        ['Carrying Amount', ': ' . number_format($CarryingAmount, 2)],
         ['EIR Exposure', ': ' . number_format($loan->eirex * 100, 14) . '%'],
         ['EIR Calculated', ': ' . number_format($loan->eircalc * 100, 14) . '%'],
-        ['Payment Amount', ': ' . number_format($master->pmtamt, 0)],
+        ['Payment Amount', ': ' . number_format($master->pmtamt, 2)],
         ['Interest Rate', ': ' . number_format($master->rate*100, 5) . '%'],
         //        ['Ibase (Year Base)', ':', '360'],
         ];

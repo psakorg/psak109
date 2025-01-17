@@ -116,7 +116,7 @@ class simpleinterestController extends Controller
  ['Outstanding Amount Initial Cost', ':', number_format($loan->org_bal ?? 0, 2) ],
  ['EIR Cost Calculated', ':', number_format($loan->eircalc_cost*100, 14). '%'],
  ['Term', ':', number_format($loan-> term).' Month'],
- ['Interest Rate', ':', number_format($loan->rate * 100, 14) . '%'],
+ ['Interest Rate', ':', number_format($loan->rate * 100, 5) . '%'],
  ];
  $currentRow = 3;
  foreach ($infoRows as $info) {
@@ -310,13 +310,9 @@ class simpleinterestController extends Controller
  $sheet->getPageMargins()->setLeft(0.5);
  $sheet->getPageMargins()->setBottom(0.5);
 
- $sheet->getColumnDimension('A')->setWidth(20);
- $sheet->getColumnDimension('B')->setWidth(5);
- $sheet->getColumnDimension('C')->setWidth(30);
-
  $infoRows = [
      ['Entity Name', ':', $entityName ? $entityName->nama_pt : ''],
-     ['Account Number', ':', "'" . $loan->no_acc],
+     ['Account Number', ':', $loan->no_acc],
      ['Debitor Name', ':', $loan->deb_name],
      ['Original Amount', ':', number_format($loan->org_bal, 2)],
      ['Original Loan Date', ':', date('d-m-Y', strtotime($loan->org_date))],
@@ -332,12 +328,9 @@ class simpleinterestController extends Controller
      $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getStyle('B' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getStyle('C' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getRowDimension($currentRow)->setRowHeight(25);
+     $sheet->getRowDimension($currentRow)->setRowHeight(15);
      $currentRow++;
  }
- $sheet->getColumnDimension('F')->setWidth(20);
- $sheet->getColumnDimension('G')->setWidth(5);
- $sheet->getColumnDimension('H')->setWidth(30);
  // Misalkan trxcost adalah string dengan simbol mata uang
  $trxcost = $loan->trxcost; // Ambil nilai dari database
  // Hapus simbol mata uang dan pemisah ribuan
@@ -349,7 +342,7 @@ class simpleinterestController extends Controller
  ['Outstanding Amount Initial Cost', ':', number_format($loan->org_bal ?? 0, 2) ],
  ['EIR Cost Calculated', ':', number_format($loan->eircalc_cost*100, 14). '%'],
  ['Term', ':', number_format($loan-> term).' Month'],
- ['Interest Rate', ':', number_format($loan->rate * 100, 14) . '%'],
+ ['Interest Rate', ':', number_format($loan->rate * 100, 5) . '%'],
  ];
  $currentRow = 3;
  foreach ($infoRows as $info) {
@@ -359,7 +352,7 @@ class simpleinterestController extends Controller
      $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
      $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-     $sheet->getRowDimension($currentRow)->setRowHeight(25);
+     $sheet->getRowDimension($currentRow)->setRowHeight(15);
      $currentRow++;
  }
 
@@ -371,6 +364,7 @@ class simpleinterestController extends Controller
         $sheet->getStyle('A10')->getFill()->setFillType(Fill::FILL_SOLID);
         $sheet->getStyle('A10')->getFill()->getStartColor()->setARGB('FF006600'); // Warna latar belakang
         $sheet->getStyle('A10')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+        $sheet->getRowDimension(11)->setRowHeight(5);
 
         // Set judul kolom tabel
         $headers = [

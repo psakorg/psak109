@@ -69,7 +69,7 @@ class effectiveController extends Controller
 
     public function exportExcel(Request $request, $id_pt)
     {
-        $user_id_pt = Auth::user()->id_pt;
+    $user_id_pt = Auth::user()->id_pt;
     
     $namaBulan = [
         1 => 'January',
@@ -630,9 +630,11 @@ public function exportCsv(Request $request, $id_pt)
 
 
     $master = DB::table('public.tbljournal_effective')
+        ->where('tbljournal_effective.branch_no', $id_pt)
         ->where('bulan', $bulan)
         ->where('tahun', $tahun)
         ->orderBy('tbljournal_effective.id_jrnl', 'asc')
+        ->orderBy('tbljournal_effective.acct_no', 'asc')
         ->orderBy('tbljournal_effective.post', 'asc')
         ->get();
 
@@ -655,7 +657,7 @@ public function exportCsv(Request $request, $id_pt)
 
     // Siapkan data CSV
     //$csvData[] = ['Outstanding Effective Report - Report Details'];
-    $csvData[] = ['Entity Number','GL Account','Description','Debit', 'Credit','Posting Date'];
+    $csvData[] = ['Entity Number','GL Account','Account Number','Description','Debit', 'Credit','Posting Date'];
 
     $row = 1; // Mulai dari baris 13 untuk data laporan
     $nourut = 0;
