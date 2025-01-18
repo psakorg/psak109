@@ -15,6 +15,7 @@ use App\Http\Controllers\upload\effective\tblmasterController as tblmaster_EFF;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\upload\effective\OutstandingController;
 use App\Http\Controllers\upload\simple_interest\OutstandingController as Outstanding_SI;
+use App\Http\Controllers\upload\simple_interest\COAController;
 
 
 use App\Http\Controllers\MappingAdminController;
@@ -386,6 +387,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/execute-stored-procedure', [tblcorporateController::class, 'executeStoredProcedure'])->name('execute.stored.procedure');
     Route::post('/import-excel', [tblcorporateController::class, 'importExcel'])->name('import.excel');
     Route::post('/clear-corporate', [tblcorporateController::class, 'clear'])->name('corporate.clear');
+    Route::get('/upload/tblcorporate', [tblcorporateController::class, 'index'])->name('corporate.index');
 });
 
 
@@ -453,4 +455,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/check-entity/{entity_number}', [ReportController::class, 'checkEntity'])->name('check.entity');
     Route::get('/check-account/{account_number}', [ReportController::class, 'checkAccount'])->name('check.account');
     Route::get('/check-account-corporate/{account_number}', [ReportController::class, 'checkAccountCorporate'])->name('check.account.corporate');
+});
+//route COA menu simple interest
+Route::middleware(['auth'])->group(function () {
+    Route::get('/CoA-menu-simple-interest', [COAController::class, 'index'])->name('coa.index');
+    Route::get('/CoA-menu/download-excel/{interface}/{coa}/{group}', [COAController::class, 'exportExcel'])->name('CoA.downloadExcel');
 });
