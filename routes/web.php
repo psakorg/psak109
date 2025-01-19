@@ -15,8 +15,10 @@ use App\Http\Controllers\upload\effective\tblmasterController as tblmaster_EFF;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\upload\effective\OutstandingController;
 use App\Http\Controllers\upload\simple_interest\OutstandingController as Outstanding_SI;
-use App\Http\Controllers\upload\simple_interest\COAController;
-
+use App\Http\Controllers\upload\effective\COAControllerEffective;
+use App\Http\Controllers\upload\simple_interest\COAControllerCorporateloan;
+use App\Http\Controllers\upload\securities\uploadTblMasterTmpBidController;
+use App\Http\Controllers\upload\securities\uploadDataSecuritiesController;
 
 use App\Http\Controllers\MappingAdminController;
 
@@ -50,6 +52,7 @@ use App\Http\Controllers\report\securities\amortisedcostController;
 use App\Http\Controllers\report\securities\amortisedinitialdiscController;
 use App\Http\Controllers\report\securities\amortisedinitialpremController;
 use App\Http\Controllers\report\securities\expectedcashflowController;
+use App\Http\Controllers\report\securities\initialRecognitionTreasuryController;
 
 use App\Http\Controllers\report\Report_Initial_Recognition\effectiveController as initialRecognitionEffectiveController;
 use App\Http\Controllers\report\Report_Initial_Recognition\simpleInterestController as initialRecognitionSimpleInterestController;
@@ -57,8 +60,6 @@ use App\Http\Controllers\report\Report_Initial_Recognition\simpleInterestControl
 use App\Models\Mapping;
 
 use App\Http\Controllers\report\ReportController;
-
-
 
 
 // Rute untuk halaman utama
@@ -375,6 +376,32 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-expected-cashflow/export-excel/{no_acc}/{id_pt}', [expectedcashflowController::class, 'exportExcel'])->name('report-expected-cashflow.exportExcel');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('securities')->group(function () {      
+        Route::get('/initial-recognition-treasury', [initialRecognitionTreasuryController::class, 'index'])
+            ->name('securities.initial-recognition-treasury.index');
+        
+        // Route upload untuk tblmaster_tmpbid
+        Route::get('/upload/tblmaster', [uploadTblMasterTmpBidController::class, 'index'])
+            ->name('upload.securities.tblmaster_tmpbid.index');
+        Route::post('/upload/tblmaster/import', [uploadTblMasterTmpBidController::class, 'importExcel'])
+            ->name('upload.securities.tblmaster_tmpbid.import');
+        Route::post('/upload/tblmaster/execute-procedure', [uploadTblMasterTmpBidController::class, 'executeStoredProcedure'])
+            ->name('upload.securities.tblmaster_tmpbid.execute-procedure');
+        Route::post('/upload/tblmaster/clear', [uploadTblMasterTmpBidController::class, 'clear'])
+            ->name('upload.securities.tblmaster_tmpbid.clear');
+        
+        // Route upload untuk data securities
+        Route::get('/upload/data', [uploadDataSecuritiesController::class, 'index'])
+            ->name('upload.securities.data.index');
+        Route::post('/upload/data/import', [uploadDataSecuritiesController::class, 'importExcel'])
+            ->name('upload.securities.data.import');
+        Route::post('/upload/data/execute-procedure', [uploadDataSecuritiesController::class, 'executeStoredProcedure'])
+            ->name('upload.securities.data.execute-procedure');
+        Route::post('/upload/data/clear', [uploadDataSecuritiesController::class, 'clear'])
+            ->name('upload.securities.data.clear');
+    });
+});
 
 
 Route::get('/sedang-dalam-pengembangan', function () {
@@ -458,6 +485,11 @@ Route::middleware(['auth'])->group(function () {
 });
 //route COA menu simple interest
 Route::middleware(['auth'])->group(function () {
-    Route::get('/CoA-menu-simple-interest', [COAController::class, 'index'])->name('coa.index');
-    Route::get('/CoA-menu/download-excel/{interface}/{coa}/{group}', [COAController::class, 'exportExcel'])->name('CoA.downloadExcel');
+    Route::get('/CoA-menu-simple-interest', [COAControllerCorporateloan::class, 'index'])->name('coaSimple.index');
+    Route::get('/CoA-menu-simple-interest/download-excel/{id_pt}', [COAControllerCorporateloan::class, 'exportExcel'])->name('coaSimple.downloadExcel');
+});
+//route COA menu effective
+Route::middleware(['auth'])->group(function () {
+    Route::get('/CoA-menu-effective', [COAControllerEffective::class, 'index'])->name('coaEffective.index');
+    Route::get('/CoA-menu-effective/download-excel/{id_pt}', [COAControllerEffective::class, 'exportExcel'])->name('coaEffective.downloadExcel');
 });

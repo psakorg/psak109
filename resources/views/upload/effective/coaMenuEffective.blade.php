@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Data CoA Simpe Interest</title>
+  <title>Data CoA Effective</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -128,7 +128,7 @@ label[for="group"] {
                 <h1>Data Table CoA</h1>
             </div>
 <div class="relative flex items-center justify-between gap-2"> 
-<form action="{{ route('coaSimple.index') }}" method="GET" id="filterForm">
+<form action="{{ route('coaEffective.index') }}" method="GET" id="filterForm">
 <!-- SELECT INTERFACE -->
         <label for="interface" style="width: 100px">Interface</label>
         <select name="interface" id="interface" style="width: 120px;" required>
@@ -276,7 +276,7 @@ function updateReport() {
     const group = document.getElementById('group').value;
     const id_pt = "{{ Auth::user()->id_pt ?? '' }}";
     
-    let reportUrl = `/CoA-menu-simple-interest`;
+    let reportUrl = `/CoA-menu-effective`;
     
      // Build query parameters dynamically
      const params = new URLSearchParams();
@@ -296,7 +296,7 @@ function updateReport() {
         const id_pt = "{{ Auth::user()->id_pt ?? '' }}";
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('coaSimple.downloadExcel', ['id_pt' => Auth::user()->id_pt]) }}?interface=${interface}&coa=${coa}&group=${group}`;
+        window.location.href = `{{ route('coaEffective.downloadExcel', ['id_pt' => Auth::user()->id_pt]) }}?interface=${interface}&coa=${coa}&group=${group}`;
     });
     </script>
 </body>

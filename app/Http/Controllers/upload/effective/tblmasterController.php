@@ -32,7 +32,7 @@ class TblmasterController extends Controller
     // Ambil jumlah item per halaman dari query string, default 10
     $perPage = $request->input('per_page', 10);
 
-     // Ambil data dengan pagination dan filter berdasarkan id_pt
+     // Ambil data dengan pagination dan filter berdasarkan id_ptt
      $tblmaster = $this->uploadEffective
      ->where('id_pt', $id_pt)
      ->paginate($perPage);

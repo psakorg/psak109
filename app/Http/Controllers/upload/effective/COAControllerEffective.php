@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\upload\simple_interest;
+namespace App\Http\Controllers\upload\effective;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -16,7 +16,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use Illuminate\Support\Facades\DB; 
 use Illuminate\Support\Facades\Log;
 
-class COAController extends Controller
+class COAControllerEffective extends Controller
 {
     public function index(Request $request)
     {
@@ -56,7 +56,7 @@ class COAController extends Controller
         //dd($request->all());
         $isSuperAdmin = $user->role === 'superadmin';
 
-        return view('upload.simple_interest.layouts.coa', compact('loans', 'interface','coa','group','isSuperAdmin'));
+        return view('upload.effective.layouts.coa', compact('loans', 'interface','coa','group','isSuperAdmin'));
     }
     public function exportExcel(Request $request, $id_pt)
     {
@@ -230,7 +230,7 @@ class COAController extends Controller
         // }
 
         // Siapkan nama file
-        $filename = "DaftarCoASimpleInterest_{$id_pt}_{$interface}_{$coa}_{$group}.xlsx";
+        $filename = "DaftarCoAEffective_{$id_pt}_{$interface}_{$coa}_{$group}.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);

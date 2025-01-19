@@ -177,4 +177,50 @@ public static function getLoanDetails($no_acc,$id_pt)
             // Log data yang diambil
     Log::info('Data fetched from tblobaleffective and tblmaster_tmp', ['data' => $result]);
     }
+
+
+    public static function fetchInitialRecognition($id_pt, $perPage, $tahun, $bulan)
+    {
+        return DB::table('securities.tbldatasecurities as a')
+            ->join('securities.tblobalsecurities as b', 'a.no_acc', '=', 'b.no_acc')
+            ->join('securities.tblcfobalsecurities as c', 'a.no_acc', '=', 'c.no_acc')
+            ->join('securities.tblpricesecurities as d', 'a.no_acc', '=', 'd.no_acc')
+            ->select([
+                'a.no_branch',
+                'a.no_acc',
+                'b.bond_id',
+                'a.status',
+                'b.issuer_name',
+                'a.bond_jns',
+                'b.bond_type',
+                'b.org_bal',
+                'b.org_date',
+                'b.tenor',
+                'b.mtr_date',
+                'b.coupon_rate',
+                'b.yield',
+                'b.eirex',
+                'b.eircalc',
+                'b.face_value',
+                'b.fair_value',
+                'b.atdiscount',
+                'b.atpremium',
+                'b.brokerage',
+                'b.eircalc_conv',
+                'b.eircalc_disc',
+                'b.eircalc_prem',
+                'b.eircalc_brok',
+                'd.price',
+                'd.price_date',
+                'b.ibase',
+                'a.id_pt'
+            ])
+            ->where('a.no_branch', $id_pt)
+            ->where('c.month_to', 0)
+            ->whereYear('b.org_date', $tahun)
+            ->whereMonth('b.org_date', $bulan)
+            ->where('a.id_pt', $id_pt)
+            ->orderBy('a.no_acc')
+            ->paginate($perPage);
+    }
 }

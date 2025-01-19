@@ -52,7 +52,7 @@
                 <li class="nav-item">
                     <a href="#" class="nav-link d-flex align-items-center">
                         <i class="fas fa-file"></i>
-                        <p class="ms-2 mb-0 text-start" style="font-size: 14px;">Loan Report</p>
+                        <p class="ms-2 mb-0 text-start" style="font-size: 14px;">Report Loan</p>
                         <i class="nav-arrow bi bi-chevron-right"></i>
                     </a>
                     <ul class="nav nav-treeview">
@@ -60,7 +60,7 @@
                        <li class="nav-item">
                             <div class="sidebar-dropdown">
                                 <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
-                                    <p class="ms-2 mb-0" style="font-size: 14px;">Initial Recognition</p>
+                                    <p class="ms-2 mb-0" style="font-size: 14px;">Report Initial Recognition</p>
                                     <i class="bi bi-chevron-right ms-auto"></i>
                                 </a>
                                 <div class="sidebar-dropdown-menu">
@@ -74,7 +74,7 @@
                        <li class="nav-item">
                             <div class="sidebar-dropdown">
                                 <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
-                                    <p class="ms-2 mb-0" style="font-size: 14px;">Outstanding Report</p>
+                                    <p class="ms-2 mb-0" style="font-size: 14px;">Report Outstanding</p>
                                     <i class="bi bi-chevron-right ms-auto"></i>
                                 </a>
                                 <div class="sidebar-dropdown-menu">
@@ -88,7 +88,7 @@
                        <li clatss="nav-item">
                             <div class="sidebar-dropdown">
                                 <a href="#" class="nav-link d-flex align-items-center sidebar-dropdown-toggle">
-                                    <p class="ms-2 mb-0" style="font-size: 14px;">Journal</p>
+                                    <p class="ms-2 mb-0" style="font-size: 14px;">Report Journal</p>
                                     <i class="bi bi-chevron-right ms-auto"></i>
                                 </a>
                                 <div class="sidebar-dropdown-menu">
@@ -273,7 +273,7 @@
                         <li class="nav-item">
                             <a href="#" class="nav-link d-flex align-items-center">
                                 <i class="bi bi-shield-lock" style="font-size: 15px;"></i>
-                                <p class="ms-2 mb-0 text-start" style="white-space: nowrap; font-size: 14px;">Securities</p>
+                                <p class="ms-2 mb-0 text-start" style="white-space: nowrap; font-size: 14px;">Report Securities</p>
                                 <i class="nav-arrow bi bi-chevron-right"></i>
                             </a>
                             <ul class="nav nav-treeview">
@@ -292,6 +292,9 @@
                                     </a>
                                     <a href="{{route('report-expected-cashflow.index')}}" class="nav-link">
                                         <p class="text-start" style="font-size: 14px;">Report Expected Cash Flow</p>
+                                    </a>
+                                    <a href="{{route('securities.initial-recognition-treasury.index')}}" class="nav-link">
+                                        <p class="text-start" style="font-size: 14px;">Report Initial Recognition</p>
                                     </a>
                                 </li>
                             </ul>
@@ -328,14 +331,14 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('simple-interest.outstanding.index') }}" class="nav-link d-flex align-items-center">
-                                        <p class="ms-2 mb-0 text-center" style="width: 30px; font-size: 14px;">✦</p>
-                                        <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Upload Data Outstanding</p>
+                                        <p class="ms-2 mb-0 text-start" style="width: 30px; font-size: 14px;">✦</p>
+                                        <p class="ms-1 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Upload Data Outstanding</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('coa.index') }}" class="nav-link d-flex align-items-center">
-                                        <p class="ms-2 mb-0 text-center" style="width: 30px; font-size: 14px;">✦</p>
-                                        <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Daftar Menu CoA</p>
+                                    <a href="{{ route('coaSimple.index') }}" class="nav-link d-flex align-items-center">
+                                        <p class="ms-2 mb-0 text-start" style="width: 30px; font-size: 14px;">✦</p>
+                                        <p class="ms-1 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Daftar Menu CoA</p>
                                     </a>
                                 </li>
                             </ul>
@@ -350,14 +353,44 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ route('effective.tblmaster.index') }}" class="nav-link d-flex align-items-center">
-                                        <p class="ms-2 mb-0 text-center" style="width: 30px; font-size: 14px;">✦</p>
+                                        <p class="ms-2 mb-0 text-start" style="width: 30px; font-size: 14px;">✦</p>
                                         <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Upload File tblmaster_tmp</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('effective.outstanding.index') }}" class="nav-link d-flex align-items-center">
-                                        <p class="ms-2 mb-0 text-center" style="width: 30px; font-size: 14px;">✦</p>
+                                        <p class="ms-2 mb-0 text-start" style="width: 30px; font-size: 14px;">✦</p>
                                         <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Upload Data Outstanding</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('coaEffective.index') }}" class="nav-link d-flex align-items-center">
+                                        <p class="ms-2 mb-0 text-start" style="width: 30px; font-size: 14px;">✦</p>
+                                        <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Daftar Menu CoA</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Securities -->
+                        <li class="nav-item">
+                            <a href="#" class="nav-link d-flex align-items-center">
+                                <p class="ms-2 mb-0 text-start" style="white-space: nowrap; font-size: 14px;">Securities</p>
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('upload.securities.data.index') }}" class="nav-link d-flex align-items-center">
+                                        <p class="ms-2 mb-0 text-center" style="width: 30px; font-size: 14px;">✦</p>
+                                        <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Upload Data Securities</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('upload.securities.tblmaster_tmpbid.index') }}" class="nav-link d-flex align-items-center">
+                                        <p class="ms-2 mb-0 text-center" style="width: 30px; font-size: 14px;">✦</p>
+                                        <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">Master TmpBid</p>
                                     </a>
                                 </li>
                             </ul>

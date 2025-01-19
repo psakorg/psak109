@@ -25,7 +25,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">At Discount</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="-{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount),2) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="-{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount),0) }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -83,7 +83,7 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Settlement Date</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{date('d/m/Y', strtotime($loan->settle_dt))}}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{date('d/m/Y', strtotime($loan->org_date))}}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
@@ -119,14 +119,30 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-4 col-form-label text-right">Coupon Rate</label>
+                                    <label class="col-sm-4 col-form-label text-right">Fair Value</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="-{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount),2) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format((float) str_replace(['$', ','], '', $loan->fair_value)) }}" readonly>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Row 8 -->
+                            <div class="form-row">
+                            <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-3 col-form-label">Coupon Rate</label>
+                                    <div class="col-sm-8">
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format((float) str_replace(['$', ','], '', $loan->coupon_rate*100),5)}}%" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-4 col-form-label text-right">Price</label>
+                                    <div class="col-sm-8">
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format((float) str_replace(['$', ','], '', $loan->price*100),5) }}%" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Row 9 -->
                             <div class="form-row">
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Yield (YTM)</label>
@@ -135,19 +151,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-4 col-form-label text-right">Price</label>
+                                    <label class="col-sm-4 col-form-label text-right">IBase</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="-{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount),2) }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Row 9 -->
-                            <div class="form-row">
-                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
-                                    <label class="col-sm-3 col-form-label">Fair Value</label>
-                                    <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format((float) str_replace(['$', ','], '', $loan->fair_value)) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format((float) str_replace(['$', ','], '', $loan->ibase),0) }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -182,12 +188,13 @@
                                 $atdisc = $loan->atdiscount;
                                 $atdisc = preg_replace('/[^\d.]/', '', $atdisc);
                                 $atdiscFloat = (float)$atdisc;
-
+                                $totalharibunga = 0;
+                                $totalamortized = 0;
                                 $unamort = $atdiscFloat;
 
                             @endphp
                             @foreach ($reports as $report)
-                            @php
+                                @php
                                     $amortized = (float)$report->amortized; // Ambil nilai amortized dari laporan
                                     $cumulativeAmortized += $amortized; // Tambahkan amortized ke total kumulatif
 
@@ -200,33 +207,39 @@
                                         // Untuk baris selanjutnya, hitung unamortized berdasarkan cumulative amortized
                                         $unamort -= $amortized;
                                     }
-
+                                    $totalharibunga = $totalharibunga + $report->haribunga;
+                                    $totalamortized += $report->amortized;
                                 @endphp
                             <tr>
                                 <td>{{ $report->month_to }}</td>
                                 <td class="text-center" >{{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
                                 <td>{{ $report->haribunga }}</td>
                                 <td>{{ number_format($report->pmtamt) }}</td>
-                                <td>{{ $report->principal_in}}</td>
-                                <td>{{number_format($report->interest_eir)}}</td>
+                                <td>{{ number_format($report->principal_in)}}</td>
+                                <td>{{ number_format($report->interest_eir)}}</td>
                                 <td>{{ number_format($report->interest) }}</td>
                                 <td>{{ number_format($report->amortized) }}</td>
                                 <td>{{ number_format($report->fair_value) }}</td>
-                                <td>{{ $cumulativeAmortized }} </td>
-                                <td>{{ $unamort }}</td>
+                                <td>{{ number_format($cumulativeAmortized) }} </td>
+                                <td>-{{ number_format($unamort) }}</td>
                             </tr>
                             @endforeach
                             <!-- Row Total -->
                             <tr class="font-weight-normal">
-                                <td colspan="3" class="text-center">TOTAL</td>
-                                <td>{{ number_format($reports->sum('pmtamt'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('principal_in'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('interest_eir'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('interest'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('amortized'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('fair_value'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('cumulativeAmortized'), 2) }}</td>
-                                <td>{{ number_format($reports->sum('unamort'), 2) }}</td>
+                                <td colspan="2" class="text-center">TOTAL</td>
+                                <td>{{ number_format($totalharibunga) }}</td>
+                                <td>{{ number_format($reports->sum('pmtamt'), 0) }}</td>
+                                <td>{{ number_format($reports->sum('principal_in'), 0) }}</td>
+                                <td>{{ number_format($reports->sum('interest_eir'), 0) }}</td>
+                                <td>{{ number_format($reports->sum('interest'), 0) }}</td>
+                                <td>{{ number_format($totalamortized, 0) }}</td>
+                                <!-- <td>{{ number_format($reports->sum('amortized'), 0) }}</td> -->
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <!-- <td>{{ number_format($reports->sum('fair_value'), 0) }}</td> -->
+                                <!-- <td>{{ number_format($reports->sum('cumulativeAmortized'), 0) }}</td>
+                                <td>{{ number_format($reports->sum('unamort'), 0) }}</td> -->
                             </tr>
                         </tbody>
                     </table>

@@ -78,17 +78,6 @@ class UploadSimpleInterest extends Model
         return DB::table($this->tblCorporateLoanCabangDetail)->where('id_pt', $id_pt)->get()->toArray();
     }
 
-    //mengambil data coa
-    public static function getCoaSimple($id_pt)
-    {
-        return DB::table('public.tblcoaloancorporate')
-        ->where('no_branch', $id_pt)
-        ->where('interface')
-        ->where('coa')
-        ->where('GROUP')
-        ->get();
-    }
-
     /**
      * Memeriksa duplikasi ID transaksi (idtrx) di tabel tblcorporateloancabangdetail
      *

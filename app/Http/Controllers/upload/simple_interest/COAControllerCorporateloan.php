@@ -16,7 +16,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use Illuminate\Support\Facades\DB; 
 use Illuminate\Support\Facades\Log;
 
-class COAController extends Controller
+class COAControllerCorporateloan extends Controller
 {
     public function index(Request $request)
     {

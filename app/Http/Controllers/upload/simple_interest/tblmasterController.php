@@ -171,7 +171,7 @@ class tblmasterController extends Controller
             $user = Auth::user();
             $id_pt = $user->id_pt;
 
-            $bulan = date('n'); // Mengambil bulan saat ini
+            $bulan = date('n'); // Mengambil bulan saat inii
             $tahun = $request->tahun;
             $noAcc = $request->no_acc;
             $period = $request->pilihan;
