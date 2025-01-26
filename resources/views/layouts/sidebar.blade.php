@@ -278,7 +278,16 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{route('report-calculated-accrual-coupon.index')}}" class="nav-link">
+                                    <a href="{{route('securities.initial-recognition-treasury.index')}}" class="nav-link">
+                                        <p class="text-start" style="font-size: 14px;">Report Initial Recognition</p>
+                                    </a>
+                                    <a href="{{route('securities.outstanding-balance-treasury.index')}}" class="nav-link">
+                                        <p class="text-start" style="font-size: 14px;">Report Outstanding Balance Treasury Bond</p>
+                                    </a>
+                                    <a href="{{route('securities.evaluation-treasury-bond.index')}}" class="nav-link">
+                                        <p class="text-start" style="font-size: 14px;">Report Evaluation Treasury Bond</p>
+                                    </a>
+                                    <!-- <a href="{{route('report-calculated-accrual-coupon.index')}}" class="nav-link">
                                         <p class="text-start" style="font-size: 14px;">Report Calculated Accrual Coupon</p>
                                     </a>
                                     <a href="{{route('report-amortised-cost.index')}}" class="nav-link">
@@ -292,10 +301,7 @@
                                     </a>
                                     <a href="{{route('report-expected-cashflow.index')}}" class="nav-link">
                                         <p class="text-start" style="font-size: 14px;">Report Expected Cash Flow</p>
-                                    </a>
-                                    <a href="{{route('securities.initial-recognition-treasury.index')}}" class="nav-link">
-                                        <p class="text-start" style="font-size: 14px;">Report Initial Recognition</p>
-                                    </a>
+                                    </a> -->
                                 </li>
                             </ul>
                         </li>
@@ -414,6 +420,12 @@
                         <a href="{{ route('admin.usermanajemen') }}" class="nav-link d-flex align-items-center">
                             <i class="bi bi-people-fill"></i>
                             <p class="ms-2 mb-0" style="font-size: 14px;">User Management</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard.upload') }}" class="nav-link d-flex align-items-center">
+                            <i class="bi bi-people-fill"></i>
+                            <p class="ms-2 mb-0" style="font-size: 14px;">Upload Image Dashboard</p>
                         </a>
                     </li>
                 @endif

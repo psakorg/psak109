@@ -126,8 +126,72 @@ public static function getLoanDetails($no_acc,$id_pt)
 //         return self::where('no_acc', $no_acc)->get();
 //     }
 
+public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
+{
+    $query = DB::table('securities.tblcfobalsecurities as a')
+        ->join('securities.tblmaster_tmpbid as m', 'a.no_acc', '=', 'm.no_acc')
+        ->join('securities.tblobalsecurities as tbo', function($join) {
+            $join->on(DB::raw('tbo.no_acc::numeric'), '=', 'a.no_acc')
+                 ->on(DB::raw('tbo.no_branch::numeric'), '=', 'm.no_branch');
+        })
+        ->select([
+            DB::raw('DISTINCT a.no_acc'),
+            'a.month_to',
+            'm.id_pt',
+            DB::raw("TO_CHAR(a.transac_dt, 'DD/MM/YYYY') as TglAngsuranConv"),
+            'a.transac_dt',
+            'tbo.issuer_name',
+            'm.org_bal',
+            DB::raw("TO_CHAR(m.settle_dt, 'DD/MM/YYYY') as settle_dt"),
+            DB::raw("TO_CHAR(tbo.org_date, 'DD/MM/YYYY') as org_date"),
+            'm.tenor',
+            DB::raw("TO_CHAR(tbo.mtr_date, 'DD/MM/YYYY') as mtr_date"),
+            'm.bond_id', 'm.coupon_rate', 'a.pmtamt', 'm.atdiscount', 'm.atpremium', 
+            'm.brokerage', 'a.face_value', 'a.interest_eir', 'a.fair_value',
+            'a.price', 'a.amortized', 'a.accr_conv', 'a.outsamt_conv', 'a.timegap',
+            'a.accr_disc', 'a.outsamt_disc', 'a.amortise_disc', 'a.accr_prem',
+            'a.outsamt_prem', 'a.amortise_prem', 'a.accr_brok', 'a.outsamt_brok',
+            'a.amortise_brok', 'a.principal', 'a.principal_in','a.principal_out', 'a.interest', 'a.haribunga', 'tbo.yield', 'tbo.eirex',
+            'tbo.eircalc', 'tbo.eircalc_conv', 'tbo.eircalc_disc', 'tbo.eircalc_prem',
+            'tbo.eircalc_brok', 'tbo.ibase',
+            DB::raw('CASE WHEN (m.bond_grp = 4) OR (m.bond_grp = 2) THEN 
+                m.face_value
+            ELSE
+                (m.face_value - coalesce(m.atdiscount,0) + coalesce(m.atpremium,0) + coalesce(m.brokerage,0) 
+                + coalesce((SELECT SUM(amortise_disc) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to),0) 
+                + coalesce((SELECT SUM(amortise_prem) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to),0) 
+                + coalesce((SELECT SUM(amortise_brok) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to),0))
+            END as CARRYING_AMOUNT'),
+            DB::raw('(SELECT SUM(amortized) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to) as cum_amortitized'),
+            DB::raw('(SELECT SUM(timegap) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to) as cum_timegap'),
+            DB::raw('(SELECT SUM(amortise_disc) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to) as cum_amortisedisc'),
+            DB::raw('(SELECT SUM(amortise_prem) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to) as cum_amortiseprem'),
+            DB::raw('(SELECT SUM(amortise_brok) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to) as cum_amortisebrok'),
+            DB::raw('(SELECT SUM(interest) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to) as cum_interest'),
+            DB::raw('(SELECT SUM(interest_eir) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to) as cum_interest_eir'),
+            DB::raw('(SELECT SUM(haribunga) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to) as cum_haribunga'),
+            DB::raw('CASE WHEN a.month_to = 0 THEN -a.FACE_VALUE ELSE a.pmtamt END as EXPECTED_CASH_FLOW'),
+            DB::raw('CASE WHEN a.month_to = 0 THEN -OUTSAMT_CONV ELSE a.pmtamt END as OUTCONV'),
+            DB::raw('CASE WHEN a.month_to = 0 THEN -OUTSAMT_DISC ELSE a.pmtamt END as OUTDISC'),
+            DB::raw('CASE WHEN a.month_to = 0 THEN -OUTSAMT_PREM ELSE a.pmtamt END as OUTPREM'),
+            DB::raw('CASE WHEN a.month_to = 0 THEN -OUTSAMT_BROK ELSE a.pmtamt END as OUTBROK')
+        ]);
+
+    if ($no_acc) {
+        $query->where('a.no_acc', $no_acc)
+              ->where('m.no_branch', $id_pt);
+    } else {
+        $query->where('m.no_branch', $id_pt);
+    }
+
+    $query->orderBy('a.month_to');
+
+    return $query->paginate($perPage);
+}
+
+
 //     // Method untuk mengambil semua data dengan paginasi
-    public static function fetchAll($id_pt, $perPage = 10)
+    public static function fetchAll($id_pt, $perPage = 1000)
     {
         return DB::table('securities.tblobalsecurities as effective')
             ->leftJoin('securities.tblmaster_tmpbid as master', 'effective.no_acc', '=', DB::raw("master.no_acc"))

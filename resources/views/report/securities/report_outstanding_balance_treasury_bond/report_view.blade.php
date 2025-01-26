@@ -10,7 +10,7 @@
                 <!-- Loan Details Form -->
                 <div class="card mb-4" style="font-size: 12px;">
                     <div class="card-header">
-                        <h5 class="card-title" style="font-size: 16px;">REPORT INITIAL RECOGNITION - TREASURY</h5>
+                        <h5 class="card-title" style="font-size: 16px;">REPORT OUTSTANDING BALANCE - TREASURY BOND</h5>
                     </div>
                     <div class="card-body">
                         <form>

@@ -3,8 +3,8 @@
         <div class="container mt-5">
             <section class="section">
                 <div class="mb-2">
-                    <a href="{{ route('report-acc-eff.exportPdf', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])  }}" class="btn btn-danger ">Export to PDF</a>
-                    <a href="{{ route('report-acc-eff.exportExcel', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt]) }}" class="btn btn-success ">Export to Excel</a>
+                    <a href="{{ route('amortisedinitialdisc.exportPdf', ['no_acc' => $reports->first()->no_acc, 'id_pt' => $reports->first()->id_pt])  }}" class="btn btn-danger ">Export to PDF</a>
+                    <a href="{{ route('amortisedinitialdisc.exportExcel', ['no_acc' => $reports->first()->no_acc, 'id_pt' => $reports->first()->id_pt]) }}" class="btn btn-success ">Export to Excel</a>
                 </div>
 
                 <!-- Loan Details Form -->
@@ -19,13 +19,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Account Number</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $loan->no_acc }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $reports->first()->no_acc }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">At Discount</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount),2) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="-{{ number_format($reports->first()->atdiscount, 0) }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -35,13 +35,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Deal Number</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $loan->bond_id }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $reports->first()->bond_id }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">Outstanding Amount Initial Discount</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->eircalc_conv * 100, 15) . '%' }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($reports->first()->outsamt_disc, 0) }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -51,13 +51,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Issuer Name</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{$loan->issuer_name}}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $reports->first()->issuer_name }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">EIR Calculated Convertion</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->eircalc_conv * 100, 15) }}%" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($reports->first()->eircalc_conv * 100, 15) }}%" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -67,13 +67,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Face Value</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{number_format((float) str_replace(['$', ','], '',$loan->face_value)) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($reports->first()->face_value, 0) }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">EIR Calculated At Discount</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount),2) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($reports->first()->atdiscount, 0) }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -83,13 +83,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Settlement Date</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ date('d/m/Y', strtotime($loan->settle_dt)) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $reports->first()->settle_dt }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">Tenor (TTM)</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $loan->tenor}} Tahun" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $reports->first()->tenor }} Year" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -99,13 +99,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Maturity Date</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ date('d/m/Y', strtotime($loan->mtr_date)) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $reports->first()->mtr_date }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">Settlement Date</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{date('d/m/Y', strtotime($loan->settle_dt))}}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ $reports->first()->settle_dt }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -115,13 +115,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Coupon Rate</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->coupon_rate*100,5) }}%" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($reports->first()->coupon_rate*100, 5) }}%" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">Price</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($loan->price*100,5)}}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($reports->first()->price*100, 5) }}%" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -131,15 +131,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Fair Value</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format((float) str_replace(['$', ','], '', $loan->fair_value)) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" value="{{ number_format($reports->first()->fair_value, 0) }}" readonly>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-
-
 
                 <!-- Report Table -->
                 <h2 style="font-size: 16px;">Report Details</h2>
@@ -156,43 +154,43 @@
                                 <th>Amortised At Discount</th>
                                 <th>Outstanding Amount Initial At Discount</th>
                                 <th>Cummulative Amortized At Discount</th>
-                                <th>Unamortized  At Discount</th>
+                                <th>Unamortized At Discount</th>
                             </tr>
                         </thead>
                         <tbody>
                             @php
-                                $cumulativeTimeGap = 0;
-                                $totalTimeGap = 0;
-                                $cummulativeAmortizedDisc = 0;
+                                $unamortisedAtDiscount = $reports->first()->atdiscount * (-1);
                             @endphp
                             @foreach ($reports as $report)
                             @php
-                                $cumulativeTimeGap += floatval($report->timegap);
-                                $totalTimeGap += ($report->timegap);
-                                $cummulativeAmortizedDisc += floatval($report->amortise_disc);
+                                $unamortisedAtDiscount += $report->amortise_disc;
                             @endphp
                             <tr>
-                                <td>{{ $report->month_to }}</td>
-                                <td>{{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
-                                <td>{{ $report->haribunga }}</td>
-                                <td>{{ number_format($report->pmtamt, 2) }}</td>
-                                <td>{{ number_format($report->bunga ?? 0, 5) }}</td>
-                                <td>{{ $report->principal_in}}</td>
-                                <td>{{ number_format($report->amortise_disc, 2) }}</td>
-                                <td>{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount),2) }}</td>
-                                <td>{{ number_format($cummulativeAmortizedDisc, 2) }}</td>
-                                <td>{{ number_format($report->amortise_disc + $report->outsamt_disc ?? 0, 2) }}</td>
+                                <td class="text-center">{{ $report->month_to }}</td>
+                                <td class="text-center">{{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
+                                <td class="text-center">{{ number_format($report->haribunga, 0) }}</td>
+                                <td>{{ number_format($report->pmtamt, 0) }}</td>
+                                <td>{{ number_format($report->interest_eir ?? 0, 0) }}</td>
+                                <td>{{ number_format($report->interest, 0) }}</td>
+                                <td>{{ number_format($report->amortise_disc, 0) }}</td>
+                                <td>{{ number_format($report->outsamt_disc, 0) }}</td>
+                                <td>{{ number_format($report->cum_amortisedisc, 0) }}</td>
+                                <td>{{ number_format($unamortisedAtDiscount ?? 0, 0) }}</td>
                             </tr>
                             @endforeach
                             <tr class="font-weight-normal">
-                                <td colspan="3" class="text-center">TOTAL</td>
-                                <td class="text-right">{{ number_format($reports->sum('pmtamt'), 2) }}</td>
-                                <td class="text-right">{{ number_format($reports->sum('bunga'), 5) }}</td>
-                                <td class="text-right">{{ number_format($reports->sum('principal_in'), 2) }}</td>
-                                <td class="text-right">{{ number_format($reports->sum('amortise_disc'), 2) }}</td>
-                                <td class="text-right">{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount), 2) }}</td>
-                                <td class="text-right">{{ number_format($reports->sum('amortise_disc'), 2) }}</td>
-                                <td class="text-right">{{ number_format($reports->sum('amortise_disc') + $reports->sum('outsamt_disc'), 2) }}</td>
+                                <td colspan="2" class="text-center">TOTAL</td>
+                                <td class="text-center">{{ number_format($reports->sum('haribunga'), 0) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('pmtamt'), 0) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('interest_eir'), 0) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('interest'), 0) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('amortise_disc'), 0) }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <!-- <td class="text-right">{{ number_format($reports->first()->atdiscount, 0) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('amortise_disc'), 0) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('amortise_disc') + $reports->sum('outsamt_disc'), 0) }}</td> -->
                             </tr>
                         </tbody>
                     </table>

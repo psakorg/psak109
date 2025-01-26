@@ -53,11 +53,16 @@ use App\Http\Controllers\report\securities\amortisedinitialdiscController;
 use App\Http\Controllers\report\securities\amortisedinitialpremController;
 use App\Http\Controllers\report\securities\expectedcashflowController;
 use App\Http\Controllers\report\securities\initialRecognitionTreasuryController;
+use App\Http\Controllers\report\securities\amortisedinitialbrokeragefeeController;
+use App\Http\Controllers\report\securities\outstandingBalanceTreasuryController;
+use App\Http\Controllers\report\securities\evaluationTreasuryController;
 
 use App\Http\Controllers\report\Report_Initial_Recognition\effectiveController as initialRecognitionEffectiveController;
 use App\Http\Controllers\report\Report_Initial_Recognition\simpleInterestController as initialRecognitionSimpleInterestController;
 
 use App\Models\Mapping;
+
+use App\Http\Controllers\dashboardController;
 
 use App\Http\Controllers\report\ReportController;
 
@@ -375,11 +380,23 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-expected-cashflow/export-pdf/{no_acc}/{id_pt}', [expectedcashflowController::class, 'exportPdf'])->name('report-expected-cashflow.exportPdf');
     Route::get('/report-expected-cashflow/export-excel/{no_acc}/{id_pt}', [expectedcashflowController::class, 'exportExcel'])->name('report-expected-cashflow.exportExcel');
 });
-
+// Rute untuk report amortised Brokerage Fee
+Route::middleware(['auth'])->group(function () {
+    Route::get('/report-amortised-initial-brokerage-fee', [amortisedinitialbrokeragefeeController::class, 'index'])->name('report-amortised-initial-brokerage-fee.index');
+    Route::get('/report-amortised-initial-brokerage-fee/view/{no_acc}/{id_pt}', [amortisedinitialbrokeragefeeController::class, 'view'])->name('report-amortised-initial-brokerage-fee.view');
+    Route::get('/report-amortised-initial-brokerage-fee/export-pdf/{no_acc}/{id_pt}', [amortisedinitialbrokeragefeeController::class, 'exportPdf'])->name('report-amortised-initial-brokerage-fee.exportPdf');
+    Route::get('/report-amortised-initial-brokerage-fee/export-excel/{no_acc}/{id_pt}', [amortisedinitialbrokeragefeeController::class, 'exportExcel'])->name('report-amortised-initial-brokerage-fee.exportExcel');
+});
 Route::middleware(['auth'])->group(function () {
     Route::prefix('securities')->group(function () {      
         Route::get('/initial-recognition-treasury', [initialRecognitionTreasuryController::class, 'index'])
             ->name('securities.initial-recognition-treasury.index');
+
+        Route::get('/outstanding-balance-treasury-bond', [outstandingBalanceTreasuryController::class, 'index'])
+        ->name('securities.outstanding-balance-treasury.index');    
+
+        Route::get('/evaluation-treasury-bond', [evaluationTreasuryController::class, 'index'])
+        ->name('securities.evaluation-treasury-bond.index');  
         
         // Route upload untuk tblmaster_tmpbid
         Route::get('/upload/tblmaster', [uploadTblMasterTmpBidController::class, 'index'])
@@ -400,6 +417,26 @@ Route::middleware(['auth'])->group(function () {
             ->name('upload.securities.data.execute-procedure');
         Route::post('/upload/data/clear', [uploadDataSecuritiesController::class, 'clear'])
             ->name('upload.securities.data.clear');
+
+        Route::get('/securities/amortisedcostcontroller', [amortisedcostController::class, 'index'])->name('securities.index');
+        Route::get('/securities/amortisedcostcontroller/view/{no_acc}/{id_pt}', [amortisedcostController::class, 'view'])->name('securities.view');
+        Route::get('/securities/amortisedcostcontroller/export-pdf/{no_acc}/{id_pt}', [amortisedcostController::class, 'exportPdf'])->name('securities.exportPdf');
+        Route::get('/securities/amortisedcostcontroller/export-excel/{no_acc}/{id_pt}', [amortisedcostController::class, 'exportExcel'])->name('securities.exportExcel');
+
+        Route::get('/securities/amortisedinitialdiscController', [amortisedinitialdiscController::class, 'index'])->name('securities.index');
+        Route::get('/securities/amortisedinitialdiscController/view/{no_acc}/{id_pt}', [amortisedinitialdiscController::class, 'view'])->name('amortisedinitialdisc.view');
+        Route::get('/securities/amortisedinitialdiscController/export-pdf/{no_acc}/{id_pt}', [amortisedinitialdiscController::class, 'exportPdf'])->name('amortisedinitialdisc.exportPdf');
+        Route::get('/securities/amortisedinitialdiscController/export-excel/{no_acc}/{id_pt}', [amortisedinitialdiscController::class, 'exportExcel'])->name('amortisedinitialdisc.exportExcel');
+
+        Route::get('/securities/amortisedinitialpremController', [amortisedinitialpremController::class, 'index'])->name('securities.index');
+        Route::get('/securities/amortisedinitialpremController/view/{no_acc}/{id_pt}', [amortisedinitialpremController::class, 'view'])->name('amortisedinitialprem.view');
+        Route::get('/securities/amortisedinitialpremController/export-pdf/{no_acc}/{id_pt}', [amortisedinitialpremController::class, 'exportPdf'])->name('amortisedinitialprem.exportPdf');
+        Route::get('/securities/amortisedinitialpremController/export-excel/{no_acc}/{id_pt}', [amortisedinitialpremController::class, 'exportExcel'])->name('amortisedinitialprem.exportExcel');
+
+        Route::get('/securities/amortisedinitialbrokeragefeeController', [amortisedinitialbrokeragefeeController::class, 'index'])->name('amortisedinitialbrokeragefee.index');
+        Route::get('/securities/amortisedinitialbrokeragefeeController/view/{no_acc}/{id_pt}', [amortisedinitialbrokeragefeeController::class, 'view'])->name('amortisedinitialbrokeragefee.view');
+        Route::get('/securities/amortisedinitialbrokeragefeeController/export-pdf/{no_acc}/{id_pt}', [amortisedinitialbrokeragefeeController::class, 'exportPdf'])->name('amortisedinitialbrokeragefee.exportPdf');
+        Route::get('/securities/amortisedinitialbrokeragefeeController/export-excel/{no_acc}/{id_pt}', [amortisedinitialbrokeragefeeController::class, 'exportExcel'])->name('amortisedinitialbrokeragefee.exportExcel');
     });
 });
 
@@ -465,7 +502,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::prefix('report-initial-recognition')->group(function () {
-    Route::get('/', [initialRecognitionEffectiveController::class, 'index'])->name('report-initial-recognition.index');
+    Route::get('/effective', [initialRecognitionEffectiveController::class, 'index'])->name('report-initial-recognition.index');
     Route::get('/export-excel/effective/{id_pt}', [initialRecognitionEffectiveController::class, 'exportExcel'])->name('report.initial.recognition.effective.export.excel');
     Route::get('/export-pdf/effective/{id_pt}', [
        initialRecognitionEffectiveController::class, 
@@ -492,4 +529,10 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/CoA-menu-effective', [COAControllerEffective::class, 'index'])->name('coaEffective.index');
     Route::get('/CoA-menu-effective/download-excel/{id_pt}', [COAControllerEffective::class, 'exportExcel'])->name('coaEffective.downloadExcel');
+});
+//dashboard
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [dashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/dashboard-upload', [dashboardController::class, 'uploadImage'])->name('dashboard.upload');
+    Route::post('/dashboard-upload-image', [dashboardController::class, 'store'])->name('dashboard.image');
 });

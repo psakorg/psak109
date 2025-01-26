@@ -3,8 +3,8 @@
         <div class="container mt-5">
             <section class="section">
                 <div class="mb-3">
-                    <a href="{{ route('report-acc-si.exportPdf',['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])   }}" class="btn btn-danger ">Export to PDF</a>
-                    <a href="{{ route('report-acc-si.exportExcel', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])   }}" class="btn btn-success ">Export to Excel</a>
+                    <a href="{{ route('report-expected-cashflow.exportPdf',['no_acc' => $reports->first()->no_acc, 'id_pt' => $reports->first()->id_pt])   }}" class="btn btn-danger ">Export to PDF</a>
+                    <a href="{{ route('report-expected-cashflow.exportExcel', ['no_acc' => $reports->first()->no_acc, 'id_pt' => $reports->first()->id_pt])   }}" class="btn btn-success ">Export to Excel</a>
                 </div>
 
                 <!-- Loan Details Form -->
@@ -19,13 +19,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Account Number</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $loan->no_acc }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $reports->first()->no_acc }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">Deal Number</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{$loan->bond_id}}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $reports->first()->bond_id }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -35,13 +35,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Issuer Name</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $loan->issuer_name }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $reports->first()->issuer_name }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">Face Value</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ date('d/m/Y', strtotime($loan->face_value)) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($reports->first()->face_value, 0) }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -51,13 +51,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Settlement Date</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ date('d/m/Y', strtotime($loan->settle_dt)) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $reports->first()->settle_dt }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">Tenor (TTM)</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $loan->tenor}} Tahun" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $reports->first()->tenor }} Year" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -67,13 +67,13 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Maturity Date</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ date('d/m/Y', strtotime($loan->mtr_date)) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ $reports->first()->mtr_date }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">Coupon Rate</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->coupon_rate*100,5) }}%" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($reports->first()->coupon_rate*100, 5) }}%" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -83,21 +83,19 @@
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-3 col-form-label">Price</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($loan->price*100,5)}}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($reports->first()->price*100, 5) }}%" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6 row d-flex align-items-center mb-1">
                                     <label class="col-sm-4 col-form-label text-right">Fair Value</label>
                                     <div class="col-sm-8">
-                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format((float) str_replace(['$', ','], '', $loan->fair_value)) }}" readonly>
+                                        <input type="text font-size 12px" class="form-control form-control-sm" style="font-size: 12px;" value="{{ number_format($reports->first()->fair_value, 0) }}" readonly>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-
-
 
                 <!-- Report Table -->
                 <h2 style="font-size: 16px;">Report Details</h2>
@@ -119,19 +117,20 @@
                                 <tr>
                                     <td class="text-center">{{ $report->month_to }}</td>
                                     <td class="text-center">{{ date('d/m/Y', strtotime($report->transac_dt)) }}</td>
-                                    <td class="text-right">{{ $report->haribunga }}</td>
-                                    <td class="text-right">{{ number_format($report->pmtamt, 2) }}</td>
-                                    <td class="text-right">{{ number_format($report->principal_in, 2) }}</td>
-                                    <td class="text-right">{{ number_format($report->interest, 2) }}</td>
-                                    <td class="text-right">{{ number_format($report->principal_out, 2) }}</td>
+                                    <td class="text-center">{{ number_format($report->haribunga, 0) }}</td>
+                                    <td class="text-right">{{ number_format($report->expected_cash_flow, 0) }}</td>
+                                    <td class="text-right">{{ number_format($report->principal_in, 0) }}</td>
+                                    <td class="text-right">{{ number_format($report->interest, 0) }}</td>
+                                    <td class="text-right">{{ number_format($report->face_value, 0) }}</td>
                                 </tr>
                             @endforeach
                             <tr class="font-weight-normal">
-                                <td colspan="3" class="text-center">TOTAL</td>
-                                <td class="text-right">{{ number_format($reports->sum('pmtamt'), 2) }}</td>
-                                <td class="text-right">{{ number_format($reports->sum('principal_in'), 2) }}</td>
-                                <td class="text-right">{{ number_format($reports->sum('interest'), 2) }}</td>
-                                <td class="text-right">{{ number_format($reports->sum('principal_out'), 2) }}</td>
+                                <td colspan="2" class="text-center">TOTAL</td>
+                                <td class="text-center">{{ number_format($reports->sum('haribunga'), 0) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('expected_cash_flow'), 0) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('principal_in'), 0) }}</td>
+                                <td class="text-right">{{ number_format($reports->sum('interest'), 0) }}</td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>

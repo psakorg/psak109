@@ -8,7 +8,7 @@
         <div class="container mt-5" style="padding-right: 50px;">
             <section class="section">
                 <div class="section-header">
-                    <h4>REPORT INITIAL RECOGNITION - TREASURY</h4>
+                    <h4>REPORT EVALUATION - TREASURY BOND</h4>
                 </div>
                 @if(session('pesan'))
                     <div class="alert alert-success">{{ session('pesan') }}</div>
@@ -46,6 +46,7 @@
                                 <th style="width: 15%; white-space: nowrap ;">Account Number</th>
                                 <th class="text-left" style="width: 20%; white-space: nowrap;">Deal Number</th>
                                 <th style="width: 15%; white-space: nowrap;">Issuer Name</th>
+                                <th style="width: 15%; white-space: nowrap;">Face Value</th>
                                 <th style="width: 10%; white-space: nowrap;">Settlement Date</th>
                                 <th style="width: 15%; white-space: nowrap;">Tenor (TTM)</th>
                                 <th style="width: 10%; white-space: nowrap;">Maturity Date</th>
@@ -53,16 +54,13 @@
                                 <th style="width: 10%; white-space: nowrap;">Yield (YTM)</th>
                                 <th style="width: 15%; white-space: nowrap;">Price</th>
                                 <th style="width: 15%; white-space: nowrap;">Face Value</th>
-                                <th style="width: 15%; white-space: nowrap;">Carrying Amount</th>
+                                <th style="width: 15%; white-space: nowrap;">Fair Value</th>
                                 <th style="width: 15%; white-space: nowrap;">At Discount</th>
                                 <th style="width: 15%; white-space: nowrap;">At Premium</th>
                                 <th style="width: 15%; white-space: nowrap;">Brokerage Fee</th>
+                                <th style="width: 15%; white-space: nowrap;">Carrying Amount</th>
                                 <th style="width: 15%; white-space: nowrap;">EIR Exposure</th>
                                 <th style="width: 15%; white-space: nowrap;">EIR Calculated</th>
-                                <th style="width: 15%; white-space: nowrap;">EIR Conversion</th>
-                                <th style="width: 15%; white-space: nowrap;">EIR At Discount</th>
-                                <th style="width: 15%; white-space: nowrap;">EIR At Premium</th>
-                                <th style="width: 15%; white-space: nowrap;">EIR Brokerage</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -108,7 +106,7 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('report-amortised-initial-brokerage-fee.view', ['no_acc' => $loan->no_acc, 'id_pt' => $user->id_pt]) }}">
+                                                    <a class="dropdown-item" href="{{ route('securities.amortisedinitialbrokeragefee.view', ['no_acc' => $loan->no_acc, 'id_pt' => $user->id_pt]) }}">
                                                         Amortised Initial Brokerage Fee
                                                     </a>
                                                 </li>
@@ -124,6 +122,7 @@
                                     <!-- <td class="text-left">{{ $loan->no_acc }}</td> -->
                                     <td class="text-left">{{$loan->bond_id}}</td>
                                     <td class="text-left">{{$loan->issuer_name}}</td>
+                                    <td>{{number_format((float) str_replace(['$', ','], '',$loan->face_value))}}</td>
                                     <td>{{date('d/m/Y', strtotime($loan->org_date))}}</td>
                                     <td>{{ $loan->tenor}}Tahun</td>
                                     <td>{{ date('d/m/Y', strtotime($loan->mtr_date)) }}</td>
@@ -135,12 +134,9 @@
                                     <td>-{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount)) }}</td>
                                     <td>{{ number_format((float) str_replace(['$', ','], '',$loan->atpremium)) }}</td>
                                     <td>{{ number_format((float) str_replace(['$', ','], '',$loan->brokerage)) }}</td>
+                                    <td>{{number_format((float) str_replace(['$', ','], '',$loan->fair_value))}}</td>
                                     <td>{{ number_format($loan->eirex*100,14)}}%</td>
                                     <td>{{ number_format($loan->eircalc*100,14)}}%</td>                                    
-                                    <td>{{ number_format($loan->eircalc_conv*100,14)}}%</td>                                    
-                                    <td>{{ number_format($loan->eircalc_disc*100,14)}}%</td>                                    
-                                    <td>{{ number_format($loan->eircalc_prem*100,14)}}%</td>                                    
-                                    <td>{{ number_format($loan->eircalc_brok*100,14)}}%</td>                                    
                                 </tr>
                             @endforeach
                         </tbody>
@@ -184,7 +180,7 @@
         window.location.href = url;
     }
 
-    const reportUrl = "{{ route('securities.initial-recognition-treasury.index') }}";
+    const reportUrl = "{{ route('securities.evaluation-treasury-bond.index') }}";
 
     document.addEventListener('DOMContentLoaded', function() {
         // Convert bulan to string and pad with leading zero if needed

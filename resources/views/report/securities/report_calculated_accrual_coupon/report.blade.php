@@ -16,7 +16,6 @@
                                 <th style="width: 20%; white-space: nowrap;">Deal Number</th>
                                 <th style="width: 15%; white-space: nowrap;">Issuer Name</th>
                                 <th style="width: 15%; white-space: nowrap;">Face Value</th>
-                                <th style="width: 10%; white-space: nowrap;">Settlement Date</th>
                                 <th style="width: 15%; white-space: nowrap;">Tenor (TTM)</th>
                                 <th style="width: 10%; white-space: nowrap;">Maturity Date</th>
                                 <th style="width: 15%; white-space: nowrap;">Coupon Rate</th>
@@ -33,7 +32,6 @@
                                     <td>{{$loan->bond_id}}</td>
                                     <td>{{$loan->issuer_name}}</td>
                                     <td>{{ date('d/m/Y', strtotime($loan->face_value)) }}</td>
-                                    <td>{{ date('d/m/Y', strtotime($loan->settle_dt)) }}</td>
                                     <td>{{ $loan->tenor}} Tahun</td>
                                     <td>{{ date('d/m/Y', strtotime($loan->mtr_date)) }}</td>
                                     <td>{{ number_format($loan->coupon_rate*100,5) }}%</td>
@@ -41,12 +39,10 @@
                                     <td>{{ number_format((float) str_replace(['$', ','], '', $loan->fair_value)) }}</td>
                                     <td>{{ number_format($loan->eircalc_conv*100,14)}}%</td>
                                     <td>
+                                        
                                         <a href="{{ route('report-calculated-accrual-coupon.view', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])  }}" class="btn btn-sm btn-info">
                                             <i class="fas fa-eye" style="margin-right: 5px;"></i> View
                                         </a>
-                                        {{-- <a href="{{route('under')}}" class="btn btn-sm btn-info">
-                                            <i class="fas fa-eye" style="margin-right: 5px;"></i> View
-                                        </a> --}}
                                     </td>
                                 </tr>
                             @endforeach

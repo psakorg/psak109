@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-class initialRecognitionTreasuryController extends Controller
+class evaluationTreasuryController extends Controller
 {
     // Method untuk menampilkan semua data pinjaman korporat
     public function index(Request $request)
@@ -38,7 +38,7 @@ class initialRecognitionTreasuryController extends Controller
 
          // Tambahkan debug untuk loans
         //  dd($loans);
-        return view('report.securities.report_initial_recognition_treasury.master', compact('loans', 'tahun', 'bulan', 'user'));
+        return view('report.securities.report_evaluation_treasury_bond.master', compact('loans', 'tahun', 'bulan', 'user'));
     }
 
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akunn
@@ -55,7 +55,7 @@ class initialRecognitionTreasuryController extends Controller
 
         // dd($loan, $master, $reports);
 
-        return view('report.report_initial_recognition_treasury.view', compact('loan', 'reports','master'));
+        return view('report.securities.report_evaluation_treasury_bond.view', compact('loan', 'reports','master'));
     }
 
     public function exportExcel($no_acc, $id_pt)
@@ -163,7 +163,7 @@ class initialRecognitionTreasuryController extends Controller
 
 
         // Set judul tabel laporan
-        $sheet->setCellValue('A11', 'Amortised Cost Effective Report - Report Details');
+        $sheet->setCellValue('A11', 'Evaluation Treasury Bond - Report Details');
         $sheet->mergeCells('A11:I11'); // Menggabungkan sel untuk judul tabel
         $sheet->getStyle('A11')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('A11')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -290,7 +290,7 @@ class initialRecognitionTreasuryController extends Controller
         $sheet->getColumnDimension('I')->setWidth(20);
 
         // Siapkan nama file
-        $filename = "ReportAmortisedCostEffective_$no_acc.xlsx";
+        $filename = "ReportEvaluationTreasuryBond_$no_acc.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -409,7 +409,7 @@ class initialRecognitionTreasuryController extends Controller
 
 
         // Set judul tabel laporan
-        $sheet->setCellValue('A11', 'Amortised Cost Effective Report - Report Details');
+        $sheet->setCellValue('A11', 'Evaluation Treasury Bond - Report Details');
         $sheet->mergeCells('A11:I11'); // Menggabungkan sel untuk judul tabel
         $sheet->getStyle('A11')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('A11')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -536,7 +536,7 @@ class initialRecognitionTreasuryController extends Controller
         $sheet->getColumnDimension('I')->setWidth(20);
 
     // Siapkan nama file
-    $filename = "ReportAmortisedCostEffective_$no_acc.pdf";
+    $filename = "ReportEvaluationTreasuryBond_$no_acc.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
