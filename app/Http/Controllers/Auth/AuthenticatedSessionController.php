@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -45,13 +46,31 @@ class AuthenticatedSessionController extends Controller
             ->withErrors(['error' => 'ID PT tidak ditemukan untuk user ini.']);
     }
 
+    // Fetch user's id_pt
+    $idpt = Auth::user()->id_pt;
+
+    // // Check if the user's image exists in the database
+    $image = DB::table('public.tbl_pt')
+    ->where('id_pt', $idpt)
+    ->value('image'); // Only fetch the image column
+
     // Redirect berdasarkan peran user
     if ($loggedInUser->role == 'superadmin') {
         // return redirect()->route('superadmin.dashboard', ['id_pt' => $id_pt]);
-        return redirect()->route('report-initial-recognition.index', ['id_pt' => $id_pt]);
+        if ($image) {
+            return redirect()->route('dashboard.index'); // Redirect to dashboard
+        } else {
+            return redirect()->route('report-initial-recognition.index'); // Redirect to report
+        }
+        // return redirect()->route('report-initial-recognition.index', ['id_pt' => $id_pt]);
     } elseif ($loggedInUser->role == 'admin') {
         // return redirect()->route('admin.dashboard', ['id_pt' => $id_pt]);
-        return redirect()->route('report-initial-recognition.index', ['id_pt' => $id_pt]);
+        if ($image) {
+            return redirect()->route('dashboard.index'); // Redirect to dashboard
+        } else {
+            return redirect()->route('report-initial-recognition.index'); // Redirect to report
+        }
+        // return redirect()->route('report-initial-recognition.index', ['id_pt' => $id_pt]);
     }
 
     // return redirect()->route('dashboard', ['id_pt' => $id_pt]);

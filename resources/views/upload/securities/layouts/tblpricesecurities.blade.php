@@ -4,6 +4,6 @@
 
 @include('layouts.sidebar')
 
-@include('dashboard.dashboard')
+@include('upload.securities.tblpricesecurities')
 
 @include('layouts.footer')

@@ -12,7 +12,7 @@
     }
     .container{
         display: flex;
-        height: 100vh; /* Adjust height to account for header */
+        height: 90vh; /* Adjust height to account for header */
         margin-left: 80px;
 
     }
