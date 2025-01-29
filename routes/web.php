@@ -402,7 +402,9 @@ Route::middleware(['auth'])->group(function () {
     
 
         Route::get('/evaluation-treasury-bond', [evaluationTreasuryController::class, 'index'])
-        ->name('securities.evaluation-treasury-bond.index');  
+        ->name('securities.evaluation-treasury-bond.index');
+        Route::get('/evaluation-treasury-bond/export-excel/{id_pt}', [evaluationTreasuryController::class, 'exportExcel'])->name('report-evaluation-treasury-bond.exportExcel');
+        Route::get('/evaluation-treasury-bond/export-pdf/{id_pt}', [evaluationTreasuryController::class, 'exportPdf'])->name('report-evaluation-treasury-bond.exportPdf');
         
         // Route upload untuk tblmaster_tmpbid
         Route::get('/upload/tblmaster', [uploadTblMasterTmpBidController::class, 'index'])

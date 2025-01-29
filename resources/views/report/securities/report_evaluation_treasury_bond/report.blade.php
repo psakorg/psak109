@@ -44,6 +44,15 @@
                                min="2000" 
                                max="2099"
                                onchange="updateDays()">
+
+                               <div class="d-flex gap-2">
+                                <a href="#" class="btn btn-danger" id="exportPdf">
+                                    <i class="fas fa-file-pdf"></i> Export to PDF
+                                </a>
+                                <a href="#" id="exportExcel" class="btn btn-success">
+                                    <i class="fas fa-file-excel"></i> Export to Excel
+                                </a>
+                    </div>
                     </div>
                     <table class="table table-striped table-bordered custom-table" style="width: 100%; margin: 0 auto;">
                         <thead>
@@ -153,7 +162,7 @@
                     to
                     {{ min(($page - 1) * $perPage + $loans->count(), $loans->count()) }}
                     of
-                    {{ $loans->count() }}
+                    {{ $count }}
                     Results
                 </div>
                 <div class="d-flex align-items-center">
@@ -230,6 +239,24 @@
         
         window.location.href = `${reportUrl}?bulan=${month}&hari=${day}&tahun=${year}&branch=${branch}`;
     }
+
+    document.getElementById('exportPdf').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+        const day = document.getElementById('daySelect').value;
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-evaluation-treasury-bond.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&hari=${day}`;
+    });
+
+    document.getElementById('exportExcel').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+        const day = document.getElementById('daySelect').value;
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-evaluation-treasury-bond.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&hari=${day}`;
+    });
 </script>
 
 

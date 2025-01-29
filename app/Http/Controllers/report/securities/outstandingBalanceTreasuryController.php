@@ -182,219 +182,284 @@ class outstandingBalanceTreasuryController extends Controller
 
 
         // Set judul tabel laporan
-        $sheet->setCellValue('A7', 'Report Outstanding - Treasury Bonds');
-        $sheet->mergeCells('A7:L7'); // Menggabungkan sel untuk judul tabel
-        $sheet->getStyle('A7')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->getStyle('A7')->getFill()->setFillType(Fill::FILL_SOLID);
-        $sheet->getStyle('A7:L7')->getFill()->getStartColor()->setARGB('8359A3'); // Warna latar belakang
-        $sheet->getStyle('A7')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+    $sheet->setCellValue('A7', 'Report Outstanding - Treasury Bonds');
+    $sheet->mergeCells('A7:W7'); // Menggabungkan sel untuk judul tabel
+    $sheet->getStyle('A7')->getFont()->setBold(true)->setSize(14);
+    $sheet->getStyle('A7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+    $sheet->getStyle('A7')->getFill()->setFillType(Fill::FILL_SOLID);
+    $sheet->getStyle('A7:W7')->getFill()->getStartColor()->setARGB('8359A3'); // Warna latar belakang
+    $sheet->getStyle('A7')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
-        // Set judul kolom tabel
-        $headers = [
-            'Branch Number',
-            'Account Number',
-            'Bond ID',
-            'Issuer Name',
-            'GL Account',
-            'Bond Type',
-            'GL Group',
-            'Settlement Date',
-            'Tenor (TTM)',
-            'Maturity Date',
-            'Coupon Rate',
-            'Yield (YTM)'
-        ];
-        $columnIndex = 'A';
-        foreach ($headers as $header) {
-            $sheet->setCellValue($columnIndex . '8', $header);
-            $sheet->getStyle($columnIndex . '8')->getFont()->setBold(true);
-            $sheet->getStyle($columnIndex . '8')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle($columnIndex . '8')->getFill()->setFillType(Fill::FILL_SOLID);
-            $sheet->getStyle($columnIndex . '8')->getFill()->getStartColor()->setARGB('FF4F81BD'); // Warna latar belakang header
-            $sheet->getStyle($columnIndex . '8')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
-            $columnIndex++;
-        }
+    // Set judul kolom tabel
+    $headers = [
+        'Branch Number',
+        'Account Number',
+        'Bond ID',
+        'Issuer Name',
+        'GL Account',
+        'Bond Type',
+        'GL Group',
+        'Settlement Date',
+        'Tenor (TTM)',
+        'Maturity Date',
+        'Coupon Rate',
+        'Yield (YTM)',
+        'EIR Amortized Cost Exposure',
+        'EIR Amortized Cost Calculated',
+        'Face Value',
+        'Price',
+        'Mark to Market (MTM)',
+        'Carrying Amount',
+        'Unamortized At Discount',
+        'Unamortized At Premium',
+        'Unamortized Brokerage Fee',
+        'Cummlative Time Gap',
+        'Unreleased Gain/Losses'
+    ];
+    $columnIndex = 'A';
+    foreach ($headers as $header) {
+        $sheet->setCellValue($columnIndex . '8', $header);
+        $sheet->getStyle($columnIndex . '8')->getFont()->setBold(true);
+        $sheet->getStyle($columnIndex . '8')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle($columnIndex . '8')->getFill()->setFillType(Fill::FILL_SOLID);
+        $sheet->getStyle($columnIndex . '8')->getFill()->getStartColor()->setARGB('FF4F81BD'); // Warna latar belakang header
+        $sheet->getStyle($columnIndex . '8')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+        $columnIndex++;
+    }
 
-        // Mengisi data laporan ke dalam tabel
-        $row = 9; // Mulai dari baris 14 untuk data laporan
-        foreach ($securities as $report) {
+    // Mengisi data laporan ke dalam tabel
+    $row = 9; // Mulai dari baris 14 untuk data laporan
+    foreach ($securities as $report) {
 
-            // Mengisi data ke dalam kolom
-            $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('A' . $row, $report->no_branch );
-            $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('B' . $row, "'" . $report->no_acc );
-            $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('C' . $row, $report->bond_id);
-            $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-            $sheet->setCellValue('D' . $row, $report->issuer_name);
-            $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('E' . $row, $report->coa );
-            $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('F' . $row, $report->bond_type);
-            $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('G' . $row, $report->gl_group);
-            $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('H' . $row, date('d/m/Y', strtotime($report->org_date_dt)));
-            $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('I' . $row, ($report->tenor) . 'days');
-            $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('J' . $row,  date('d/m/Y', strtotime($report->mtr_date_dt)));
-            $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('K' . $row, number_format($report->coupon_rate*100,5).'%');
-            $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('L' . $row, number_format($report->yield*100,5).'%');
+        // Mengisi data ke dalam kolom
+        $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('A' . $row, $report->no_branch );
+        $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('B' . $row, "'" . $report->no_acc );
+        $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('C' . $row, $report->bond_id);
+        $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->setCellValue('D' . $row, $report->issuer_name);
+        $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('E' . $row, $report->coa );
+        $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('F' . $row, $report->bond_type);
+        $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('G' . $row, $report->gl_group);
+        $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('H' . $row, date('d/m/Y', strtotime($report->org_date_dt)));
+        $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('I' . $row, ($report->tenor) . ' days');
+        $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('J' . $row,  date('d/m/Y', strtotime($report->mtr_date_dt)));
+        $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('K' . $row, number_format($report->coupon_rate*100,5).'%');
+        $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('L' . $row, number_format($report->yield*100,5).'%');
+        $sheet->getStyle('M' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('M' . $row, number_format($report->eirex*100,14).'%');
+        $sheet->getStyle('N' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('N' . $row, number_format($report->eircalc*100,14).'%');
+        $sheet->getStyle('O' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('O' . $row, number_format((float) str_replace(['$', ','], '',$report->face_value)));
+        $sheet->getStyle('P' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('P' . $row, number_format($report->price, 5));
+        $sheet->getStyle('Q' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('Q' . $row, number_format((float) str_replace(['$', ','], '', $report->mtm_price)));
+        $sheet->getStyle('R' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('R' . $row, number_format((float) str_replace(['$', ','], '',$report->carrying_amount)));
+        $sheet->getStyle('S' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('S' . $row, '-' . number_format((float) str_replace(['$', ','], '', $report->atdiscount)));
+        $sheet->getStyle('T' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('T' . $row, number_format((float) str_replace(['$', ','], '',$report->atpremium)));
+        $sheet->getStyle('U' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('U' . $row, number_format((float) str_replace(['$', ','], '',$report->brokerage)));
+        $sheet->getStyle('V' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('V' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_timegap)));
+        $sheet->getStyle('W' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('W' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_gain_losses)));
 
-              $row++; // Pindah ke baris berikutnya
-          }
+        $row++; // Pindah ke baris berikutnya
+      }
 
-          //TOTAL OUTSTANDING
-          $sheet->setCellValue('A' . $row, "TOTAL");
-          $sheet->mergeCells('A' . $row . ':J' . $row); 
-          $sheet->getStyle('A' . $row . ':J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-          $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-          $sheet->setCellValue('K' . $row, number_format($securities->avg('coupon_rate')*100,5).'%');
-          $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-          $sheet->setCellValue('L' . $row, number_format($securities->avg('yield')*100,5).'%');
+    $sumFaceValue = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->face_value));
+    $sumMtmPrice = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->mtm_price));
+    $sumCarryingAmount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->carrying_amount));
+    $sumAtdiscount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atdiscount));
+    $sumAtpremium = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atpremium));
+    $sumBrokerage = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->brokerage));
+    $sumTimegap = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_timegap));
+    $sumGainLoss = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_gain_losses));
 
-          $sheet->getStyle('A' . $row . ':L' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF4F81BD');
-          $sheet->getStyle('A' . $row . ':L' . $row)->getFont()->setBold(true);
+      //TOTAL OUTSTANDING SECURITIES
+      $sheet->setCellValue('A' . $row, "TOTAL");
+      $sheet->mergeCells('A' . $row . ':J' . $row); 
+      $sheet->getStyle('A' . $row . ':J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->setCellValue('K' . $row, number_format($securities->avg('coupon_rate')*100,5).'%');
+      $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->setCellValue('L' . $row, number_format($securities->avg('yield')*100,5).'%');
+      $sheet->getStyle('M' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->setCellValue('M' . $row, number_format($securities->avg('eirex')*100,14).'%');
+      $sheet->getStyle('N' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->setCellValue('N' . $row, number_format($securities->avg('eircalc')*100,14).'%');
+      $sheet->getStyle('O' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('O' . $row, number_format($sumFaceValue));
+      $sheet->getStyle('P' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('P' . $row, number_format($securities->sum('price'), 5));
+      $sheet->getStyle('Q' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('Q' . $row, number_format($sumMtmPrice));
+      $sheet->getStyle('R' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('R' . $row, number_format($sumCarryingAmount));
+      $sheet->getStyle('S' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('S' . $row, '-' . number_format($sumAtdiscount));
+      $sheet->getStyle('T' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('T' . $row, number_format($sumAtpremium));
+      $sheet->getStyle('U' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('U' . $row, number_format($sumBrokerage));
+      $sheet->getStyle('V' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('V' . $row, number_format($sumTimegap));
+      $sheet->getStyle('W' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('W' . $row, number_format($sumGainLoss));
 
-        //Tabel ke 2
-        // Set judul kolom tabel
-        $headers = [
-            'Yield (YTM)',
-            'EIR Amortized Cost Exposure',
-            'EIR Amortized Cost Calculated',
-            'Face Value',
-            'Price',
-            'Mark to Market (MTM)',
-            'Carrying Amount',
-            'Unamortized At Discount',
-            'Unamortized At Premium',
-            'Unamortized Brokerage Fee',
-            'Cummlative Time Gap',
-            'Unreleased Gain/Losses'
-        ];
-        $columnIndex = 'A';
-        foreach ($headers as $header) {
-            $sheet->setCellValue($columnIndex . '13', $header);
-            $sheet->getStyle($columnIndex . '13')->getFont()->setBold(true);
-            $sheet->getStyle($columnIndex . '13')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle($columnIndex . '13')->getFill()->setFillType(Fill::FILL_SOLID);
-            $sheet->getStyle($columnIndex . '13')->getFill()->getStartColor()->setARGB('FF4F81BD'); // Warna latar belakang header
-            $sheet->getStyle($columnIndex . '13')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
-            $columnIndex++;
-        }
-        
-        $row = 14; // Mulai dari baris 18 untuk data laporan
-        foreach ($securities as $report) {
+      $sheet->getStyle('A' . $row . ':W' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF4F81BD');
+      $sheet->getStyle('A' . $row . ':W' . $row)->getFont()->setBold(true);
+
+    // //Tabel ke 2
+    // // Set judul kolom tabel
+    // $headers = [
+    //     'Yield (YTM)',
+    //     'EIR Amortized Cost Exposure',
+    //     'EIR Amortized Cost Calculated',
+    //     'Face Value',
+    //     'Price',
+    //     'Mark to Market (MTM)',
+    //     'Carrying Amount',
+    //     'Unamortized At Discount',
+    //     'Unamortized At Premium',
+    //     'Unamortized Brokerage Fee',
+    //     'Cummlative Time Gap',
+    //     'Unreleased Gain/Losses'
+    // ];
+    // $columnIndex = 'A';
+    // foreach ($headers as $header) {
+    //     $sheet->setCellValue($columnIndex . '13', $header);
+    //     $sheet->getStyle($columnIndex . '13')->getFont()->setBold(true);
+    //     $sheet->getStyle($columnIndex . '13')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //     $sheet->getStyle($columnIndex . '13')->getFill()->setFillType(Fill::FILL_SOLID);
+    //     $sheet->getStyle($columnIndex . '13')->getFill()->getStartColor()->setARGB('FF4F81BD'); // Warna latar belakang header
+    //     $sheet->getStyle($columnIndex . '13')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+    //     $columnIndex++;
+    // }
     
+    // $row = 14; // Mulai dari baris 18 untuk data laporan
+    // foreach ($securities as $report) {
 
-            $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('A' . $row, number_format($report->yield*100,5).'%');
-            $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('B' . $row, number_format($report->eirex*100,14).'%');
-            $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('C' . $row, number_format($report->eircalc*100,14).'%');
-            $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('D' . $row, number_format((float) str_replace(['$', ','], '',$report->face_value)));
-            $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('E' . $row, number_format($report->price, 5));
-            $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('F' . $row, number_format((float) str_replace(['$', ','], '', $report->mtm_price)));
-            $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('G' . $row, number_format((float) str_replace(['$', ','], '',$report->carrying_amount)));
-            $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('H' . $row, '-' . number_format((float) str_replace(['$', ','], '', $report->atdiscount)));
-            $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('I' . $row, number_format((float) str_replace(['$', ','], '',$report->atpremium)));
-            $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('J' . $row, number_format((float) str_replace(['$', ','], '',$report->brokerage)));
-            $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('K' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_timegap)));
-            $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue('L' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_gain_losses)));
 
-            $row++; // Pindah ke baris berikutnya
-        }
+    //     $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //     $sheet->setCellValue('A' . $row, number_format($report->yield*100,5).'%');
+    //     $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //     $sheet->setCellValue('B' . $row, number_format($report->eirex*100,14).'%');
+    //     $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //     $sheet->setCellValue('C' . $row, number_format($report->eircalc*100,14).'%');
+    //     $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('D' . $row, number_format((float) str_replace(['$', ','], '',$report->face_value)));
+    //     $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('E' . $row, number_format($report->price, 5));
+    //     $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('F' . $row, number_format((float) str_replace(['$', ','], '', $report->mtm_price)));
+    //     $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('G' . $row, number_format((float) str_replace(['$', ','], '',$report->carrying_amount)));
+    //     $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('H' . $row, '-' . number_format((float) str_replace(['$', ','], '', $report->atdiscount)));
+    //     $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('I' . $row, number_format((float) str_replace(['$', ','], '',$report->atpremium)));
+    //     $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('J' . $row, number_format((float) str_replace(['$', ','], '',$report->brokerage)));
+    //     $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('K' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_timegap)));
+    //     $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('L' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_gain_losses)));
 
-        $sumFaceValue = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->face_value));
-        $sumMtmPrice = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->mtm_price));
-        $sumCarryingAmount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->carrying_amount));
-        $sumAtdiscount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atdiscount));
-        $sumAtpremium = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atpremium));
-        $sumBrokerage = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->brokerage));
-        $sumTimegap = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_timegap));
-        $sumGainLoss = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_gain_losses));
+    //     $row++; // Pindah ke baris berikutnya
+    // }
 
-          //TOTAL OUTSTANDING
-          $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-          $sheet->setCellValue('A' . $row, number_format($securities->avg('yield')*100,5).'%');
-          $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-          $sheet->setCellValue('B' . $row, number_format($securities->avg('eirex')*100,14).'%');
-          $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-          $sheet->setCellValue('C' . $row, number_format($securities->avg('eircalc')*100,14).'%');
-          $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-          $sheet->setCellValue('D' . $row, number_format($sumFaceValue));
-          $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-          $sheet->setCellValue('E' . $row, number_format($securities->sum('price'), 5));
-          $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-          $sheet->setCellValue('F' . $row, number_format($sumMtmPrice));
-          $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-          $sheet->setCellValue('G' . $row, number_format($sumCarryingAmount));
-          $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-          $sheet->setCellValue('H' . $row, number_format($sumAtdiscount));
-          $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-          $sheet->setCellValue('I' . $row, number_format($sumAtpremium));
-          $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-          $sheet->setCellValue('J' . $row, number_format($sumBrokerage));
-          $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-          $sheet->setCellValue('K' . $row, number_format($sumTimegap));
-          $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-          $sheet->setCellValue('L' . $row, number_format($sumGainLoss));
+    // $sumFaceValue = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->face_value));
+    // $sumMtmPrice = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->mtm_price));
+    // $sumCarryingAmount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->carrying_amount));
+    // $sumAtdiscount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atdiscount));
+    // $sumAtpremium = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atpremium));
+    // $sumBrokerage = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->brokerage));
+    // $sumTimegap = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_timegap));
+    // $sumGainLoss = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_gain_losses));
 
-          $sheet->getStyle('A' . $row . ':L' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF4F81BD');
-          $sheet->getStyle('A' . $row . ':L' . $row)->getFont()->setBold(true);
-  
-        //   foreach (range('A', 'I') as $columnID) {
-        //       $sheet->getColumnDimension($columnID)->setAutoSize(true);
-        //   }
+    //   //TOTAL OUTSTANDING
+    //   $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //   $sheet->setCellValue('A' . $row, number_format($securities->avg('yield')*100,5).'%');
+    //   $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //   $sheet->setCellValue('B' . $row, number_format($securities->avg('eirex')*100,14).'%');
+    //   $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //   $sheet->setCellValue('C' . $row, number_format($securities->avg('eircalc')*100,14).'%');
+    //   $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('D' . $row, number_format($sumFaceValue));
+    //   $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('E' . $row, number_format($securities->sum('price'), 5));
+    //   $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('F' . $row, number_format($sumMtmPrice));
+    //   $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('G' . $row, number_format($sumCarryingAmount));
+    //   $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('H' . $row, number_format($sumAtdiscount));
+    //   $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('I' . $row, number_format($sumAtpremium));
+    //   $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('J' . $row, number_format($sumBrokerage));
+    //   $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('K' . $row, number_format($sumTimegap));
+    //   $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('L' . $row, number_format($sumGainLoss));
 
-        // Mengatur border untuk tabel
-        $styleArray = [
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['argb' => Color::COLOR_BLACK],
-                ],
+    //   $sheet->getStyle('A' . $row . ':L' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF4F81BD');
+    //   $sheet->getStyle('A' . $row . ':L' . $row)->getFont()->setBold(true);
+
+    //   foreach (range('A', 'I') as $columnID) {
+    //       $sheet->getColumnDimension($columnID)->setAutoSize(true);
+    //   }
+
+    // Mengatur border untuk tabel
+    $styleArray = [
+        'borders' => [
+            'allBorders' => [
+                'borderStyle' => Border::BORDER_THIN,
+                'color' => ['argb' => Color::COLOR_BLACK],
             ],
-        ];
+        ],
+    ];
 
-        // Set border untuk header tabel
-        $sheet->getStyle('A7:L7')->applyFromArray($styleArray);
+    // Set border untuk header tabel
+    $sheet->getStyle('A7:W7')->applyFromArray($styleArray);
 
-        // Set border untuk semua data laporan
-        $sheet->getStyle('A7:L' . $row)->applyFromArray($styleArray);
+    // Set border untuk semua data laporan
+    $sheet->getStyle('A7:W' . $row)->applyFromArray($styleArray);
 
-        //Mengatur lebar kolom agar lebih rapi
-        foreach (range('A', 'L') as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true);
-        }
+    //Mengatur lebar kolom agar lebih rapi
+    foreach (range('A', 'W') as $columnID) {
+        $sheet->getColumnDimension($columnID)->setAutoSize(true);
+    }
 
-        // $sheet->getColumnDimension('A')->setWidth(30);
-        // $sheet->getColumnDimension('B')->setWidth(30);
-        // $sheet->getColumnDimension('C')->setWidth(30);
-        // $sheet->getColumnDimension('D')->setWidth(30);
-        // $sheet->getColumnDimension('E')->setWidth(30);
-        // $sheet->getColumnDimension('F')->setWidth(30);
-        // $sheet->getColumnDimension('G')->setWidth(30);
-        // $sheet->getColumnDimension('H')->setWidth(30);
-        // $sheet->getColumnDimension('I')->setWidth(30);
-        // $sheet->getColumnDimension('J')->setWidth(30);
-        // $sheet->getColumnDimension('K')->setWidth(30);
-        // $sheet->getColumnDimension('L')->setWidth(30);
+    // $sheet->getColumnDimension('A')->setWidth(30);
+    // $sheet->getColumnDimension('B')->setWidth(30);
+    // $sheet->getColumnDimension('C')->setWidth(30);
+    // $sheet->getColumnDimension('D')->setWidth(30);
+    // $sheet->getColumnDimension('E')->setWidth(30);
+    // $sheet->getColumnDimension('F')->setWidth(30);
+    // $sheet->getColumnDimension('G')->setWidth(30);
+    // $sheet->getColumnDimension('H')->setWidth(30);
+    // $sheet->getColumnDimension('I')->setWidth(30);
+    // $sheet->getColumnDimension('J')->setWidth(30);
+    // $sheet->getColumnDimension('K')->setWidth(30);
+    // $sheet->getColumnDimension('L')->setWidth(30);
+
 
         // Siapkan nama file
         $filename = "ReportOutstandingBalanceTreasuryBond_{$id_pt}_{$bulan}_{$tahun}.xlsx";
@@ -518,11 +583,11 @@ class outstandingBalanceTreasuryController extends Controller
 
     // Set judul tabel laporan
     $sheet->setCellValue('A7', 'Report Outstanding - Treasury Bonds');
-    $sheet->mergeCells('A7:L7'); // Menggabungkan sel untuk judul tabel
+    $sheet->mergeCells('A7:W7'); // Menggabungkan sel untuk judul tabel
     $sheet->getStyle('A7')->getFont()->setBold(true)->setSize(14);
     $sheet->getStyle('A7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
     $sheet->getStyle('A7')->getFill()->setFillType(Fill::FILL_SOLID);
-    $sheet->getStyle('A7:L7')->getFill()->getStartColor()->setARGB('8359A3'); // Warna latar belakang
+    $sheet->getStyle('A7:W7')->getFill()->getStartColor()->setARGB('8359A3'); // Warna latar belakang
     $sheet->getStyle('A7')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
 
     // Set judul kolom tabel
@@ -538,7 +603,18 @@ class outstandingBalanceTreasuryController extends Controller
         'Tenor (TTM)',
         'Maturity Date',
         'Coupon Rate',
-        'Yield (YTM)'
+        'Yield (YTM)',
+        'EIR Amortized Cost Exposure',
+        'EIR Amortized Cost Calculated',
+        'Face Value',
+        'Price',
+        'Mark to Market (MTM)',
+        'Carrying Amount',
+        'Unamortized At Discount',
+        'Unamortized At Premium',
+        'Unamortized Brokerage Fee',
+        'Cummlative Time Gap',
+        'Unreleased Gain/Losses'
     ];
     $columnIndex = 'A';
     foreach ($headers as $header) {
@@ -573,87 +649,38 @@ class outstandingBalanceTreasuryController extends Controller
         $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->setCellValue('H' . $row, date('d/m/Y', strtotime($report->org_date_dt)));
         $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->setCellValue('I' . $row, ($report->tenor) . 'days');
+        $sheet->setCellValue('I' . $row, ($report->tenor) . ' days');
         $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->setCellValue('J' . $row,  date('d/m/Y', strtotime($report->mtr_date_dt)));
         $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->setCellValue('K' . $row, number_format($report->coupon_rate*100,5).'%');
         $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->setCellValue('L' . $row, number_format($report->yield*100,5).'%');
-
-          $row++; // Pindah ke baris berikutnya
-      }
-
-      //TOTAL OUTSTANDING SECURITIES
-      $sheet->setCellValue('A' . $row, "TOTAL");
-      $sheet->mergeCells('A' . $row . ':J' . $row); 
-      $sheet->getStyle('A' . $row . ':J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-      $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-      $sheet->setCellValue('K' . $row, number_format($securities->avg('coupon_rate')*100,5).'%');
-      $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-      $sheet->setCellValue('L' . $row, number_format($securities->avg('yield')*100,5).'%');
-
-      $sheet->getStyle('A' . $row . ':L' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF4F81BD');
-      $sheet->getStyle('A' . $row . ':L' . $row)->getFont()->setBold(true);
-
-    //Tabel ke 2
-    // Set judul kolom tabel
-    $headers = [
-        'Yield (YTM)',
-        'EIR Amortized Cost Exposure',
-        'EIR Amortized Cost Calculated',
-        'Face Value',
-        'Price',
-        'Mark to Market (MTM)',
-        'Carrying Amount',
-        'Unamortized At Discount',
-        'Unamortized At Premium',
-        'Unamortized Brokerage Fee',
-        'Cummlative Time Gap',
-        'Unreleased Gain/Losses'
-    ];
-    $columnIndex = 'A';
-    foreach ($headers as $header) {
-        $sheet->setCellValue($columnIndex . '13', $header);
-        $sheet->getStyle($columnIndex . '13')->getFont()->setBold(true);
-        $sheet->getStyle($columnIndex . '13')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle($columnIndex . '13')->getFill()->setFillType(Fill::FILL_SOLID);
-        $sheet->getStyle($columnIndex . '13')->getFill()->getStartColor()->setARGB('FF4F81BD'); // Warna latar belakang header
-        $sheet->getStyle($columnIndex . '13')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
-        $columnIndex++;
-    }
-    
-    $row = 14; // Mulai dari baris 18 untuk data laporan
-    foreach ($securities as $report) {
-
-
-        $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->setCellValue('A' . $row, number_format($report->yield*100,5).'%');
-        $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->setCellValue('B' . $row, number_format($report->eirex*100,14).'%');
-        $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->setCellValue('C' . $row, number_format($report->eircalc*100,14).'%');
-        $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('D' . $row, number_format((float) str_replace(['$', ','], '',$report->face_value)));
-        $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('E' . $row, number_format($report->price, 5));
-        $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('F' . $row, number_format((float) str_replace(['$', ','], '', $report->mtm_price)));
-        $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('G' . $row, number_format((float) str_replace(['$', ','], '',$report->carrying_amount)));
-        $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('H' . $row, '-' . number_format((float) str_replace(['$', ','], '', $report->atdiscount)));
-        $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('I' . $row, number_format((float) str_replace(['$', ','], '',$report->atpremium)));
-        $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('J' . $row, number_format((float) str_replace(['$', ','], '',$report->brokerage)));
-        $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('K' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_timegap)));
-        $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('L' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_gain_losses)));
+        $sheet->getStyle('M' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('M' . $row, number_format($report->eirex*100,14).'%');
+        $sheet->getStyle('N' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('N' . $row, number_format($report->eircalc*100,14).'%');
+        $sheet->getStyle('O' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('O' . $row, number_format((float) str_replace(['$', ','], '',$report->face_value)));
+        $sheet->getStyle('P' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('P' . $row, number_format($report->price, 5));
+        $sheet->getStyle('Q' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('Q' . $row, number_format((float) str_replace(['$', ','], '', $report->mtm_price)));
+        $sheet->getStyle('R' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('R' . $row, number_format((float) str_replace(['$', ','], '',$report->carrying_amount)));
+        $sheet->getStyle('S' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('S' . $row, '-' . number_format((float) str_replace(['$', ','], '', $report->atdiscount)));
+        $sheet->getStyle('T' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('T' . $row, number_format((float) str_replace(['$', ','], '',$report->atpremium)));
+        $sheet->getStyle('U' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('U' . $row, number_format((float) str_replace(['$', ','], '',$report->brokerage)));
+        $sheet->getStyle('V' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('V' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_timegap)));
+        $sheet->getStyle('W' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('W' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_gain_losses)));
 
         $row++; // Pindah ke baris berikutnya
-    }
+      }
 
     $sumFaceValue = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->face_value));
     $sumMtmPrice = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->mtm_price));
@@ -664,34 +691,136 @@ class outstandingBalanceTreasuryController extends Controller
     $sumTimegap = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_timegap));
     $sumGainLoss = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_gain_losses));
 
-      //TOTAL OUTSTANDING
-      $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-      $sheet->setCellValue('A' . $row, number_format($securities->avg('yield')*100,5).'%');
-      $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-      $sheet->setCellValue('B' . $row, number_format($securities->avg('eirex')*100,14).'%');
-      $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-      $sheet->setCellValue('C' . $row, number_format($securities->avg('eircalc')*100,14).'%');
-      $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-      $sheet->setCellValue('D' . $row, number_format($sumFaceValue));
-      $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-      $sheet->setCellValue('E' . $row, number_format($securities->sum('price'), 5));
-      $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-      $sheet->setCellValue('F' . $row, number_format($sumMtmPrice));
-      $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-      $sheet->setCellValue('G' . $row, number_format($sumCarryingAmount));
-      $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-      $sheet->setCellValue('H' . $row, number_format($sumAtdiscount));
-      $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-      $sheet->setCellValue('I' . $row, number_format($sumAtpremium));
-      $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-      $sheet->setCellValue('J' . $row, number_format($sumBrokerage));
-      $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-      $sheet->setCellValue('K' . $row, number_format($sumTimegap));
-      $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-      $sheet->setCellValue('L' . $row, number_format($sumGainLoss));
+      //TOTAL OUTSTANDING SECURITIES
+      $sheet->setCellValue('A' . $row, "TOTAL");
+      $sheet->mergeCells('A' . $row . ':J' . $row); 
+      $sheet->getStyle('A' . $row . ':J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->setCellValue('K' . $row, number_format($securities->avg('coupon_rate')*100,5).'%');
+      $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->setCellValue('L' . $row, number_format($securities->avg('yield')*100,5).'%');
+      $sheet->getStyle('M' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->setCellValue('M' . $row, number_format($securities->avg('eirex')*100,14).'%');
+      $sheet->getStyle('N' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+      $sheet->setCellValue('N' . $row, number_format($securities->avg('eircalc')*100,14).'%');
+      $sheet->getStyle('O' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('O' . $row, number_format($sumFaceValue));
+      $sheet->getStyle('P' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('P' . $row, number_format($securities->sum('price'), 5));
+      $sheet->getStyle('Q' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('Q' . $row, number_format($sumMtmPrice));
+      $sheet->getStyle('R' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('R' . $row, number_format($sumCarryingAmount));
+      $sheet->getStyle('S' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('S' . $row, '-' . number_format($sumAtdiscount));
+      $sheet->getStyle('T' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('T' . $row, number_format($sumAtpremium));
+      $sheet->getStyle('U' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('U' . $row, number_format($sumBrokerage));
+      $sheet->getStyle('V' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('V' . $row, number_format($sumTimegap));
+      $sheet->getStyle('W' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+      $sheet->setCellValue('W' . $row, number_format($sumGainLoss));
 
-      $sheet->getStyle('A' . $row . ':L' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF4F81BD');
-      $sheet->getStyle('A' . $row . ':L' . $row)->getFont()->setBold(true);
+      $sheet->getStyle('A' . $row . ':W' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF4F81BD');
+      $sheet->getStyle('A' . $row . ':W' . $row)->getFont()->setBold(true);
+
+    // //Tabel ke 2
+    // // Set judul kolom tabel
+    // $headers = [
+    //     'Yield (YTM)',
+    //     'EIR Amortized Cost Exposure',
+    //     'EIR Amortized Cost Calculated',
+    //     'Face Value',
+    //     'Price',
+    //     'Mark to Market (MTM)',
+    //     'Carrying Amount',
+    //     'Unamortized At Discount',
+    //     'Unamortized At Premium',
+    //     'Unamortized Brokerage Fee',
+    //     'Cummlative Time Gap',
+    //     'Unreleased Gain/Losses'
+    // ];
+    // $columnIndex = 'A';
+    // foreach ($headers as $header) {
+    //     $sheet->setCellValue($columnIndex . '13', $header);
+    //     $sheet->getStyle($columnIndex . '13')->getFont()->setBold(true);
+    //     $sheet->getStyle($columnIndex . '13')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //     $sheet->getStyle($columnIndex . '13')->getFill()->setFillType(Fill::FILL_SOLID);
+    //     $sheet->getStyle($columnIndex . '13')->getFill()->getStartColor()->setARGB('FF4F81BD'); // Warna latar belakang header
+    //     $sheet->getStyle($columnIndex . '13')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
+    //     $columnIndex++;
+    // }
+    
+    // $row = 14; // Mulai dari baris 18 untuk data laporan
+    // foreach ($securities as $report) {
+
+
+    //     $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //     $sheet->setCellValue('A' . $row, number_format($report->yield*100,5).'%');
+    //     $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //     $sheet->setCellValue('B' . $row, number_format($report->eirex*100,14).'%');
+    //     $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //     $sheet->setCellValue('C' . $row, number_format($report->eircalc*100,14).'%');
+    //     $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('D' . $row, number_format((float) str_replace(['$', ','], '',$report->face_value)));
+    //     $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('E' . $row, number_format($report->price, 5));
+    //     $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('F' . $row, number_format((float) str_replace(['$', ','], '', $report->mtm_price)));
+    //     $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('G' . $row, number_format((float) str_replace(['$', ','], '',$report->carrying_amount)));
+    //     $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('H' . $row, '-' . number_format((float) str_replace(['$', ','], '', $report->atdiscount)));
+    //     $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('I' . $row, number_format((float) str_replace(['$', ','], '',$report->atpremium)));
+    //     $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('J' . $row, number_format((float) str_replace(['$', ','], '',$report->brokerage)));
+    //     $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('K' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_timegap)));
+    //     $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //     $sheet->setCellValue('L' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_gain_losses)));
+
+    //     $row++; // Pindah ke baris berikutnya
+    // }
+
+    // $sumFaceValue = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->face_value));
+    // $sumMtmPrice = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->mtm_price));
+    // $sumCarryingAmount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->carrying_amount));
+    // $sumAtdiscount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atdiscount));
+    // $sumAtpremium = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atpremium));
+    // $sumBrokerage = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->brokerage));
+    // $sumTimegap = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_timegap));
+    // $sumGainLoss = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_gain_losses));
+
+    //   //TOTAL OUTSTANDING
+    //   $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //   $sheet->setCellValue('A' . $row, number_format($securities->avg('yield')*100,5).'%');
+    //   $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //   $sheet->setCellValue('B' . $row, number_format($securities->avg('eirex')*100,14).'%');
+    //   $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    //   $sheet->setCellValue('C' . $row, number_format($securities->avg('eircalc')*100,14).'%');
+    //   $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('D' . $row, number_format($sumFaceValue));
+    //   $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('E' . $row, number_format($securities->sum('price'), 5));
+    //   $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('F' . $row, number_format($sumMtmPrice));
+    //   $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('G' . $row, number_format($sumCarryingAmount));
+    //   $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('H' . $row, number_format($sumAtdiscount));
+    //   $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('I' . $row, number_format($sumAtpremium));
+    //   $sheet->getStyle('J' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('J' . $row, number_format($sumBrokerage));
+    //   $sheet->getStyle('K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('K' . $row, number_format($sumTimegap));
+    //   $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    //   $sheet->setCellValue('L' . $row, number_format($sumGainLoss));
+
+    //   $sheet->getStyle('A' . $row . ':L' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF4F81BD');
+    //   $sheet->getStyle('A' . $row . ':L' . $row)->getFont()->setBold(true);
 
     //   foreach (range('A', 'I') as $columnID) {
     //       $sheet->getColumnDimension($columnID)->setAutoSize(true);
@@ -708,13 +837,13 @@ class outstandingBalanceTreasuryController extends Controller
     ];
 
     // Set border untuk header tabel
-    $sheet->getStyle('A7:L7')->applyFromArray($styleArray);
+    $sheet->getStyle('A7:W7')->applyFromArray($styleArray);
 
     // Set border untuk semua data laporan
-    $sheet->getStyle('A7:L' . $row)->applyFromArray($styleArray);
+    $sheet->getStyle('A7:W' . $row)->applyFromArray($styleArray);
 
     //Mengatur lebar kolom agar lebih rapi
-    foreach (range('A', 'L') as $columnID) {
+    foreach (range('A', 'W') as $columnID) {
         $sheet->getColumnDimension($columnID)->setAutoSize(true);
     }
 
