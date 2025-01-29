@@ -8,7 +8,7 @@
         <div class="container mt-5" style="padding-right: 50px;">
             <section class="section">
                 <div class="section-header">
-                    <h4>REPORT EVALUATION - TREASURY BOND</h4>
+                    <h4>REPORT EVALUATION (MARK TO MARKET) - TREASURY BOND</h4>
                 </div>
                 @if(session('pesan'))
                     <div class="alert alert-success">{{ session('pesan') }}</div>
@@ -18,7 +18,12 @@
                         <button type="button" class="btn btn-primary dropdown-toggle me-2" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-file-import"></i> Bulan/Tahun
                         </button>
-                        <select class="form-select me-2" style="width: 120px; height: 40px; font-size: 14px" id="monthSelect" onchange="changeMonth()">
+
+                        <select class="form-select me-2" style="width: 120px; height: 40px; font-size: 14px" id="daySelect" onchange="updateReport()">
+                            <!-- Will be populated by JavaScript -->
+                        </select>
+
+                        <select class="form-select me-2" style="width: 120px; height: 40px; font-size: 14px" id="monthSelect" onchange="updateDays()">
                             <option value="1">January</option>
                             <option value="2">February</option>
                             <option value="3">March</option>
@@ -37,30 +42,29 @@
                                style="width: 100px; font-size: 14px" 
                                value="{{ date('Y') }}" 
                                min="2000" 
-                               max="2099">
+                               max="2099"
+                               onchange="updateDays()">
                     </div>
                     <table class="table table-striped table-bordered custom-table" style="width: 100%; margin: 0 auto;">
                         <thead>
                             <tr>
                                 <th style="width: 5%; white-space: nowrap;">No.</th>
+                                <th style="width: 15%; white-space: nowrap ;">Branch Number</th>
                                 <th style="width: 15%; white-space: nowrap ;">Account Number</th>
-                                <th class="text-left" style="width: 20%; white-space: nowrap;">Deal Number</th>
+                                <th class="text-left" style="width: 20%; white-space: nowrap;">Bond Id</th>
                                 <th style="width: 15%; white-space: nowrap;">Issuer Name</th>
-                                <th style="width: 15%; white-space: nowrap;">Face Value</th>
-                                <th style="width: 10%; white-space: nowrap;">Settlement Date</th>
-                                <th style="width: 15%; white-space: nowrap;">Tenor (TTM)</th>
-                                <th style="width: 10%; white-space: nowrap;">Maturity Date</th>
-                                <th style="width: 15%; white-space: nowrap;">Coupon Rate</th>
+                                <th style="width: 15%; white-space: nowrap;">GL Account</th>
+                                <th style="width: 10%; white-space: nowrap;">Bond Type</th>
+                                <th style="width: 15%; white-space: nowrap;">GL Group</th>
+                                <th style="width: 10%; white-space: nowrap;">Evaluation Date</th>
+                                <th style="width: 15%; white-space: nowrap;">Maturity Date</th>
                                 <th style="width: 10%; white-space: nowrap;">Yield (YTM)</th>
-                                <th style="width: 15%; white-space: nowrap;">Price</th>
                                 <th style="width: 15%; white-space: nowrap;">Face Value</th>
-                                <th style="width: 15%; white-space: nowrap;">Fair Value</th>
-                                <th style="width: 15%; white-space: nowrap;">At Discount</th>
-                                <th style="width: 15%; white-space: nowrap;">At Premium</th>
-                                <th style="width: 15%; white-space: nowrap;">Brokerage Fee</th>
+                                <th style="width: 15%; white-space: nowrap;">Price</th>
+                                <th style="width: 15%; white-space: nowrap;">Mark To Market(MTM)</th>
                                 <th style="width: 15%; white-space: nowrap;">Carrying Amount</th>
-                                <th style="width: 15%; white-space: nowrap;">EIR Exposure</th>
-                                <th style="width: 15%; white-space: nowrap;">EIR Calculated</th>
+                                <th style="width: 15%; white-space: nowrap;">Unreleazed Gain / (Losses)</th>
+                                <th style="width: 15%; white-space: nowrap;">Cummulative Unreleazed / (Losses)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -73,7 +77,7 @@
                                 @endphp
                                 <tr>
                                     <td>{{ $nourut }}</td>
-
+                                    <td>{{ $loan->no_branch }}</td>
                                     <td>
                                         <div class="dropdown d-flex justify-content-end dropend">
                                             <a href="#" class="dropdown-toggle text-primary" data-bs-toggle="dropdown" style="text-decoration: none;">
@@ -106,7 +110,7 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('securities.amortisedinitialbrokeragefee.view', ['no_acc' => $loan->no_acc, 'id_pt' => $user->id_pt]) }}">
+                                                    <a class="dropdown-item" href="{{ route('report-amortised-initial-brokerage-fee.view', ['no_acc' => $loan->no_acc, 'id_pt' => $user->id_pt]) }}">
                                                         Amortised Initial Brokerage Fee
                                                     </a>
                                                 </li>
@@ -122,21 +126,18 @@
                                     <!-- <td class="text-left">{{ $loan->no_acc }}</td> -->
                                     <td class="text-left">{{$loan->bond_id}}</td>
                                     <td class="text-left">{{$loan->issuer_name}}</td>
-                                    <td>{{number_format((float) str_replace(['$', ','], '',$loan->face_value))}}</td>
-                                    <td>{{date('d/m/Y', strtotime($loan->org_date))}}</td>
-                                    <td>{{ $loan->tenor}}Tahun</td>
-                                    <td>{{ date('d/m/Y', strtotime($loan->mtr_date)) }}</td>
-                                    <td>{{ number_format($loan->coupon_rate*100,5) }}%</td>
-                                    <td>{{ number_format($loan->yield*100,5) }}%</td>
-                                    <td>{{ number_format($loan->price*100,5)}}</td>
+                                    <td class="text-left">{{$loan->coa}}</td>
+                                    <td class="text-left">{{$loan->bond_type}}</td>
+                                    <td class="text-left">{{$loan->gl_group}}</td>
+                                    <td>{{ date('d/m/Y', strtotime($loan->transac_dt)) }}</td>
+                                    <td>{{ date('d/m/Y', strtotime($loan->transac_dt)) }}</td>
+                                    <td>{{ number_format(0,5) }}%</td>
                                     <td>{{ number_format((float) str_replace(['$', ','], '', $loan->face_value)) }}</td>
-                                    <td>{{ number_format((float) str_replace(['$', ','], '', $loan->fair_value)) }}</td>
-                                    <td>-{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount)) }}</td>
-                                    <td>{{ number_format((float) str_replace(['$', ','], '',$loan->atpremium)) }}</td>
-                                    <td>{{ number_format((float) str_replace(['$', ','], '',$loan->brokerage)) }}</td>
-                                    <td>{{number_format((float) str_replace(['$', ','], '',$loan->fair_value))}}</td>
-                                    <td>{{ number_format($loan->eirex*100,14)}}%</td>
-                                    <td>{{ number_format($loan->eircalc*100,14)}}%</td>                                    
+                                    <td>{{ number_format($loan->price*100,5)}}</td>
+                                    <td>{{ number_format($loan->mtm_price,5)}}</td>
+                                    <td>{{ number_format($loan->carrying_amount,5)}}</td>
+                                    <td>{{ number_format($loan->gain_losses,5)}}</td>
+                                    <td>{{ number_format($loan->cum_gain_losses,5)}}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -148,15 +149,17 @@
             <div class="d-flex justify-content-between align-items-center mt-3">
                 <div class="showing-entries">
                     Showing
-                    {{$loans->firstItem()}}
+                    {{ ($loans->count() > 0) ? (($page - 1) * $perPage) + 1 : 0 }}
                     to
-                    {{$loans->lastItem()}}
+                    {{ min(($page - 1) * $perPage + $loans->count(), $loans->count()) }}
                     of
-                    {{$loans->total()}}
+                    {{ $loans->count() }}
                     Results
                 </div>
                 <div class="d-flex align-items-center">
-                    {{ $loans->appends(['per_page' => request('per_page')])->links('pagination::bootstrap-4') }}
+                    @if($loans->count() > $perPage)
+                        {{ $loans->appends(['per_page' => request('per_page')])->links('pagination::bootstrap-4') }}
+                    @endif
                     <label for="per_page" class="form-label mb-0" style="font-size: 0.8rem; margin-right: 15px; margin-left:30px;">Show</label>
                     <select id="per_page" class="form-select form-select-sm" onchange="changePerPage()" style="width: auto;">
                         <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
@@ -183,25 +186,49 @@
     const reportUrl = "{{ route('securities.evaluation-treasury-bond.index') }}";
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Convert bulan to string and pad with leading zero if needed
         const selectedMonth = "{{ $bulan }}";
         const selectedYear = "{{ $tahun }}";
+        const selectedDay = "{{ $hari ?? '1' }}";
         
-        // Set values using the padded month
-        document.getElementById('monthSelect').value = parseInt(selectedMonth);  // Remove leading zero for select
+        document.getElementById('monthSelect').value = parseInt(selectedMonth);
         document.getElementById('yearInput').value = selectedYear;
+        
+        // Initialize days
+        updateDays();
+        
+        // Set selected day without triggering updateReport
+        document.getElementById('daySelect').value = parseInt(selectedDay);
     });
 
-    // Event listener untuk perubahan bulan atau tahun
-    document.getElementById('monthSelect').addEventListener('change', updateReport);
-    document.getElementById('yearInput').addEventListener('change', updateReport);
+    function updateDays() {
+        const month = parseInt(document.getElementById('monthSelect').value);
+        const year = parseInt(document.getElementById('yearInput').value);
+        const daySelect = document.getElementById('daySelect');
+        
+        // Clear existing options
+        daySelect.innerHTML = '';
+        
+        // Get number of days in the selected month
+        const daysInMonth = new Date(year, month, 0).getDate();
+        
+        // Populate days
+        for(let i = 1; i <= daysInMonth; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            daySelect.appendChild(option);
+        }
+        
+        // Tidak perlu memanggil updateReport() di sini
+    }
 
     function updateReport() {
-        const month = document.getElementById('monthSelect').value.padStart(2, '0');  // Pad with leading zero
+        const month = document.getElementById('monthSelect').value.padStart(2, '0');
+        const day = document.getElementById('daySelect').value.padStart(2, '0');
         const year = document.getElementById('yearInput').value;
         const branch = '{{ $user->id_pt }}';
         
-        window.location.href = `${reportUrl}?bulan=${month}&tahun=${year}&branch=${branch}`;
+        window.location.href = `${reportUrl}?bulan=${month}&hari=${day}&tahun=${year}&branch=${branch}`;
     }
 </script>
 

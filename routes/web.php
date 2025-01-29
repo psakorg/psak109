@@ -396,6 +396,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/outstanding-balance-treasury-bond', [outstandingBalanceTreasuryController::class, 'index'])
         ->name('securities.outstanding-balance-treasury.index');    
 
+        Route::get('/outstanding-balance-treasury-bond/export-excel/{id_pt}', [outstandingBalanceTreasuryController::class, 'exportExcel'])->name('report-outstanding-securities.exportExcel');
+
+        Route::get('/outstanding-balance-treasury-bond/export-pdf/{id_pt}', [outstandingBalanceTreasuryController::class, 'exportPdf'])->name('report-outstanding-securities.exportPDF');
+    
+
         Route::get('/evaluation-treasury-bond', [evaluationTreasuryController::class, 'index'])
         ->name('securities.evaluation-treasury-bond.index');  
         

@@ -38,75 +38,90 @@
                                value="{{ date('Y') }}" 
                                min="2000" 
                                max="2099">
+
+                    <!-- Tombol Export -->
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-danger" id="exportPdf">
+                            <i class="fas fa-file-pdf"></i> Export to PDF
+                        </a>
+                        <a href="#" id="exportExcel" class="btn btn-success">
+                            <i class="fas fa-file-excel"></i> Export to Excel
+                        </a>
                     </div>
-                    <table class="table table-striped table-bordered custom-table" style="width: 100%; margin: 0 auto;">
+                    </div>
+                    <table class="table table-striped table-bordered custom-table" style="width: 100%;">
                         <thead>
                             <tr>
-                                <th style="width: 5%; white-space: nowrap;">No.</th>
-                                <th style="width: 15%; white-space: nowrap ;">Account Number</th>
-                                <th class="text-left" style="width: 20%; white-space: nowrap;">Deal Number</th>
-                                <th style="width: 15%; white-space: nowrap;">Issuer Name</th>
-                                <th style="width: 15%; white-space: nowrap;">Face Value</th>
-                                <th style="width: 10%; white-space: nowrap;">Settlement Date</th>
-                                <th style="width: 15%; white-space: nowrap;">Tenor (TTM)</th>
-                                <th style="width: 10%; white-space: nowrap;">Maturity Date</th>
-                                <th style="width: 15%; white-space: nowrap;">Coupon Rate</th>
-                                <th style="width: 10%; white-space: nowrap;">Yield (YTM)</th>
-                                <th style="width: 15%; white-space: nowrap;">Price</th>
-                                <th style="width: 15%; white-space: nowrap;">Face Value</th>
-                                <th style="width: 15%; white-space: nowrap;">Fair Value</th>
-                                <th style="width: 15%; white-space: nowrap;">At Discount</th>
-                                <th style="width: 15%; white-space: nowrap;">At Premium</th>
-                                <th style="width: 15%; white-space: nowrap;">Brokerage Fee</th>
-                                <th style="width: 15%; white-space: nowrap;">Carrying Amount</th>
-                                <th style="width: 15%; white-space: nowrap;">EIR Exposure</th>
-                                <th style="width: 15%; white-space: nowrap;">EIR Calculated</th>
+                                <th style="width: 5%;">No.</th>
+                                <th style="width: 5%;">Branch Number</th>
+                                <th style="width: 15%;">Account Number</th>
+                                <th class="text-left" style="width: 20%;">Bond Id</th>
+                                <th style="width: 15%; ">Issuer Name</th>
+                                <th style="width: 15%; ">GL Account</th>
+                                <th style="width: 15%; ">Bond Type</th>
+                                <th style="width: 15%; ">GL Group</th>
+                                <th style="width: 15%; ">Settlement Date</th>
+                                <th style="width: 15%; ">Tenor (TTM)</th>
+                                <th style="width: 15%; ">Maturity Date</th>
+                                <th style="width: 15%; ">Coupon Rate</th>
+                                <th style="width: 10%; ">Yield (YTM)</th>
+                                <th style="width: 15%; ">EIR Amortized Cost Exposure</th>
+                                <th style="width: 10%; ">EIR Amortized Cost Calculated</th>
+                                <th style="width: 15%; ">Face Value</th>
+                                <th style="width: 15%; ">Price</th>
+                                <th style="width: 15%; ">Mark to Market (MTM)</th>
+                                <th style="width: 15%; ">Carrying Amount</th>
+                                <th style="width: 15%; ">Unamortized At Discount</th>
+                                <th style="width: 15%; ">Unamortized At Premium</th>
+                                <th style="width: 15%; ">Unamortized Brokerage Fee</th>
+                                <th style="width: 15%; ">Cummlative Time Gap</th>
+                                <th style="width: 15%; ">Unreleased Gain/Losses </th>
                             </tr>
                         </thead>
                         <tbody>
                             @php
                                 $nourut = 0;
                             @endphp
-                            @foreach ($loans as $loan)
+                            @foreach ($securities as $security)
                                 @php 
                                     $nourut = $nourut + 1;
                                 @endphp
                                 <tr>
                                     <td>{{ $nourut }}</td>
-
+                                    <td class="text-center">{{$security->no_branch}}</td>
                                     <td>
                                         <div class="dropdown d-flex justify-content-end dropend">
                                             <a href="#" class="dropdown-toggle text-primary" data-bs-toggle="dropdown" style="text-decoration: none;">
-                                                {{ $loan->no_acc }}
+                                                {{ $security->no_acc }}
                                             </a>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('report-expected-cashflow.view', ['no_acc' => $loan->no_acc, 'id_pt' => $user->id_pt]) }}">
+                                                    <a class="dropdown-item" href="{{ route('report-expected-cashflow.view', ['no_acc' => $security->no_acc, 'id_pt' => $user->id_pt]) }}">
                                                         Expected Cashflow
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('report-calculated-accrual-coupon.view', ['no_acc' => $loan->no_acc, 'id_pt' => $user->id_pt]) }}">
+                                                    <a class="dropdown-item" href="{{ route('report-calculated-accrual-coupon.view', ['no_acc' => $security->no_acc, 'id_pt' => $user->id_pt]) }}">
                                                         Calculated Accrual Coupon
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('report-amortised-cost.view', ['no_acc' => $loan->no_acc, 'id_pt' => $user->id_pt]) }}">
+                                                    <a class="dropdown-item" href="{{ route('report-amortised-cost.view', ['no_acc' => $security->no_acc, 'id_pt' => $user->id_pt]) }}">
                                                         Amortised Cost
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('report-amortised-initial-disc.view', ['no_acc' => $loan->no_acc, 'id_pt' => $user->id_pt]) }}">
+                                                    <a class="dropdown-item" href="{{ route('report-amortised-initial-disc.view', ['no_acc' => $security->no_acc, 'id_pt' => $user->id_pt]) }}">
                                                         Amortised Initial At Discount
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('report-amortised-initial-prem.view', ['no_acc' => $loan->no_acc, 'id_pt' => $user->id_pt]) }}">
+                                                        <a class="dropdown-item" href="{{ route('report-amortised-initial-prem.view', ['no_acc' => $security->no_acc, 'id_pt' => $user->id_pt]) }}">
                                                         Amortised Initial At Premium
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('securities.amortisedinitialbrokeragefee.view', ['no_acc' => $loan->no_acc, 'id_pt' => $user->id_pt]) }}">
+                                                    <a class="dropdown-item" href="{{ route('report-amortised-initial-brokerage-fee.view', ['no_acc' => $security->no_acc, 'id_pt' => $user->id_pt]) }}">
                                                         Amortised Initial Brokerage Fee
                                                     </a>
                                                 </li>
@@ -119,24 +134,27 @@
                                         </div>
                                     </td>
 
-                                    <!-- <td class="text-left">{{ $loan->no_acc }}</td> -->
-                                    <td class="text-left">{{$loan->bond_id}}</td>
-                                    <td class="text-left">{{$loan->issuer_name}}</td>
-                                    <td>{{number_format((float) str_replace(['$', ','], '',$loan->face_value))}}</td>
-                                    <td>{{date('d/m/Y', strtotime($loan->org_date))}}</td>
-                                    <td>{{ $loan->tenor}}Tahun</td>
-                                    <td>{{ date('d/m/Y', strtotime($loan->mtr_date)) }}</td>
-                                    <td>{{ number_format($loan->coupon_rate*100,5) }}%</td>
-                                    <td>{{ number_format($loan->yield*100,5) }}%</td>
-                                    <td>{{ number_format($loan->price*100,5)}}</td>
-                                    <td>{{ number_format((float) str_replace(['$', ','], '', $loan->face_value)) }}</td>
-                                    <td>{{ number_format((float) str_replace(['$', ','], '', $loan->fair_value)) }}</td>
-                                    <td>-{{ number_format((float) str_replace(['$', ','], '', $loan->atdiscount)) }}</td>
-                                    <td>{{ number_format((float) str_replace(['$', ','], '',$loan->atpremium)) }}</td>
-                                    <td>{{ number_format((float) str_replace(['$', ','], '',$loan->brokerage)) }}</td>
-                                    <td>{{number_format((float) str_replace(['$', ','], '',$loan->fair_value))}}</td>
-                                    <td>{{ number_format($loan->eirex*100,14)}}%</td>
-                                    <td>{{ number_format($loan->eircalc*100,14)}}%</td>                                    
+                                    <td class="text-center">{{$security->bond_id}}</td>
+                                    <td class="text-left">{{$security->issuer_name}}</td>
+                                    <td class="text-center">{{$security->coa}}</td>
+                                    <td class="text-center">{{$security->bond_type}}</td>
+                                    <td class="text-center">{{$security->gl_group}}</td>
+                                    <td>{{date('d/m/Y', strtotime($security->org_date_dt))}}</td>
+                                    <td>{{ $security->tenor}} days</td>
+                                    <td>{{ date('d/m/Y', strtotime($security->mtr_date_dt)) }}</td>
+                                    <td>{{ number_format($security->coupon_rate*100,5) }}%</td>
+                                    <td>{{ number_format($security->yield*100,5) }}%</td>
+                                    <td>{{ number_format($security->eirex*100,14)}}%</td>
+                                    <td>{{ number_format($security->eircalc*100,14)}}%</td>                                    
+                                    <td class="text-right">{{number_format((float) str_replace(['$', ','], '',$security->face_value))}}</td>
+                                    <td>{{ number_format($security->price,5)}}</td>
+                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '', $security->mtm_price)) }}</td>
+                                    <td class="text-right">{{number_format((float) str_replace(['$', ','], '',$security->carrying_amount))}}</td>
+                                    <td class="text-right">-{{ number_format((float) str_replace(['$', ','], '', $security->atdiscount)) }}</td>
+                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->atpremium)) }}</td>
+                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->brokerage)) }}</td>
+                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->cum_timegap)) }}</td>
+                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->cum_gain_losses)) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -148,15 +166,15 @@
             <div class="d-flex justify-content-between align-items-center mt-3">
                 <div class="showing-entries">
                     Showing
-                    {{$loans->firstItem()}}
+                    {{$securities->firstItem()}}
                     to
-                    {{$loans->lastItem()}}
+                    {{$securities->lastItem()}}
                     of
-                    {{$loans->total()}}
+                    {{$securities->total()}}
                     Results
                 </div>
                 <div class="d-flex align-items-center">
-                    {{ $loans->appends(['per_page' => request('per_page')])->links('pagination::bootstrap-4') }}
+                    {{ $securities->appends(['per_page' => request('per_page')])->links('pagination::bootstrap-4') }}
                     <label for="per_page" class="form-label mb-0" style="font-size: 0.8rem; margin-right: 15px; margin-left:30px;">Show</label>
                     <select id="per_page" class="form-select form-select-sm" onchange="changePerPage()" style="width: auto;">
                         <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
@@ -203,6 +221,24 @@
         
         window.location.href = `${reportUrl}?bulan=${month}&tahun=${year}&branch=${branch}`;
     }
+    // Update export URL dynamically based on selected month and year
+    document.getElementById('exportExcel').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-outstanding-securities.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
+    document.getElementById('exportPdf').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-outstanding-securities.exportPDF', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+    });
+
 </script>
 
 
