@@ -16,9 +16,17 @@
                 <div class="table-responsive text-center">
                     <div class="d-flex align-items-center mb-2">
                         <button type="button" class="btn btn-primary dropdown-toggle me-2" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-file-import"></i> Bulan/Tahun
+                            <i class="fas fa-file-import"></i> Tanggal
                         </button>
-                        <select class="form-select me-2" style="width: 120px; height: 40px; font-size: 14px" id="monthSelect" onchange="changeMonth()">
+                            <label for="date" style="font-size: 14px" class="me-2">Tanggal:</label>
+                            <input type="number" class="form-control me-2" name="date" id="dateInput" 
+                               style="width: 100px; font-size: 14px" 
+                               value="{{ date('d') }}" 
+                               min="1" 
+                               max="31">
+
+                        <label for="month" style="font-size: 14px" class="me-2">Bulan:</label>
+                        <select class="form-select me-2" name="month" style="width: 120px; font-size: 14px" id="monthSelect" onchange="changeMonth()">
                             <option value="1">January</option>
                             <option value="2">February</option>
                             <option value="3">March</option>
@@ -33,7 +41,8 @@
                             <option value="12">December</option>
                         </select>
 
-                        <input type="number" class="form-select" id="yearInput" 
+                        <label for="year" style="font-size: 14px" class="me-2">Tahun:</label>
+                        <input type="number" class="form-select me-2" name="year" id="yearInput" 
                                style="width: 100px; font-size: 14px" 
                                value="{{ date('Y') }}" 
                                min="2000" 
@@ -81,10 +90,26 @@
                         <tbody>
                             @php
                                 $nourut = 0;
+                                $sumFaceValue = 0;
+                                $sumMtmPrice = 0;
+                                $sumCarryingAmount = 0;
+                                $sumAtdiscount = 0;
+                                $sumAtpremium = 0;
+                                $sumBrokerage = 0;
+                                $sumTimegap = 0;
+                                $sumGainLoss = 0;
                             @endphp
                             @foreach ($securities as $security)
                                 @php 
                                     $nourut = $nourut + 1;
+                                    $sumFaceValue = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->face_value));
+                                    $sumMtmPrice = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->mtm_price));
+                                    $sumCarryingAmount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->carrying_amount));
+                                    $sumAtdiscount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atdiscount));
+                                    $sumAtpremium = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atpremium));
+                                    $sumBrokerage = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->brokerage));
+                                    $sumTimegap = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_timegap));
+                                    $sumGainLoss = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_gain_losses));
                                 @endphp
                                 <tr>
                                     <td>{{ $nourut }}</td>
@@ -157,6 +182,24 @@
                                     <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->cum_gain_losses)) }}</td>
                                 </tr>
                             @endforeach
+                            <!-- Row Total / Average -->
+                            <tr class="table-secondary font-weight-normal">
+                                    <td colspan="11" class="text-center"><strong>TOTAL:</strong></td>
+                                    <td class="text-center">{{ number_format($securities->avg('coupon_rate')*100,5).'%' }}</td>
+                                    <td class="text-center">{{ number_format($securities->avg('yield')*100,5).'%' }}</td>
+                                    <td class="text-center">{{ number_format($securities->avg('eirex')*100,14).'%' }}</td>
+                                    <td class="text-center">{{ number_format($securities->avg('eircalc')*100,14).'%' }}</td>
+                                    <td class="text-right">{{ number_format($sumFaceValue) }}</td>
+                                    <td class="text-right">{{ number_format($securities->sum('price'), 5) }}</td>
+                                    <td class="text-right">{{ number_format($sumMtmPrice) }}</td>
+                                    <td class="text-right">{{ number_format($sumCarryingAmount) }}</td>
+                                    <td class="text-right">{{ number_format($sumAtdiscount) }}</td>
+                                    <td class="text-right">{{ number_format($sumAtpremium) }}</td>
+                                    <td class="text-right">{{ number_format($sumBrokerage) }}</td>
+                                    <td class="text-right">{{ number_format($sumTimegap) }}</td>
+                                    <td class="text-right">{{ number_format($sumGainLoss) }}</td>
+
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -204,39 +247,47 @@
         // Convert bulan to string and pad with leading zero if needed
         const selectedMonth = "{{ $bulan }}";
         const selectedYear = "{{ $tahun }}";
+        const selectedDate = "{{ $tanggal }}";
         
         // Set values using the padded month
         document.getElementById('monthSelect').value = parseInt(selectedMonth);  // Remove leading zero for select
         document.getElementById('yearInput').value = selectedYear;
+        document.getElementById('dateInput').value = selectedDate;
     });
 
     // Event listener untuk perubahan bulan atau tahun
     document.getElementById('monthSelect').addEventListener('change', updateReport);
     document.getElementById('yearInput').addEventListener('change', updateReport);
+    document.getElementById('dateInput').addEventListener('change', updateReport);
 
     function updateReport() {
         const month = document.getElementById('monthSelect').value.padStart(2, '0');  // Pad with leading zero
         const year = document.getElementById('yearInput').value;
+        const date = document.getElementById('dateInput').value;
         const branch = '{{ $user->id_pt }}';
         
-        window.location.href = `${reportUrl}?bulan=${month}&tahun=${year}&branch=${branch}`;
+        window.location.href = `${reportUrl}?bulan=${month}&tahun=${year}&tanggal=${date}&branch=${branch}`;
     }
     // Update export URL dynamically based on selected month and year
     document.getElementById('exportExcel').addEventListener('click', function (e) {
         e.preventDefault();
         const month = document.getElementById('monthSelect').value;
         const year = document.getElementById('yearInput').value;
+        const date = document.getElementById('dateInput').value;
+        
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-outstanding-securities.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+        window.location.href = `{{ route('report-outstanding-securities.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
     });
     document.getElementById('exportPdf').addEventListener('click', function (e) {
         e.preventDefault();
         const month = document.getElementById('monthSelect').value;
         const year = document.getElementById('yearInput').value;
+        const date = document.getElementById('dateInput').value;
+
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-outstanding-securities.exportPDF', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+        window.location.href = `{{ route('report-outstanding-securities.exportPDF', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
     });
 
 </script>
@@ -615,6 +666,7 @@ function showModal(type) {
         // Set default values for month and year
         document.getElementById('modalMonth').value = document.getElementById('monthSelect').value;
         document.getElementById('modalYear').value = document.getElementById('yearInput').value;
+        document.getElementById('modalDate').value = document.getElementById('dateInput').value;
     } else {
         accountNumberInput.style.display = 'block';
         accountNumberLabel.style.display = 'block';

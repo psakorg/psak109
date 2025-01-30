@@ -288,7 +288,7 @@ public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
             ->paginate($perPage);
     }
 
-    public static function getOutstandingSecurities($no_acc, $id_pt, $tahun, $bulan, $status = '2'){
+    public static function getOutstandingSecurities($id_pt, $tahun, $bulan, $tanggal, $status = '2'){
         return DB::select('
         SELECT DISTINCT
         a.id,a.no_acc,a.bond_id, d.yield,a.eirex,a.eircalc, a.face_value,a.mtm_price,a.price,a.carrying_amount, EOM(a.transac_dt) as transac_dt,
@@ -301,12 +301,12 @@ public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
 	    LEFT OUTER JOIN securities.tblOBALSecurities d on a.no_acc = d.no_acc
 	    WHERE b.no_branch = ? 
         AND (
-        date_part(\'month\',a.transac_dt) = ? AND date_part(\'year\',a.transac_dt) = ? AND a.face_value > 0 AND (b.status)<> ?  
+        date_part(\'month\',a.transac_dt) = ? AND date_part(\'year\',a.transac_dt) = ? AND date_part(\'day\',a.transac_dt) = ? AND a.face_value > 0 AND (b.status)<> ?  
 	    OR
-        date_part(\'month\',a.transac_dt) = ? AND date_part(\'year\',a.transac_dt) = ? AND a.face_value > 0 AND (b.status) <> ? 
+        date_part(\'month\',a.transac_dt) = ? AND date_part(\'year\',a.transac_dt) = ? AND date_part(\'day\',a.transac_dt) = ? AND a.face_value > 0 AND (b.status) <> ? 
         )
         ORDER BY a.no_acc
-        ', [$id_pt, $bulan, $tahun, $status, $bulan, $tahun, $status]);
+        ', [$id_pt, $bulan, $tahun, $tanggal, $status, $bulan, $tahun, $tanggal, $status]);
     }
 
     public static function callEvaluationTreasuryBonds($year, $month, $day, $id_pt)

@@ -16,10 +16,10 @@
                 <div class="table-responsive text-center">
                     <div class="d-flex align-items-center mb-2">
                         <button type="button" class="btn btn-primary dropdown-toggle me-2" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-file-import"></i> Bulan/Tahun
+                            <i class="fas fa-file-import"></i> Tanggal
                         </button>
 
-                        <select class="form-select me-2" style="width: 120px; height: 40px; font-size: 14px" id="daySelect" onchange="updateReport()">
+                        <select class="form-select me-2" style="width: 80px; height: 40px; font-size: 14px" id="daySelect" onchange="updateReport()">
                             <!-- Will be populated by JavaScript -->
                         </select>
 
@@ -38,7 +38,7 @@
                             <option value="12">December</option>
                         </select>
 
-                        <input type="number" class="form-select" id="yearInput" 
+                        <input type="number" class="form-select me-2" id="yearInput" 
                                style="width: 100px; font-size: 14px" 
                                value="{{ date('Y') }}" 
                                min="2000" 
@@ -57,8 +57,8 @@
                     <table class="table table-striped table-bordered custom-table" style="width: 100%; margin: 0 auto;">
                         <thead>
                             <tr>
-                                <th style="width: 5%; white-space: nowrap;">No.</th>
-                                <th style="width: 15%; white-space: nowrap ;">Branch Number</th>
+                                <th style="width: 5%; white-space: nowrap ;">No.</th>
+                                <th style="width: 10%; white-space: nowrap ;">Branch Number</th>
                                 <th style="width: 15%; white-space: nowrap ;">Account Number</th>
                                 <th class="text-left" style="width: 20%; white-space: nowrap;">Bond Id</th>
                                 <th style="width: 15%; white-space: nowrap;">Issuer Name</th>
@@ -79,10 +79,22 @@
                         <tbody>
                             @php
                                 $nourut = 0;
+                                $total_face_value = 0;
+                                $total_mtm = 0;
+                                $total_carrying = 0;
+                                $total_unreleazed = 0;
+                                $total_cumulative = 0;
+                                $counter = 1;
                             @endphp
                             @foreach ($loans as $loan)
                                 @php 
                                     $nourut = $nourut + 1;
+                                    $total_face_value += (float)str_replace(['$', ','], '', $loan->face_value);
+                                    $total_mtm += $loan->mtm_price;
+                                    $total_carrying += $loan->carrying_amount;
+                                    $total_unreleazed += $loan->gain_losses;
+                                    $total_cumulative += $loan->cum_gain_losses; 
+                                    $counter++; 
                                 @endphp
                                 <tr>
                                     <td>{{ $nourut }}</td>
@@ -139,16 +151,25 @@
                                     <td class="text-left">{{$loan->bond_type}}</td>
                                     <td class="text-left">{{$loan->gl_group}}</td>
                                     <td>{{ date('d/m/Y', strtotime($loan->transac_dt)) }}</td>
-                                    <td>{{ date('d/m/Y', strtotime($loan->transac_dt)) }}</td>
-                                    <td>{{ number_format(0,5) }}%</td>
-                                    <td>{{ number_format((float) str_replace(['$', ','], '', $loan->face_value)) }}</td>
-                                    <td>{{ number_format($loan->price*100,5)}}</td>
-                                    <td>{{ number_format($loan->mtm_price,5)}}</td>
-                                    <td>{{ number_format($loan->carrying_amount,5)}}</td>
-                                    <td>{{ number_format($loan->gain_losses,5)}}</td>
-                                    <td>{{ number_format($loan->cum_gain_losses,5)}}</td>
+                                    <td>{{ date('d/m/Y', strtotime($loan->mtr_date_dt)) }}</td>
+                                    <td class="text-right">{{ number_format($loan->yield*100,5) }}%</td>
+                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '', $loan->face_value)) }}</td>
+                                    <td class="text-right">{{ number_format($loan->price,5)}}%</td>
+                                    <td class="text-right">{{ number_format($loan->mtm_price,0)}}</td>
+                                    <td class="text-right">{{ number_format($loan->carrying_amount,0)}}</td>
+                                    <td class="text-right">{{ number_format($loan->gain_losses,0)}}</td>
+                                    <td class="text-right">{{ number_format($loan->cum_gain_losses,0)}}</td>
                                 </tr>
                             @endforeach
+                            <tr class="table-secondary font-weight-normal">
+                                    <td colspan="11" class="text-center"><strong>TOTAL:</strong></td>
+                                    <td class="text-right">{{ number_format($total_face_value, 0) }}</td>
+                                    <td class="text-right"></td>
+                                    <td class="text-right">{{ number_format($total_mtm, 0) }}</td>
+                                    <td class="text-right">{{ number_format($total_carrying, 0) }}</td>
+                                    <td class="text-right">{{ number_format($total_unreleazed, 0) }}</td>
+                                    <td class="text-right">{{ number_format($total_cumulative, 0) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -201,12 +222,13 @@
         
         document.getElementById('monthSelect').value = parseInt(selectedMonth);
         document.getElementById('yearInput').value = selectedYear;
+        // Set selected day without triggering updateReport
+        document.getElementById('daySelect').value = parseInt(selectedDay);
+
         
         // Initialize days
         updateDays();
-        
-        // Set selected day without triggering updateReport
-        document.getElementById('daySelect').value = parseInt(selectedDay);
+
     });
 
     function updateDays() {
@@ -242,18 +264,18 @@
 
     document.getElementById('exportPdf').addEventListener('click', function (e) {
         e.preventDefault();
-        const month = document.getElementById('monthSelect').value;
+        const month = document.getElementById('monthSelect').value.padStart(2, '0');
         const year = document.getElementById('yearInput').value;
-        const day = document.getElementById('daySelect').value;
+        const day = document.getElementById('daySelect').value.padStart(2, '0');
         // Redirect to the export route with query parameters
         window.location.href = `{{ route('report-evaluation-treasury-bond.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&hari=${day}`;
     });
 
     document.getElementById('exportExcel').addEventListener('click', function (e) {
         e.preventDefault();
-        const month = document.getElementById('monthSelect').value;
+        const month = document.getElementById('monthSelect').value.padStart(2, '0');
         const year = document.getElementById('yearInput').value;
-        const day = document.getElementById('daySelect').value;
+        const day = document.getElementById('daySelect').value.padStart(2, '0');
         // Redirect to the export route with query parameters
         window.location.href = `{{ route('report-evaluation-treasury-bond.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&hari=${day}`;
     });
@@ -349,7 +371,7 @@
         text-transform: uppercase;
         font-weight: 500;
         font-size: 10px;
-        white-space: nowrap;
+        /* white-space: nowrap; */
     }
     .custom-table td a {
         text-decoration: none;
