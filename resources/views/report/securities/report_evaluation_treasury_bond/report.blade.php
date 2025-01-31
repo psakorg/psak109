@@ -23,7 +23,7 @@
                             <!-- Will be populated by JavaScript -->
                         </select>
 
-                        <select class="form-select me-2" style="width: 120px; height: 40px; font-size: 14px" id="monthSelect" onchange="updateDays()">
+                        <select class="form-select me-2" style="width: 120px; height: 40px; font-size: 14px" id="monthSelect" onchange="updateDays(); updateReport()">
                             <option value="1">January</option>
                             <option value="2">February</option>
                             <option value="3">March</option>
@@ -43,7 +43,7 @@
                                value="{{ date('Y') }}" 
                                min="2000" 
                                max="2099"
-                               onchange="updateDays()">
+                               onchange="updateDays(); updateReport()">
 
                                <div class="d-flex gap-2">
                                 <a href="#" class="btn btn-danger" id="exportPdf">

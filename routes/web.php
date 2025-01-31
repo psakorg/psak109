@@ -20,6 +20,8 @@ use App\Http\Controllers\upload\simple_interest\COAControllerCorporateloan;
 use App\Http\Controllers\upload\securities\uploadTblMasterTmpBidController;
 use App\Http\Controllers\upload\securities\uploadDataSecuritiesController;
 use App\Http\Controllers\upload\securities\uploadPriceSecuritiesController;
+use App\Http\Controllers\upload\securities\uploadCoaSecuritiesController;
+use App\Http\Controllers\upload\securities\uploadRatingSecuritiesController;
 
 use App\Http\Controllers\MappingAdminController;
 
@@ -429,6 +431,16 @@ Route::middleware(['auth'])->group(function () {
         // Route upload untuk price securities
         Route::get('/upload/data/price', [uploadPriceSecuritiesController::class, 'index'])
             ->name('upload.price.securities.index');
+
+        // Route upload untuk CoA securities
+        Route::get('/upload/data/coa', [uploadCoaSecuritiesController::class, 'index'])
+            ->name('upload.coa.securities.index');
+
+        // Route upload untuk Rating securities
+        Route::get('/upload/data/rating', [uploadCoaSecuritiesController::class, 'index'])
+            ->name('upload.rating.securities.index');
+
+
 
         Route::get('/securities/amortisedcostcontroller', [amortisedcostController::class, 'index'])->name('securities.index');
         Route::get('/securities/amortisedcostcontroller/view/{no_acc}/{id_pt}', [amortisedcostController::class, 'view'])->name('securities.view');

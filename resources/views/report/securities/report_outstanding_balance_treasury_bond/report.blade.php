@@ -109,7 +109,7 @@
                                     $sumAtpremium = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atpremium));
                                     $sumBrokerage = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->brokerage));
                                     $sumTimegap = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_timegap));
-                                    $sumGainLoss = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_gain_losses));
+                                    $sumGainLoss = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->gain_losses));
                                 @endphp
                                 <tr>
                                     <td>{{ $nourut }}</td>
@@ -179,7 +179,7 @@
                                     <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->atpremium)) }}</td>
                                     <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->brokerage)) }}</td>
                                     <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->cum_timegap)) }}</td>
-                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->cum_gain_losses)) }}</td>
+                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->gain_losses)) }}</td>
                                 </tr>
                             @endforeach
                             <!-- Row Total / Average -->

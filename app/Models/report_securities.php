@@ -289,35 +289,59 @@ public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
     }
 
     public static function getOutstandingSecurities($id_pt, $tahun, $bulan, $tanggal, $status = '2'){
+        DB::transaction(function () use ($tahun, $bulan, $tanggal, $id_pt) {
+            try {
+                DB::select("CALL securities.spevaluationtreasury_bonds(?, ?, ?, ?)", 
+                    [$tahun, $bulan, $tanggal, $id_pt]);
+                
+                DB::select("CALL securities.spoutbaltreasury_daily_bonds(?, ?, ?, ?)", 
+                    [intval($id_pt), $tahun, $bulan, $tanggal]);
+                
+            } catch (\Exception $e) {
+                \Log::error('Error in getOutstandingSecurities stored procedures: ' . $e->getMessage());
+                throw $e;
+            }
+        });
+        
         return DB::select('
-        SELECT DISTINCT
-        a.id,a.no_acc,a.bond_id, d.yield,a.eirex,a.eircalc, a.face_value,a.mtm_price,a.price,a.carrying_amount, EOM(a.transac_dt) as transac_dt,
-	    a.cum_amortized,a.cum_timegap,a.cum_amortise_disc,a.cum_amortise_prem,a.cum_amortise_brok,a.atdiscount,a.atpremium,a.brokerage,a.gain_losses,a.cum_gain_losses,
-	    b.issuer_name, b.no_branch,b.status,b.bond_type, b.org_date_dt, b.tenor,b.pmtamt ,b.mtr_date_dt, b.gl_group, b.coupon_rate,m.jdname,c.coa
-	    FROM securities.tblpsaklbutreasury a 
-	    INNER JOIN securities.tblMASTER_SECURITIES b on a.no_acc = b.no_acc
-	    LEFT OUTER JOIN public."CABANG-" m on (b.no_branch = m.jdbr)
-	    LEFT OUTER JOIN securities.tblGROUPCOASecurities c on b.gl_group = c.gl_group
-	    LEFT OUTER JOIN securities.tblOBALSecurities d on a.no_acc = d.no_acc
-	    WHERE b.no_branch = ? 
-        AND (
-        date_part(\'month\',a.transac_dt) = ? AND date_part(\'year\',a.transac_dt) = ? AND date_part(\'day\',a.transac_dt) = ? AND a.face_value > 0 AND (b.status)<> ?  
-	    OR
-        date_part(\'month\',a.transac_dt) = ? AND date_part(\'year\',a.transac_dt) = ? AND date_part(\'day\',a.transac_dt) = ? AND a.face_value > 0 AND (b.status) <> ? 
-        )
-        ORDER BY a.no_acc
-        ', [$id_pt, $bulan, $tahun, $tanggal, $status, $bulan, $tahun, $tanggal, $status]);
+            SELECT DISTINCT 
+            a.id,a.no_acc,a.bond_id, d.yield,a.eirex,a.eircalc, a.face_value,a.mtm_price,a.price,a.carrying_amount, EOM(a.transac_dt) as transac_dt,
+            a.cum_amortized,a.cum_timegap,a.cum_amortise_disc,a.cum_amortise_prem,a.cum_amortise_brok,a.atdiscount,a.atpremium,a.brokerage,a.gain_losses,a.cum_gain_losses,
+            b.issuer_name, b.no_branch,b.status,b.bond_type, b.org_date_dt, b.tenor,b.pmtamt ,b.mtr_date_dt, b.gl_group, b.coupon_rate,m.jdname,c.coa
+            FROM securities.tblpsaklbutreasury a 
+            INNER JOIN securities.tblMASTER_SECURITIES b on a.no_acc = b.no_acc
+            LEFT OUTER JOIN public."CABANG-" m on (b.no_branch = m.jdbr)
+            LEFT OUTER JOIN securities.tblglgroupsecurities c on b.gl_group = c.gl_group
+            LEFT OUTER JOIN securities.tblOBALSecurities d on a.no_acc = d.no_acc
+            WHERE b.no_branch = ? 
+            AND date_part(\'month\',a.transac_dt) = ? 
+            AND date_part(\'year\',a.transac_dt) = ? 
+            AND date_part(\'day\',a.transac_dt) = ? 
+            AND a.face_value > 0 
+            AND (b.status)<>\'2\'
+            ORDER BY a.no_acc
+        ', [$id_pt, $bulan, $tahun, $tanggal]);
     }
 
     public static function callEvaluationTreasuryBonds($year, $month, $day, $id_pt)
     {
-        // Panggil SP
-        DB::select("CALL securities.spevaluationtreasury_bonds(?, ?, ?, ?)", 
-            [$year, $month, $day, $id_pt]);
+        return DB::transaction(function () use ($year, $month, $day, $id_pt) {
+            try {
+                DB::select("CALL securities.spevaluationtreasury_bonds(?, ?, ?, ?)", 
+                    [$year, $month, $day, $id_pt]);
+                
+                DB::select("CALL securities.spoutbaltreasury_daily_bonds(?, ?, ?, ?)", 
+                    [intval($id_pt), $year, $month, $day]);
 
-        // Ambil data dari tabel hasil SP
-        return DB::table('securities.tblevaluationtreasury_bonds')
-            ->where('no_branch', $id_pt)
-            ->get();
+                return DB::table('securities.tblevaluationtreasury_bonds')
+                    ->where('no_branch', $id_pt)
+                    ->where('transac_dt', $year . "-" . $month . "-" . $day)
+                    ->get();
+                
+            } catch (\Exception $e) {
+                \Log::error('Error in callEvaluationTreasuryBonds: ' . $e->getMessage());
+                throw $e;
+            }
+        });
     }
 }
