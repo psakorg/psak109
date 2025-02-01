@@ -437,8 +437,12 @@ Route::middleware(['auth'])->group(function () {
             ->name('upload.coa.securities.index');
 
         // Route upload untuk Rating securities
-        Route::get('/upload/data/rating', [uploadCoaSecuritiesController::class, 'index'])
+        Route::get('/upload/data/rating', [uploadRatingSecuritiesController::class, 'index'])
             ->name('upload.rating.securities.index');
+        Route::post('/upload/rating/import', [uploadRatingSecuritiesController::class, 'importExcel'])
+            ->name('upload.securities.rating.import');
+        Route::post('/upload/rating/execute-procedure', [uploadRatingSecuritiesController::class, 'executeStoredProcedure'])
+            ->name('upload.securities.rating.execute-procedure');
 
 
 

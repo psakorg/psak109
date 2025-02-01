@@ -152,28 +152,32 @@
                     <table class="table table-hover table-bordered text-center">
                         <thead>
                             <tr>
-                                <th>no_branch</th>
-                                <th>no_acc</th>
-                                <th>bond_id</th>
-                                <th>price</th>
-                                <th>price_date</th>
-                                <th>sources_qoutation</th>
-                                <th>description</th>
+                                <th>bond_type</th>
+                                <th>gl_group</th>
+                                <th>interface</th>
+                                <th>CoA</th>
+                                <th>deskripsi/th>
+                                <th>pc</th>
+                                <th>ccy</th>
+                                <th>post</th>
+                                <th>event</th>
+                                <th>bond_description</th>
                             </tr>
                         </thead>
                         <tbody>
                         @if (isset($messages) && count($messages) > 0)
-                            @foreach($priceSecurities as $item)
+                            @foreach($securities as $item)
                             <tr>
-                                <td>{{ $item->no_branch }}</td>
-                                <td>{{ $item->no_acc }}</td>
-                                <td>{{ $item->bond_id}}</td>
-                                <td>{{ number_format($item->price*100, 5) }}%</td>
-                                <td>{{ date('d/m/Y', strtotime($item->price_date)) }}</td>
-                                <td>{{ $item->sources_qoutation }}</td>
-                                @foreach($messages as $item)
-                                <td>{!! $item !!}</td>
-                                @endforeach
+                                <td>{{ $item->bond_type }}</td>
+                                <td>{{ $item->gl_group }}</td>
+                                <td>{{ $item->interface}}</td>
+                                <td>{{ $item->coa }}</td>
+                                <td>{{ $item->deskripsi }}</td>
+                                <td>{{ $item->pc }}</td>
+                                <td>{{ $item->ccy }}</td>
+                                <td>{{ $item->post }}</td>
+                                <td>{{ $item->event }}</td>
+                                <td>{{ $item->bond_description }}</td>
                             </tr>
                             @endforeach
                         @endif

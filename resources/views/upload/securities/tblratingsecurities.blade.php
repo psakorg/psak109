@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-  body {
+    body {
       background-color: #f4f7fc;
       display: flex;
       justify-content: center; /* Center horizontally */
@@ -125,9 +125,9 @@
             <!-- Button Section -->
             <div class="d-flex justify-content-between mb-3">
                 <div>
-                    <button type="button" class="btn btn-success btn-icon-split" data-bs-toggle="modal" data-bs-target="#importModal">
+                    <!-- <button type="button" class="btn btn-success btn-icon-split" data-bs-toggle="modal" data-bs-target="#importModal">
                         <i class="fas fa-file-import"></i> Upload
-                    </button>
+                    </button> -->
 
                     <!-- <button type="button" class="btn btn-warning btn-icon-split" data-bs-toggle="modal" data-bs-target="#executeModal">
                         <i class="fas fa-play"></i> Execute
@@ -155,25 +155,24 @@
                                 <th>no_branch</th>
                                 <th>no_acc</th>
                                 <th>bond_id</th>
-                                <th>price</th>
-                                <th>price_date</th>
-                                <th>sources_qoutation</th>
-                                <th>description</th>
+                                <th>appraisal_name</th>
+                                <th>rating</th>
+                                <th>rating_date</th>
+                                <th>economi_sector</th>
+                                <th>sources_rating</th>
                             </tr>
                         </thead>
                         <tbody>
                         @if (isset($messages) && count($messages) > 0)
-                            @foreach($priceSecurities as $item)
+                            @foreach($securities as $item)
                             <tr>
                                 <td>{{ $item->no_branch }}</td>
                                 <td>{{ $item->no_acc }}</td>
                                 <td>{{ $item->bond_id}}</td>
-                                <td>{{ number_format($item->price*100, 5) }}%</td>
-                                <td>{{ date('d/m/Y', strtotime($item->price_date)) }}</td>
-                                <td>{{ $item->sources_qoutation }}</td>
-                                @foreach($messages as $item)
-                                <td>{!! $item !!}</td>
-                                @endforeach
+                                <td>{{ $item->appraisal_name }}</td>
+                                <td>{{ $item->rating }}</td>
+                                <td>{{ $item->economi_sector }}</td>
+                                <td>{{ $item->sources_rating }}</td>
                             </tr>
                             @endforeach
                         @endif
@@ -217,7 +216,7 @@
                         <h5 class="modal-title" id="importModalLabel">Import Data</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('upload.securities.rating.import') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body">
                             <div class="mb-3">
