@@ -1,8 +1,11 @@
+<html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
+<body>
 <div class="content-wrapper">
     <div class="main-content" style="padding-top: 20px;">
         <div class="container mt-5" style="padding-right: 50px;">
@@ -46,6 +49,18 @@
                                onchange="updateDays(); updateReport()">
 
                                <div class="d-flex gap-2">
+                               <form action="{{ route('securities.evaluation-treasury-bond.execute-procedure') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="tahun" value="{{ date('Y') }}">
+                                    <input type="hidden" name="bulan" value="{{ date('n') }}">
+                                    <input type="hidden" name="tanggal" value="{{ date('j') }}">
+                                    <button type="submit" class="btn btn-warning btn-icon-split">
+                                        <span class="icon ">
+                                            <i class="fas fa-play"></i>
+                                        </span>
+                                        <span class="text">Execute</span>
+                                    </button>
+                                </form>
                                 <a href="#" class="btn btn-danger" id="exportPdf">
                                     <i class="fas fa-file-pdf"></i> Export to PDF
                                 </a>
@@ -72,8 +87,8 @@
                                 <th style="width: 15%; white-space: nowrap;">Price</th>
                                 <th style="width: 15%; white-space: nowrap;">Mark To Market(MTM)</th>
                                 <th style="width: 15%; white-space: nowrap;">Carrying Amount</th>
-                                <th style="width: 15%; white-space: nowrap;">Unreleazed Gain / (Losses)</th>
-                                <th style="width: 15%; white-space: nowrap;">Cummulative Unreleazed / (Losses)</th>
+                                <th style="width: 15%; white-space: nowrap;">Unreleazed Gain/(Losses)</th>
+                                <th style="width: 15%; white-space: nowrap;">Cummulative Unreleazed Gain/(Losses)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -92,7 +107,7 @@
                                     $total_face_value += (float)str_replace(['$', ','], '', $loan->face_value);
                                     $total_mtm += $loan->mtm_price;
                                     $total_carrying += $loan->carrying_amount;
-                                    $total_unreleazed += $loan->gain_losses;
+                                    $total_unreleazed += ($loan->gain_losses);
                                     $total_cumulative += $loan->cum_gain_losses; 
                                     $counter++; 
                                 @endphp
@@ -154,7 +169,7 @@
                                     <td>{{ date('d/m/Y', strtotime($loan->mtr_date_dt)) }}</td>
                                     <td class="text-right">{{ number_format($loan->yield*100,5) }}%</td>
                                     <td class="text-right">{{ number_format((float) str_replace(['$', ','], '', $loan->face_value)) }}</td>
-                                    <td class="text-right">{{ number_format($loan->price,5)}}%</td>
+                                    <td class="text-right">{{ number_format($loan->price,5)}}</td>
                                     <td class="text-right">{{ number_format($loan->mtm_price,0)}}</td>
                                     <td class="text-right">{{ number_format($loan->carrying_amount,0)}}</td>
                                     <td class="text-right">{{ number_format($loan->gain_losses,0)}}</td>
@@ -222,19 +237,22 @@
         
         document.getElementById('monthSelect').value = parseInt(selectedMonth);
         document.getElementById('yearInput').value = selectedYear;
-        // Set selected day without triggering updateReport
-        document.getElementById('daySelect').value = parseInt(selectedDay);
-
         
-        // Initialize days
+        // Initialize days first
         updateDays();
-
+        
+        // Set selected day after initializing days
+        const daySelect = document.getElementById('daySelect');
+        if (selectedDay && selectedDay <= new Date(selectedYear, selectedMonth, 0).getDate()) {
+            daySelect.value = parseInt(selectedDay);
+        }
     });
 
     function updateDays() {
         const month = parseInt(document.getElementById('monthSelect').value);
         const year = parseInt(document.getElementById('yearInput').value);
         const daySelect = document.getElementById('daySelect');
+        const currentSelectedDay = daySelect.value; // Simpan nilai hari yang dipilih
         
         // Clear existing options
         daySelect.innerHTML = '';
@@ -250,7 +268,12 @@
             daySelect.appendChild(option);
         }
         
-        // Tidak perlu memanggil updateReport() di sini
+        // Kembalikan nilai hari yang dipilih jika masih valid
+        if (currentSelectedDay && currentSelectedDay <= daysInMonth) {
+            daySelect.value = currentSelectedDay;
+        } else {
+            daySelect.value = 1;
+        }
     }
 
     function updateReport() {
@@ -771,3 +794,20 @@ function showModalWithAccount(accountNumber, reportType) {
     }
 }
 </script>
+
+<!-- Add this before closing </body> tag -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('swal'))
+            Swal.fire({
+                title: "{{ session('swal.title') }}",
+                text: "{{ session('swal.text') }}",
+                icon: "{{ session('swal.icon') }}",
+                confirmButtonText: 'OK'
+            });
+        @endif
+    });
+</script>
+</body>
+</html>

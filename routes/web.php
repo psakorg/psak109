@@ -396,15 +396,17 @@ Route::middleware(['auth'])->group(function () {
             ->name('securities.initial-recognition-treasury.index');
 
         Route::get('/outstanding-balance-treasury-bond', [outstandingBalanceTreasuryController::class, 'index'])
-        ->name('securities.outstanding-balance-treasury.index');    
-
+        ->name('securities.outstanding-balance-treasury.index');
+        Route::post('/outstanding-balance-treasury-bond/execute-procedure', [outstandingBalanceTreasuryController::class, 'executeStoredProcedure'])
+        ->name('securities.outstanding-balance-treasury.execute-procedure');
         Route::get('/outstanding-balance-treasury-bond/export-excel/{id_pt}', [outstandingBalanceTreasuryController::class, 'exportExcel'])->name('report-outstanding-securities.exportExcel');
-
         Route::get('/outstanding-balance-treasury-bond/export-pdf/{id_pt}', [outstandingBalanceTreasuryController::class, 'exportPdf'])->name('report-outstanding-securities.exportPDF');
     
 
         Route::get('/evaluation-treasury-bond', [evaluationTreasuryController::class, 'index'])
         ->name('securities.evaluation-treasury-bond.index');
+        Route::post('/evaluation-treasury-bond/execute-procedure', [evaluationTreasuryController::class, 'executeStoredProcedure'])
+        ->name('securities.evaluation-treasury-bond.execute-procedure');
         Route::get('/evaluation-treasury-bond/export-excel/{id_pt}', [evaluationTreasuryController::class, 'exportExcel'])->name('report-evaluation-treasury-bond.exportExcel');
         Route::get('/evaluation-treasury-bond/export-pdf/{id_pt}', [evaluationTreasuryController::class, 'exportPdf'])->name('report-evaluation-treasury-bond.exportPdf');
         

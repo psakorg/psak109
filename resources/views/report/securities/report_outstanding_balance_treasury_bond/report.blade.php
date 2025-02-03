@@ -1,8 +1,11 @@
+<html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
+<body>
 <div class="content-wrapper">
     <div class="main-content" style="padding-top: 20px;">
         <div class="container mt-5" style="padding-right: 50px;">
@@ -18,14 +21,12 @@
                         <button type="button" class="btn btn-primary dropdown-toggle me-2" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-file-import"></i> Tanggal
                         </button>
-                            <label for="date" style="font-size: 14px" class="me-2">Tanggal:</label>
                             <select class="form-select me-2" name="date" id="dateInput" 
                                 style="width: 80px; height: 40px; font-size: 14px" 
                                 onchange="updateReport()">
                                 <!-- Will be populated by JavaScript -->
                             </select>
 
-                        <label for="month" style="font-size: 14px" class="me-2">Bulan:</label>
                         <select class="form-select me-2" name="month" style="width: 120px; font-size: 14px" id="monthSelect" onchange="changeMonth()">
                             <option value="1">January</option>
                             <option value="2">February</option>
@@ -41,7 +42,6 @@
                             <option value="12">December</option>
                         </select>
 
-                        <label for="year" style="font-size: 14px" class="me-2">Tahun:</label>
                         <input type="number" class="form-select me-2" name="year" id="yearInput" 
                                style="width: 100px; font-size: 14px" 
                                value="{{ date('Y') }}" 
@@ -50,6 +50,18 @@
 
                     <!-- Tombol Export -->
                     <div class="d-flex gap-2">
+                        <form action="{{ route('securities.outstanding-balance-treasury.execute-procedure') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="tahun" value="{{ request()->query('tahun', date('Y')) }}">
+                            <input type="hidden" name="bulan" value="{{ request()->query('bulan', date('n')) }}">
+                            <input type="hidden" name="tanggal" value="{{ request()->query('tanggal', date('j')) }}">
+                            <button type="submit" class="btn btn-warning btn-icon-split">
+                                <span class="icon ">
+                                    <i class="fas fa-play"></i>
+                                </span>
+                                <span class="text">Execute</span>
+                            </button>
+                        </form>
                         <a href="#" class="btn btn-danger" id="exportPdf">
                             <i class="fas fa-file-pdf"></i> Export to PDF
                         </a>
@@ -105,11 +117,11 @@
                                     $sumFaceValue = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->face_value));
                                     $sumMtmPrice = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->mtm_price));
                                     $sumCarryingAmount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->carrying_amount));
-                                    $sumAtdiscount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atdiscount));
-                                    $sumAtpremium = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->atpremium));
-                                    $sumBrokerage = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->brokerage));
+                                    $sumAtdiscount = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->unamortized_atdiscount));
+                                    $sumAtpremium = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->unamortized_atpremium));
+                                    $sumBrokerage = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->unamortized_brokerage));
                                     $sumTimegap = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_timegap));
-                                    $sumGainLoss = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->gain_losses));
+                                    $sumGainLoss = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->cum_gain_losses));
                                 @endphp
                                 <tr>
                                     <td>{{ $nourut }}</td>
@@ -172,14 +184,14 @@
                                     <td>{{ number_format($security->eirex*100,14)}}%</td>
                                     <td>{{ number_format($security->eircalc*100,14)}}%</td>                                    
                                     <td class="text-right">{{number_format((float) str_replace(['$', ','], '',$security->face_value))}}</td>
-                                    <td>{{ number_format($security->price,5)}}</td>
+                                    <td class="text-right">{{ number_format($security->price,5)}}</td>
                                     <td class="text-right">{{ number_format((float) str_replace(['$', ','], '', $security->mtm_price)) }}</td>
                                     <td class="text-right">{{number_format((float) str_replace(['$', ','], '',$security->carrying_amount))}}</td>
-                                    <td class="text-right">-{{ number_format((float) str_replace(['$', ','], '', $security->atdiscount)) }}</td>
-                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->atpremium)) }}</td>
-                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->brokerage)) }}</td>
+                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '', $security->unamortized_atdiscount)) }}</td>
+                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->unamortized_atpremium)) }}</td>
+                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->unamortized_brokerage)) }}</td>
                                     <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->cum_timegap)) }}</td>
-                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->gain_losses)) }}</td>
+                                    <td class="text-right">{{ number_format((float) str_replace(['$', ','], '',$security->cum_gain_losses)) }}</td>
                                 </tr>
                             @endforeach
                             <!-- Row Total / Average -->
@@ -190,7 +202,7 @@
                                     <td class="text-center">{{ number_format($securities->avg('eirex')*100,14).'%' }}</td>
                                     <td class="text-center">{{ number_format($securities->avg('eircalc')*100,14).'%' }}</td>
                                     <td class="text-right">{{ number_format($sumFaceValue) }}</td>
-                                    <td class="text-right">{{ number_format($securities->sum('price'), 5) }}</td>
+                                    <td class="text-right">{{ number_format($securities->avg('price'), 5) }}</td>
                                     <td class="text-right">{{ number_format($sumMtmPrice) }}</td>
                                     <td class="text-right">{{ number_format($sumCarryingAmount) }}</td>
                                     <td class="text-right">{{ number_format($sumAtdiscount) }}</td>
@@ -251,8 +263,10 @@
         document.getElementById('monthSelect').value = parseInt(selectedMonth);
         document.getElementById('yearInput').value = selectedYear;
         
-        // Initialize days
+        // Initialize days first
         updateDays();
+        
+        // Then set the selected date
         document.getElementById('dateInput').value = parseInt(selectedDate);
     });
 
@@ -299,10 +313,11 @@
     function updateDays() {
         const month = parseInt(document.getElementById('monthSelect').value);
         const year = parseInt(document.getElementById('yearInput').value);
-        const daySelect = document.getElementById('dateInput');
+        const dateSelect = document.getElementById('dateInput');
+        const currentSelectedDate = dateSelect.value; // Simpan tanggal yang dipilih saat ini
         
         // Clear existing options
-        daySelect.innerHTML = '';
+        dateSelect.innerHTML = '';
         
         // Get number of days in the selected month
         const daysInMonth = new Date(year, month, 0).getDate();
@@ -312,7 +327,15 @@
             const option = document.createElement('option');
             option.value = i;
             option.textContent = i;
-            daySelect.appendChild(option);
+            dateSelect.appendChild(option);
+        }
+        
+        // Restore selected date if it exists and is valid for the current month
+        if (currentSelectedDate && currentSelectedDate <= daysInMonth) {
+            dateSelect.value = currentSelectedDate;
+        } else {
+            // If the date is invalid for the new month, default to 1
+            dateSelect.value = 1;
         }
     }
 
@@ -809,3 +832,20 @@ function showModalWithAccount(accountNumber, reportType) {
     }
 }
 </script>
+
+<!-- Add this before closing </body> tag -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('swal'))
+            Swal.fire({
+                title: "{{ session('swal.title') }}",
+                text: "{{ session('swal.text') }}",
+                icon: "{{ session('swal.icon') }}",
+                confirmButtonText: 'OK'
+            });
+        @endif
+    });
+</script>
+</body>
+</html>

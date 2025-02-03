@@ -65,6 +65,60 @@ class evaluationTreasuryController extends Controller
             compact('loans', 'tahun', 'bulan', 'hari', 'user', 'page', 'perPage', 'count'));
     }
 
+    public function executeStoredProcedure(Request $request)
+    {
+        try {
+            // Validate the hidden inputs just to be safe
+            $request->validate([
+                'tahun' => 'required|integer',
+                'bulan' => 'required|integer|min:1|max:12',
+                'tanggal' => 'required|integer|min:1|max:31',
+            ]);
+
+            $user = Auth::user();
+            $id_pt = $user->id_pt;
+
+            DB::transaction(function () use ($request, $id_pt) {
+                DB::select("CALL securities.spcreatemastersecurities_daily(?, ?, ?, ?)", [
+                    $request->tahun,
+                    $request->bulan,
+                    $request->tanggal,
+                    $id_pt
+                ]);
+
+                // Execute first stored procedure
+                DB::select("CALL securities.spevaluationtreasury_bonds(?, ?, ?, ?)", [
+                    $request->tahun,
+                    $request->bulan,
+                    $request->tanggal,
+                    $id_pt
+                ]);
+                
+                // Execute second stored procedure
+                DB::select("CALL securities.spoutbaltreasury_daily_bonds(?, ?, ?, ?)", [
+                    $id_pt,
+                    $request->tahun,
+                    $request->bulan,
+                    $request->tanggal
+                ]);
+            });
+
+            return redirect()->back()->with('swal', [
+                'title' => 'Berhasil!',
+                'text' => 'Stored procedures berhasil dijalankan',
+                'icon' => 'success'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error executing stored procedures: ' . $e->getMessage());
+            return redirect()->back()->with('swal', [
+                'title' => 'Error!',
+                'text' => 'Gagal menjalankan stored procedures: ' . $e->getMessage(),
+                'icon' => 'error'
+            ]);
+        }
+    }
+
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akunn
     public function view($no_acc, $id_pt)
     {

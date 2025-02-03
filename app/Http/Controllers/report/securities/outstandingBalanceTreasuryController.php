@@ -44,7 +44,7 @@ class outstandingBalanceTreasuryController extends Controller
         intval($user->id_pt),
         intval($tahun),
         intval($bulan),
-        intval($tanggal),
+        intval($tanggal)
         );
 
         // Convert to Collection
@@ -52,8 +52,11 @@ class outstandingBalanceTreasuryController extends Controller
 
         $selectedDate = "$tahun-$bulan-$tanggal";
         $securities = $securities->filter(function ($loan) use ($selectedDate) {
-            return date('Y-m-d', strtotime($loan->transac_dt)) == $selectedDate;
+            // Format kedua tanggal ke 'Y-m-d' untuk membandingkan hanya tanggal saja
+            $loanDate = date('Y-m-d', strtotime(explode(' ', $loan->transac_dt)[0]));
+            return $loanDate == $selectedDate;
         });
+
 
         $securities = $securities->sortBy('no_acc');
 
@@ -72,6 +75,60 @@ class outstandingBalanceTreasuryController extends Controller
         return view('report.securities.report_outstanding_balance_treasury_bond.master', 
             compact('securities', 'tahun', 'bulan', 'tanggal', 'user', 'page', 'perPage', 'count')
         );
+    }
+
+    public function executeStoredProcedure(Request $request)
+    {
+        try {
+            // Validate the hidden inputs just to be safe
+            $request->validate([
+                'tahun' => 'required|integer',
+                'bulan' => 'required|integer|min:1|max:12',
+                'tanggal' => 'required|integer|min:1|max:31',
+            ]);
+
+            $user = Auth::user();
+            $id_pt = $user->id_pt;
+
+            DB::transaction(function () use ($request, $id_pt) {
+                DB::select("CALL securities.spcreatemastersecurities_daily(?, ?, ?, ?)", [
+                    $request->tahun,
+                    $request->bulan,
+                    $request->tanggal,
+                    $id_pt
+                ]);
+                
+                // Execute first stored procedure
+                DB::select("CALL securities.spevaluationtreasury_bonds(?, ?, ?, ?)", [
+                    $request->tahun,
+                    $request->bulan,
+                    $request->tanggal,
+                    $id_pt
+                ]);
+                
+                // Execute second stored procedure
+                DB::select("CALL securities.spoutbaltreasury_daily_bonds(?, ?, ?, ?)", [
+                    $id_pt,
+                    $request->tahun,
+                    $request->bulan,
+                    $request->tanggal
+                ]);
+            });
+
+            return redirect()->back()->with('swal', [
+                'title' => 'Berhasil!',
+                'text' => 'Stored procedures berhasil dijalankan',
+                'icon' => 'success'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error executing stored procedures: ' . $e->getMessage());
+            return redirect()->back()->with('swal', [
+                'title' => 'Error!',
+                'text' => 'Gagal menjalankan stored procedures: ' . $e->getMessage(),
+                'icon' => 'error'
+            ]);
+        }
     }
 
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akunn
@@ -118,7 +175,9 @@ class outstandingBalanceTreasuryController extends Controller
 
         $selectedDate = "$tahun-$bulan-$tanggal";
         $securities = $securities->filter(function ($loan) use ($selectedDate) {
-            return date('Y-m-d', strtotime($loan->transac_dt)) == $selectedDate;
+            // Format kedua tanggal ke 'Y-m-d' untuk membandingkan hanya tanggal saja
+            $loanDate = date('Y-m-d', strtotime(explode(' ', $loan->transac_dt)[0]));
+            return $loanDate == $selectedDate;
         });
 
         $securities = $securities->sortBy('no_acc');
@@ -306,11 +365,11 @@ class outstandingBalanceTreasuryController extends Controller
         $sheet->getStyle('S' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         $sheet->setCellValue('S' . $row, number_format((float) str_replace(['$', ','], '',$report->carrying_amount)));
         $sheet->getStyle('T' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('T' . $row, '-' . number_format((float) str_replace(['$', ','], '', $report->atdiscount)));
+        $sheet->setCellValue('T' . $row, '-' . number_format((float) str_replace(['$', ','], '', $report->atdiscount - $report->cum_amortise_disc)));
         $sheet->getStyle('U' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('U' . $row, number_format((float) str_replace(['$', ','], '',$report->atpremium)));
+        $sheet->setCellValue('U' . $row, number_format((float) str_replace(['$', ','], '',$report->atpremium - $report->cum_amortise_prem )));
         $sheet->getStyle('V' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue('V' . $row, number_format((float) str_replace(['$', ','], '',$report->brokerage)));
+        $sheet->setCellValue('V' . $row, number_format((float) str_replace(['$', ','], '',$report->brokerage - $report->cum_amortise_brok)));
         $sheet->getStyle('W' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         $sheet->setCellValue('W' . $row, number_format((float) str_replace(['$', ','], '',$report->cum_timegap)));
         $sheet->getStyle('X' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
@@ -540,7 +599,9 @@ class outstandingBalanceTreasuryController extends Controller
 
         $selectedDate = "$tahun-$bulan-$tanggal";
         $securities = $securities->filter(function ($loan) use ($selectedDate) {
-            return date('Y-m-d', strtotime($loan->transac_dt)) == $selectedDate;
+            // Format kedua tanggal ke 'Y-m-d' untuk membandingkan hanya tanggal saja
+            $loanDate = date('Y-m-d', strtotime(explode(' ', $loan->transac_dt)[0]));
+            return $loanDate == $selectedDate;
         });
 
         $securities = $securities->sortBy('no_acc');
