@@ -19,11 +19,11 @@
                             <i class="fas fa-file-import"></i> Tanggal
                         </button>
                             <label for="date" style="font-size: 14px" class="me-2">Tanggal:</label>
-                            <input type="number" class="form-control me-2" name="date" id="dateInput" 
-                               style="width: 100px; font-size: 14px" 
-                               value="{{ date('d') }}" 
-                               min="1" 
-                               max="31">
+                            <select class="form-select me-2" name="date" id="dateInput" 
+                                style="width: 80px; height: 40px; font-size: 14px" 
+                                onchange="updateReport()">
+                                <!-- Will be populated by JavaScript -->
+                            </select>
 
                         <label for="month" style="font-size: 14px" class="me-2">Bulan:</label>
                         <select class="form-select me-2" name="month" style="width: 120px; font-size: 14px" id="monthSelect" onchange="changeMonth()">
@@ -244,26 +244,32 @@
     const reportUrl = "{{ route('securities.outstanding-balance-treasury.index') }}";
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Convert bulan to string and pad with leading zero if needed
         const selectedMonth = "{{ $bulan }}";
         const selectedYear = "{{ $tahun }}";
         const selectedDate = "{{ $tanggal }}";
         
-        // Set values using the padded month
-        document.getElementById('monthSelect').value = parseInt(selectedMonth);  // Remove leading zero for select
+        document.getElementById('monthSelect').value = parseInt(selectedMonth);
         document.getElementById('yearInput').value = selectedYear;
-        document.getElementById('dateInput').value = selectedDate;
+        
+        // Initialize days
+        updateDays();
+        document.getElementById('dateInput').value = parseInt(selectedDate);
     });
 
     // Event listener untuk perubahan bulan atau tahun
-    document.getElementById('monthSelect').addEventListener('change', updateReport);
-    document.getElementById('yearInput').addEventListener('change', updateReport);
-    document.getElementById('dateInput').addEventListener('change', updateReport);
+    document.getElementById('monthSelect').addEventListener('change', function() {
+        updateDays();
+        updateReport();
+    });
+    document.getElementById('yearInput').addEventListener('change', function() {
+        updateDays();
+        updateReport();
+    });
 
     function updateReport() {
-        const month = document.getElementById('monthSelect').value.padStart(2, '0');  // Pad with leading zero
+        const month = document.getElementById('monthSelect').value.padStart(2, '0');
         const year = document.getElementById('yearInput').value;
-        const date = document.getElementById('dateInput').value;
+        const date = document.getElementById('dateInput').value.padStart(2, '0');
         const branch = '{{ $user->id_pt }}';
         
         window.location.href = `${reportUrl}?bulan=${month}&tahun=${year}&tanggal=${date}&branch=${branch}`;
@@ -289,6 +295,26 @@
         // Redirect to the export route with query parameters
         window.location.href = `{{ route('report-outstanding-securities.exportPDF', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
     });
+
+    function updateDays() {
+        const month = parseInt(document.getElementById('monthSelect').value);
+        const year = parseInt(document.getElementById('yearInput').value);
+        const daySelect = document.getElementById('dateInput');
+        
+        // Clear existing options
+        daySelect.innerHTML = '';
+        
+        // Get number of days in the selected month
+        const daysInMonth = new Date(year, month, 0).getDate();
+        
+        // Populate days
+        for(let i = 1; i <= daysInMonth; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            daySelect.appendChild(option);
+        }
+    }
 
 </script>
 
