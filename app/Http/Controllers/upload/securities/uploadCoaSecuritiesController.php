@@ -22,7 +22,6 @@ class uploadCoaSecuritiesController extends Controller
         $perPage = $request->input('per_page', 10);
 
         $securities = DB::table('securities.tblgroupcoasecurities')
-        ->where('id_pt', $id_pt)
         ->paginate($perPage);
         
         return view('upload.securities.layouts.tblcoasecurities', [

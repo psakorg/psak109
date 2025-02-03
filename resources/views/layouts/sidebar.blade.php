@@ -408,14 +408,14 @@
                                     </a>
                                 </li>
                             </ul>
-                            <!-- <ul class="nav nav-treeview">
+                            <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ route('upload.coa.securities.index') }}" class="nav-link d-flex align-items-center">
                                         <p class="ms-2 mb-0 text-center" style="width: 30px; font-size: 14px;">✦</p>
                                         <p class="ms-3 mb-0 flex-grow-1 text-start" style="font-size: 14px;">tblcoasecurities</p>
                                     </a>
                                 </li>
-                            </ul>  -->
+                            </ul> 
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ route('upload.rating.securities.index') }}" class="nav-link d-flex align-items-center">

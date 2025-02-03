@@ -18,7 +18,7 @@ class uploadRatingSecuritiesController extends Controller
 {
     public function index(Request $request)
     {
-        $id_pt = Auth::user()->id;
+        $id_pt = Auth::user()->id_pt;
         $perPage = $request->input('per_page', 10);
 
         $securities = DB::table('securities.tblratingsecurities')

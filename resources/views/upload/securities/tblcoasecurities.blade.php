@@ -10,12 +10,9 @@
   <style>
   body {
       background-color: #f4f7fc;
-      display: flex;
-      justify-content: center; /* Center horizontally */
-      align-items: center; /* Center vertically */
       height: 100vh; /* Full height of the viewport */
-      margin: 0; /* Remove default margin */
       font-size: 12px;
+      margin: 0;
     }
     .section-header {
       text-align: center;
@@ -144,11 +141,11 @@
 
 
             <!-- Data Table -->
-            <div class="card">
+              <div class="card">
                 <div class="card-header">
-                    <h6 class="m-0 font-weight-bold text-primary">tblcoasecurities</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">tblcoaloancorporate</h6>
                 </div>
-                <div class="table-responsive p-3">
+                <div class="table-responsive p-3" style="font-size: 12px;">
                     <table class="table table-hover table-bordered text-center">
                         <thead>
                             <tr>
@@ -156,7 +153,7 @@
                                 <th>gl_group</th>
                                 <th>interface</th>
                                 <th>CoA</th>
-                                <th>deskripsi/th>
+                                <th>deskripsi</th>
                                 <th>pc</th>
                                 <th>ccy</th>
                                 <th>post</th>
@@ -165,7 +162,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @if (isset($messages) && count($messages) > 0)
                             @foreach($securities as $item)
                             <tr>
                                 <td>{{ $item->bond_type }}</td>
@@ -180,7 +176,6 @@
                                 <td>{{ $item->bond_description }}</td>
                             </tr>
                             @endforeach
-                        @endif
                         </tbody>
                     </table>
                 </div>
@@ -192,9 +187,8 @@
             @endif
 
        <!-- Pagination Links -->
-        <div class="d-flex justify-content-between align-items-center mt-3">
+        <div class="d-flex justify-content-between align-items-center mt-2">
             <div>
-
                 {{-- Showing {{ $securities->firstItem() }} to {{ $securities->lastItem() }} of {{ $securities->total() }} entries --}}
             </div>
             <div class="d-flex align-items-center">
