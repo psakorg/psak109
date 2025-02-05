@@ -13,19 +13,20 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use DateTime;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class uploadRatingSecuritiesController extends Controller
 {
     public function index(Request $request)
     {
         $id_pt = Auth::user()->id_pt;
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 5);
 
         $securities = DB::table('securities.tblratingsecurities')
         ->where('no_branch', $id_pt)
         ->paginate($perPage);
         
-        return view('upload.securities.layouts.tblratingsecurities', [
+        return view('upload.securities.layouts.tblratingsecurities', compact('securities'), [
         'title' => 'Laravel - PHPSpreadsheet',
         'securities' => $securities 
     ]);
@@ -74,7 +75,7 @@ class uploadRatingSecuritiesController extends Controller
             // Fungsi helper untuk format tanggal
             $formatDate = function($date) {
                 if (empty($date) || $date == "''" || $date == "''") {
-                    return '1900-01-01';
+                    return '1900-01-01 00:00:00';
                 }
                 
                 try {
@@ -104,14 +105,13 @@ class uploadRatingSecuritiesController extends Controller
                 return $value;
             }, $row);
 
-
             return [
-                'no_acc' => (float)$cleanRow[0],
+                'no_acc' => (int)$cleanRow[0],
                 'no_branch' => (string)$cleanRow[1],
                 'bond_id' => (string)$cleanRow[2],
                 'appraisal_name' => (string)$cleanRow[3],
                 'rating' => (string)$cleanRow[4],
-                'rating_date' => !empty($cleanRow[5]) ? date('Y-m-d H:i:s', strtotime($cleanRow[5])) : null,
+                'rating_date' =>  $formatDate(trim($cleanRow[5])),
                 'economi_sector' =>(string)$cleanRow[6],
                 'sources_rating' => (string)$cleanRow[7],
             ];
@@ -156,25 +156,17 @@ class uploadRatingSecuritiesController extends Controller
             $spreadsheet = $reader->load($file->getRealPath());
             $worksheet = $spreadsheet->getActiveSheet();
             $rows = $worksheet->toArray();
+            $rows = array_slice($rows, 1);
             // dd($rows);
 
             $successCount = 0;
             $errors = [];
             $duplicates = [];
+            $allData = [];
 
             foreach ($rows as $index => $row) {
                 DB::beginTransaction();
                 try {
-                    // Check for existing no_acc for this id_pt
-                    // $existingRecord = DB::table('tblmaster_tmp')
-                    //     ->where('no_acc', trim((string)$row[0]))
-                    //     ->where('id_pt', $id_pt)
-                    //     ->first();
-
-                    // if ($existingRecord) {
-                    //     $duplicates[] = "Baris " . ($index + 1) . ": No ACC '" . trim((string)$row[0]) . "' sudah ada untuk PT ini";
-                    //     continue;
-                    // }
 
                     $convertNumericDate = function($numericDate) {
                         if (empty($numericDate)) return null;
@@ -184,21 +176,58 @@ class uploadRatingSecuritiesController extends Controller
                         $day = substr($numericDate, 6, 2);
                         return date('Y-m-d H:i:s', strtotime("$year-$month-$day"));
                     };
+                    
+
+                    $no_acc = (int) trim($row[0]);
+
+                    //Check for existing no_acc for this id_pt
+                    $existingRecord = DB::table('tblmaster_tmp')
+                        ->where('no_acc',trim((int)$row[0]))
+                        ->where('id_pt', $id_pt)
+                        ->first();
+
+                    if ($existingRecord) {
+                        $duplicates[] = "Baris " . ($index + 1) . ": No ACC '" . trim((int)$row[0]) . "' sudah ada untuk PT ini";
+                        continue;
+                    }
+
+                    // Ensure it's stored as a string if it's too large for an integer
+                    if (!empty($no_acc) && is_numeric($no_acc)) {
+                    $no_acc = (int)$no_acc; 
+                    } else{
+                    $no_acc = null; // Set to null if invalid
+                    }
 
 
                     $data = [
-                        'no_acc' =>  trim((int)$row[0]),
+                        'no_acc' => trim((int)$row[0]),
                         'no_branch' => trim((string)$row[1]),
                         'bond_id' => trim((string)$row[2]),
                         'appraisal_name' => trim((string)$row[3]),
                         'rating' => trim((string)$row[4]),
-                        'rating_date' => $row[5],
+                        'rating_date' => trim($row[5]),
                         'economi_sector' => trim((string)$row[6]),
                         'sources_rating' => trim((string)$row[7]),
-                        'id_pt' => $id_pt,
                     ];
 
-                    // dd($data);
+
+                    $allData[] = $data;
+
+                    Log::info("Checking date at row " . ($index + 1) . ": " . $row[5]);
+                    // if (!strtotime($row[5])) {
+                    //     dd("Invalid date format at row " . ($index + 1), $data);
+                    // }
+
+                    $ratingDate = trim($row[5]);
+
+                    // Check if it's already a DateTime object
+                    if ($ratingDate instanceof DateTime) {
+                        $ratingDate = $ratingDate->format('Y-m-d H:i:s'); // Ensure it's a string
+                    } elseif (!empty($ratingDate) && !strtotime($ratingDate)) {
+                        Log::error("Invalid date format at row " . ($index + 1) . ": " . $ratingDate);
+                    continue;
+                    }
+                    $data['rating_date'] = $ratingDate;
 
                      // Validate data
                      if (!$this->validateData($data)) {
@@ -206,8 +235,6 @@ class uploadRatingSecuritiesController extends Controller
                         DB::rollBack();
                         continue;
                     }
-                    
-                    // dd($rows);
 
                     // // Hapus karakter $ dan konversi nilai kosong menjadi 0 untuk field numerik
                     // foreach ($data as $key => $value) {
@@ -240,6 +267,12 @@ class uploadRatingSecuritiesController extends Controller
                 }
             }
 
+            // dd($rows);
+            dd($allData, $errors);
+            //dd($errors);
+            //dd("Value at row " . ($index + 1) . ": " . $row[5]);
+            
+
             // Prepare response message
             if ($successCount > 0 || !empty($duplicates)) {
                 $message = [];
@@ -261,6 +294,7 @@ class uploadRatingSecuritiesController extends Controller
             
         } catch (\Exception $e) {
             Log::error('Import gagal: ' . $e->getMessage());
+            Log::error("Transaction rolled back at row " . ($index + 1) . ": " . $e->getMessage());
             return redirect()->back()->with('error', 'Import gagal: ' . $e->getMessage());
         }
     }

@@ -1,3 +1,4 @@
+<html>
 <head>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -7,6 +8,7 @@
 
 </head>
 
+<body>
 <div class="content-wrapper" style="font-size: 12px;">
     <div class="main-content" style="padding-top: 20px;">
         <div class="container mt-5">
@@ -156,6 +158,17 @@
 
                     <!-- Tombol Export -->
                     <div class="d-flex gap-2">
+                        <form action="{{ route('report-journal-eff.execute-procedure') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="tahun" value="{{ request()->query('tahun', date('Y')) }}">
+                            <input type="hidden" name="bulan" value="{{ request()->query('bulan', date('n')) }}">
+                            <button type="submit" class="btn btn-warning btn-icon-split">
+                                <span class="icon ">
+                                    <i class="fas fa-play"></i>
+                                </span>
+                                <span class="text">Execute</span>
+                            </button>
+                        </form>
                         <a href="#" class="btn btn-danger" id="exportPdf">
                             <i class="fas fa-file-pdf"></i> Export to PDF
                         </a>
@@ -297,6 +310,7 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 //Pagination
     function changePerPage() {
@@ -928,6 +942,8 @@ function updateReport() {
     });
 </script>
 
+
+
 <style>
     /* ... style yang sudah ada ... */
     
@@ -1193,3 +1209,20 @@ function updateReport() {
         color: #212529;
     }
 </style>
+
+<!-- Add this before closing </body> tag -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('swal'))
+            Swal.fire({
+                title: "{{ session('swal.title') }}",
+                text: "{{ session('swal.text') }}",
+                icon: "{{ session('swal.icon') }}",
+                timer: {{ session('swal.timer') ?? 'null' }},
+                showConfirmButton: {{ session('swal.showConfirmButton') ? 'true' : 'false' }}
+            });
+        @endif
+    });
+</script>
+</body>
+</html>

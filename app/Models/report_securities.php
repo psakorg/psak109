@@ -288,7 +288,7 @@ public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
             ->paginate($perPage);
     }
 
-    public static function getOutstandingSecurities($id_pt, $tahun, $bulan, $tanggal, $status = '2')
+    public static function getOutstandingFVTOCISecurities($id_pt, $tahun, $bulan, $tanggal, $status = '2')
     {
         try {
             // Format tanggal untuk query
@@ -317,6 +317,53 @@ public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
                 AND b.eval_dt = :eval_date
                 AND a.face_value > 0 
                 AND (b.status)<>'2'
+                AND b.clasification IN (12,22)
+                ORDER BY a.no_acc";
+
+            $date = "{$tahun}-{$bulan}-{$tanggal}";
+            
+            return DB::select($query, [
+                'branch' => $id_pt,
+                'date' => $date,
+                'eval_date' => $date
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error in getOutstandingSecurities: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public static function getOutstandingAmortizedCostSecurities($id_pt, $tahun, $bulan, $tanggal, $status = '2')
+    {
+        try {
+            // Format tanggal untuk query
+            $query = "
+                SELECT DISTINCT 
+                    a.id, a.no_acc, a.bond_id, d.yield, a.eirex, a.eircalc, 
+                    a.face_value, a.mtm_price, a.price, a.carrying_amount, 
+                    a.transac_dt,
+                    a.cum_amortized, a.cum_timegap, a.cum_amortise_disc, 
+                    a.cum_amortise_prem, a.cum_amortise_brok, a.atdiscount, 
+                    a.atpremium, a.brokerage, 
+                    a.atpremium+a.cum_amortise_prem as unamortized_atpremium,
+                    -a.atdiscount+a.cum_amortise_disc as unamortized_atdiscount,
+                    a.brokerage+a.cum_amortise_brok as unamortized_brokerage,
+                    a.gain_losses, a.cum_gain_losses,
+                    b.issuer_name, b.no_branch, b.status, b.bond_type, 
+                    b.org_date_dt, b.tenor, b.pmtamt, b.mtr_date_dt, 
+                    b.gl_group, b.coupon_rate, m.jdname, c.coa
+                FROM securities.tblpsaklbutreasury a 
+                INNER JOIN securities.tblMASTER_SECURITIES b ON a.no_acc = b.no_acc
+                LEFT OUTER JOIN public.\"CABANG-\" m ON (b.no_branch = m.jdbr)
+                LEFT OUTER JOIN securities.tblglgroupsecurities c ON b.gl_group = c.gl_group
+                LEFT OUTER JOIN securities.tblOBALSecurities d ON a.no_acc = d.no_acc
+                WHERE b.no_branch = :branch 
+                AND a.transac_dt = :date
+                AND b.eval_dt = :eval_date
+                AND a.face_value > 0 
+                AND (b.status)<>'2'
+                AND b.clasification IN (13,14)
                 ORDER BY a.no_acc";
 
             $date = "{$tahun}-{$bulan}-{$tanggal}";

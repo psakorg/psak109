@@ -217,7 +217,7 @@
                         <h5 class="modal-title" id="importModalLabel">Import Data</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{{ route('upload.securities.tblmaster_tmpbid.import') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('upload.securities.price.import') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body">
                             <div class="mb-3">

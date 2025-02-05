@@ -5,10 +5,10 @@
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </head>
 
 <body>
+
 <div class="content-wrapper" style="font-size: 12px;">
     <div class="main-content" style="padding-top: 20px;">
         <div class="container mt-5">
@@ -16,15 +16,122 @@
                 <!-- Loan Details Form -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="card-title"style="font-size: 16px;">REPORT JOURNAL - SIMPLE INTEREST</h5>
+                        <h5 class="card-title"style="font-size: 16px;">REPORT JOURNAL - SECURITIES</h5>
                     </div>
+
+                    
+                    <!-- <div class="card-body">
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-3 col-form-label">Branch Number</label>
+                                    <div class="col-sm-6">
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-3 col-form-label">Branch Name</label>
+                                    <div class="col-sm-6">
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-3 col-form-label">GL Group</label>
+                                    <div class="col-sm-6">
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-3 col-form-label">Date Of Report</label>
+                                    <div class="col-sm-6">
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div> -->
                 </div>
                  <div class="d-flex justify-content-start mb-3 align-items-center">
                      <div class="dropdown me-1">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-file-import"></i> Bulan/Tahun
                         </button>
-                     </div> 
+                     <!--</div> 
+
+                       
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Accrual Interest <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('accrual_interest_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('accrual_interest_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Amortised Cost <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_cost_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_cost_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Amortised Initial Cost <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_cost_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_cost_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Amortised Initial Fee <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_fee_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_fee_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Expected Cash Flow <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('expected_cashflow_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('expected_cashflow_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Outstanding <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('outstanding_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('outstanding_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Journal <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('journal_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('journal_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        -->
+                    </div> 
 
                     <div class="d-flex align-items-center ">
                         <select class="form-select me-2" style="width: 120px;" id="monthSelect">
@@ -42,22 +149,16 @@
                             <option value="12">December</option>
                         </select>
 
-                        <input type="number" class="form-select me-2" id="yearInput" 
+                        <input type="number" class="form-select" id="yearInput" 
                                style="width: 100px;" 
                                value="{{ date('Y') }}" 
                                min="2000" 
                                max="2099">
-
-                        <!-- <select class="form-select me-2" style="width: 200px;" id="jenisSelect">
-                            <option value="Initial Recognition">Initial Recognition</option>
-                            <option value="Amortised Up Front Fee">Amortised Up Front Fee</option>
-                            <option value="Amortised Transaction Cost">Amortised Transaction Cost</option>
-                        </select> -->
                     </div>
 
                     <!-- Tombol Export -->
                     <div class="d-flex gap-2">
-                        <form action="{{ route('report-journal-si.execute-procedure') }}" method="POST">
+                        <form action="{{ route('securities.report-journal-securities.execute-procedure') }}" method="POST">
                             @csrf
                             <input type="hidden" name="tahun" value="{{ request()->query('tahun', date('Y')) }}">
                             <input type="hidden" name="bulan" value="{{ request()->query('bulan', date('n')) }}">
@@ -89,7 +190,6 @@
                                 <th style="white-space: nowrap;" class="text-center">Entity Number</th>
                                 <th style="white-space: nowrap;" class="text-center">GL Account</th>
                                 <th style="white-space: nowrap;" class="text-center">Description</th>
-                                <!-- <th style="white-space: nowrap;" class="text-center">Post</th> -->
                                 <th style="white-space: nowrap;" class="text-center">Debit</th>
                                 <th style="white-space: nowrap;" class="text-center">Credit</th>
                                 <th style="white-space: nowrap;" class="text-center">Posting Date</th>
@@ -101,7 +201,7 @@
                                     <td colspan="22" class="text-left">Data tidak ditemukan atau belum di-generate</td>
                                 </tr>
                             @else
-                                @php
+                            @php
                                 $totalDebit = 0;
                                 $totalCredit = 0;
                                 @endphp
@@ -115,10 +215,10 @@
                                         $totalCredit += $loan->amount;
                                     }
                                     @endphp
-                                    <tr>
+                                        <tr>
                                         <td class="text-center">{{ $index + 1 }}</td>
-                                        <td class="text-center">{{ $loan->branch_no ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->id_coa ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->no_branch ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ $loan->coa ?? 'Data tidak ditemukan' }}</td>
                                         <td class="text-center">{{ $loan->deskripsi ?? 'Data tidak ditemukan' }}</td>
                                         <!-- <td class="text-center">{{ $loan->post ?? 'Data tidak ditemukan' }}</td> -->
                                         <td class="text-end">{{ $loan->post == 'D' ? number_format($loan->amount, 2) : '' }}</td>
@@ -127,7 +227,7 @@
                                     </tr>
                                 @endforeach
 
-                                <!-- Row Total -->
+                                <!-- Row Total / Average -->
                                 <tr class="table-secondary font-weight-normal">
                                     <td colspan="4" class="text-center">TOTAL:</td>
                                     <td class="text-end">{{ number_format($totalDebit, 2) }}</td>
@@ -782,12 +882,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set nilai default untuk bulan dan tahun dari parameter URL atau data yang dikirim dari controller
     const selectedMonth = "{{ $bulan ?? date('n') }}";
     const selectedYear = "{{ $tahun ?? date('Y') }}";
-//    const selectedJenis = "{{ $jenis ?? 'Initial Recognition' }}";
     
     // Set nilai default untuk select bulan dan input tahun
     document.getElementById('monthSelect').value = selectedMonth;
     document.getElementById('yearInput').value = selectedYear;
- //   document.getElementById('jenisSelect').value = selectedJenis;
 });
 
 // Event listener untuk perubahan bulan atau tahun
@@ -803,7 +901,7 @@ function updateReport() {
     
     // Sesuaikan dengan route yang benarr
     //window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}&jenis=${jenis}`;
-    window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}`;
+    window.location.href = `/securities/report-journal-securities?bulan=${month}&tahun=${year}`;
 }
     document.getElementById('exportExcel').addEventListener('click', function (e) {
         e.preventDefault();
@@ -811,7 +909,7 @@ function updateReport() {
         const year = document.getElementById('yearInput').value;
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-journal-si.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+        window.location.href = `{{ route('report-journal-securities.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
     });
     document.getElementById('exportPdf').addEventListener('click', function (e) {
         e.preventDefault();
@@ -819,7 +917,7 @@ function updateReport() {
         const year = document.getElementById('yearInput').value;
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-journal-si.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+        window.location.href = `{{ route('report-journal-securities.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
     });
     document.getElementById('exportCsv').addEventListener('click', function (e) {
         e.preventDefault();
@@ -827,7 +925,7 @@ function updateReport() {
         const year = document.getElementById('yearInput').value;
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-journal-si.exportCsv', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
+        window.location.href = `{{ route('report-journal-securities.exportCsv', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
     });
 
     document.addEventListener('DOMContentLoaded', function() {

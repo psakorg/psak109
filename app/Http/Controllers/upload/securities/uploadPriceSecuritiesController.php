@@ -20,7 +20,7 @@ class uploadPriceSecuritiesController extends Controller
     public function index(Request $request)
     {
         $id_pt = Auth::user()->id_pt;
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 5);
 
         $existIntbldatasecurities = DB::table('securities.tblpricesecurities')
         ->exists();
@@ -65,11 +65,7 @@ class uploadPriceSecuritiesController extends Controller
         
         // Validasi field wajib
         $required_fields = [
-            'no_acc', 'no_branch', 'deb_name', 'status', 'ln_type',
-            'org_date', 'term', 'mtr_date', 'org_bal', 'rate', 'cbal',
-            'prebal', 'bilprn', 'pmtamt', 'lrebd', 'nrebd', 'ln_grp',
-            'GROUP', 'bilint', 'bisifa', 'birest', 'freldt', 'resdt',
-            'restdt', 'prov', 'trxcost', 'gol'
+            'no_acc', 'no_branch', 'bond_id', 'price', 'price_date', 'sources_qoutation'
         ];
 
         foreach ($required_fields as $field) {
@@ -86,7 +82,7 @@ class uploadPriceSecuritiesController extends Controller
         }
 
         // Validasi format tanggal
-        $dateFields = ['org_date_dt', 'mtr_date_dt', 'lrebd_dt', 'nrebd_dt', 'freldt_dt', 'resdt_dt', 'restdt_dt'];
+        $dateFields = ['price_date'];
         foreach ($dateFields as $field) {
             if (!empty($data[$field]) && !strtotime($data[$field])) {
                 Log::error("Format tanggal tidak valid untuk field '$field'", [
@@ -139,39 +135,11 @@ class uploadPriceSecuritiesController extends Controller
 
             return [
                 'no_acc' => (float)$cleanRow[0],
-                'no_branch' => (float)$cleanRow[1],
-                'deb_name' => (string)$cleanRow[2],
-                'status' => (string)$cleanRow[3],
-                'ln_type' => (string)$cleanRow[4],
-                'org_date' => (float)$cleanRow[5],
-                'org_date_dt' => !empty($cleanRow[6]) ? date('Y-m-d H:i:s', strtotime($cleanRow[6])) : null,
-                'term' => (float)$cleanRow[7],
-                'mtr_date' => (float)$cleanRow[8],
-                'mtr_date_dt' => !empty($cleanRow[9]) ? date('Y-m-d H:i:s', strtotime($cleanRow[9])) : null,
-                'org_bal' => (float)$cleanRow[10],
-                'rate' => (float)$cleanRow[11],
-                'cbal' => (float)$cleanRow[12],
-                'prebal' => (float)$cleanRow[13],
-                'bilprn' => (float)$cleanRow[14],
-                'pmtamt' => (float)$cleanRow[15],
-                'lrebd' => (float)$cleanRow[16],
-                'lrebd_dt' => !empty($cleanRow[17]) ? date('Y-m-d H:i:s', strtotime($cleanRow[17])) : null,
-                'nrebd' => (float)$cleanRow[18],
-                'nrebd_dt' => !empty($cleanRow[19]) ? date('Y-m-d H:i:s', strtotime($cleanRow[19])) : null,
-                'ln_grp' => (float)$cleanRow[20],
-                'GROUP' => trim($cleanRow[21], "'"),
-                'bilint' => (float)$cleanRow[22],
-                'bisifa' => (float)$cleanRow[23],
-                'birest' => (string)$cleanRow[24],
-                'freldt' => (float)$cleanRow[25],
-                'freldt_dt' => !empty($cleanRow[26]) && $cleanRow[26] != '1900-01-01' ? date('Y-m-d H:i:s', strtotime($cleanRow[26])) : null,
-                'resdt' => (float)$cleanRow[27],
-                'resdt_dt' => !empty($cleanRow[28]) && $cleanRow[28] != '1900-01-01' ? date('Y-m-d H:i:s', strtotime($cleanRow[28])) : null,
-                'restdt' => (float)$cleanRow[29],
-                'restdt_dt' => !empty($cleanRow[30]) && $cleanRow[30] != '1900-01-01' ? date('Y-m-d H:i:s', strtotime($cleanRow[30])) : null,
-                'prov' => (float)$cleanRow[31],
-                'trxcost' => (float)$cleanRow[32],
-                'gol' => (int)$cleanRow[33]
+                'no_branch' => (string)$cleanRow[1],
+                'bond_id' => (string)$cleanRow[2],
+                'price' => (float)$cleanRow[3],
+                'price_date' => !empty($cleanRow[4]) ? date('Y-m-d H:i:s', strtotime($cleanRow[5])) : null,
+                'sources_qoutation' => (string)$cleanRow[5],
             ];
         } catch (\Exception $e) {
             Log::error('Data formatting error: ' . $e->getMessage());
@@ -259,19 +227,26 @@ class uploadPriceSecuritiesController extends Controller
                         'id_pt' => $id_pt,
                     ];
 
-                    // Hapus karakter $ dan konversi nilai kosong menjadi 0 untuk field numerik
-                    foreach ($data as $key => $value) {
-                        if (is_string($value)) {
-                            $data[$key] = trim(str_replace('$', '', $value));
-                        }
-                        if ($value === '' || $value === null) {
-                            if (in_array($key)) {
-                                $data[$key] = 0.0;
-                            } elseif (in_array($key)) {
-                                $data[$key] = 0;
-                            }
-                        }
+                    // Validate data
+                    if (!$this->validateData($data)) {
+                        $errors[] = "Row " . ($index + 1) . ": Invalid data.";
+                        DB::rollBack();
+                        continue;
                     }
+
+                    // // Hapus karakter $ dan konversi nilai kosong menjadi 0 untuk field numerik
+                    // foreach ($data as $key => $value) {
+                    //     if (is_string($value)) {
+                    //         $data[$key] = trim(str_replace('$', '', $value));
+                    //     }
+                    //     if ($value === '' || $value === null) {
+                    //         if (in_array($key)) {
+                    //             $data[$key] = 0.0;
+                    //         } elseif (in_array($key)) {
+                    //             $data[$key] = 0;
+                    //         }
+                    //     }
+                    // }
 
                     Log::info('Attempting to insert row ' . ($index + 1), ['data' => $data]);
                     DB::table('securities.tblpricesecurities')->insert($data);

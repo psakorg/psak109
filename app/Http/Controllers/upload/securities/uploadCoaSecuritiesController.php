@@ -35,11 +35,7 @@ class uploadCoaSecuritiesController extends Controller
         
         // Validasi field wajib
         $required_fields = [
-            'no_acc', 'no_branch', 'deb_name', 'status', 'ln_type',
-            'org_date', 'term', 'mtr_date', 'org_bal', 'rate', 'cbal',
-            'prebal', 'bilprn', 'pmtamt', 'lrebd', 'nrebd', 'ln_grp',
-            'GROUP', 'bilint', 'bisifa', 'birest', 'freldt', 'resdt',
-            'restdt', 'prov', 'trxcost', 'gol'
+            'bond_type','gl_group','interface','group','coa','deskripsi','pc','ccy','post','event','bond_description'
         ];
 
         foreach ($required_fields as $field) {
@@ -55,48 +51,48 @@ class uploadCoaSecuritiesController extends Controller
             }
         }
 
-        // Validasi format tanggal
-        $dateFields = ['org_date_dt', 'mtr_date_dt', 'lrebd_dt', 'nrebd_dt', 'freldt_dt', 'resdt_dt', 'restdt_dt'];
-        foreach ($dateFields as $field) {
-            if (!empty($data[$field]) && !strtotime($data[$field])) {
-                Log::error("Format tanggal tidak valid untuk field '$field'", [
-                    'nilai' => $data[$field]
-                ]);
-                return false;
-            }
-        }
+    //     // Validasi format tanggal
+    //     $dateFields = [];
+    //     foreach ($dateFields as $field) {
+    //         if (!empty($data[$field]) && !strtotime($data[$field])) {
+    //             Log::error("Format tanggal tidak valid untuk field '$field'", [
+    //                 'nilai' => $data[$field]
+    //             ]);
+    //             return false;
+    //         }
+    //     }
 
-        Log::info('Validasi berhasil');
-        return true;
+    //     Log::info('Validasi berhasil');
+    //     return true;
     }
 
     protected function formatData($row)
     {
         try {
-            // Fungsi helper untuk format tanggal
-            $formatDate = function($date) {
-                if (empty($date) || $date == "''" || $date == "''") {
-                    return '1900-01-01';
-                }
+            // // Fungsi helper untuk format tanggal
+            // $formatDate = function($date) {
+            //     if (empty($date) || $date == "''" || $date == "''") {
+            //         return '1900-01-01';
+            //     }
                 
-                try {
-                    // Coba parse format dd/mm/yyyy atau dd-mm-yyyy
-                    if (preg_match('/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})$/', $date, $matches)) {
-                        return sprintf('%s-%s-%s 00:00:00', $matches[3], $matches[2], $matches[1]);
-                    }
+            //     try {
+            //         // Coba parse format dd/mm/yyyy atau dd-mm-yyyy
+            //         if (preg_match('/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})$/', $date, $matches)) {
+            //             return sprintf('%s-%s-%s 00:00:00', $matches[3], $matches[2], $matches[1]);
+            //         }
                     
-                    // Coba parse format yyyy-mm-dd
-                    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
-                        return $date . ' 00:00:00';
-                    }
+            //         // Coba parse format yyyy-mm-dd
+            //         if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            //             return $date . ' 00:00:00';
+            //         }
 
-                    $dateTime = new DateTime($date);
-                    return $dateTime->format('Y-m-d H:i:s');
-                } catch (\Exception $e) {
-                    Log::error('Date parsing error:', ['date' => $date, 'error' => $e->getMessage()]);
-                    return null;
-                }
-            };
+            //         $dateTime = new DateTime($date);
+            //         return $dateTime->format('Y-m-d H:i:s');
+            //     } catch (\Exception $e) {
+            //         Log::error('Date parsing error:', ['date' => $date, 'error' => $e->getMessage()]);
+            //         return null;
+            //     }
+            // };
 
             // Hapus spasi dari nilai numerik dan ganti koma dengan titik
             $cleanRow = array_map(function($value) {
@@ -108,40 +104,17 @@ class uploadCoaSecuritiesController extends Controller
 
 
             return [
-                'no_acc' => (float)$cleanRow[0],
-                'no_branch' => (float)$cleanRow[1],
-                'deb_name' => (string)$cleanRow[2],
-                'status' => (string)$cleanRow[3],
-                'ln_type' => (string)$cleanRow[4],
-                'org_date' => (float)$cleanRow[5],
-                'org_date_dt' => !empty($cleanRow[6]) ? date('Y-m-d H:i:s', strtotime($cleanRow[6])) : null,
-                'term' => (float)$cleanRow[7],
-                'mtr_date' => (float)$cleanRow[8],
-                'mtr_date_dt' => !empty($cleanRow[9]) ? date('Y-m-d H:i:s', strtotime($cleanRow[9])) : null,
-                'org_bal' => (float)$cleanRow[10],
-                'rate' => (float)$cleanRow[11],
-                'cbal' => (float)$cleanRow[12],
-                'prebal' => (float)$cleanRow[13],
-                'bilprn' => (float)$cleanRow[14],
-                'pmtamt' => (float)$cleanRow[15],
-                'lrebd' => (float)$cleanRow[16],
-                'lrebd_dt' => !empty($cleanRow[17]) ? date('Y-m-d H:i:s', strtotime($cleanRow[17])) : null,
-                'nrebd' => (float)$cleanRow[18],
-                'nrebd_dt' => !empty($cleanRow[19]) ? date('Y-m-d H:i:s', strtotime($cleanRow[19])) : null,
-                'ln_grp' => (float)$cleanRow[20],
-                'GROUP' => trim($cleanRow[21], "'"),
-                'bilint' => (float)$cleanRow[22],
-                'bisifa' => (float)$cleanRow[23],
-                'birest' => (string)$cleanRow[24],
-                'freldt' => (float)$cleanRow[25],
-                'freldt_dt' => !empty($cleanRow[26]) && $cleanRow[26] != '1900-01-01' ? date('Y-m-d H:i:s', strtotime($cleanRow[26])) : null,
-                'resdt' => (float)$cleanRow[27],
-                'resdt_dt' => !empty($cleanRow[28]) && $cleanRow[28] != '1900-01-01' ? date('Y-m-d H:i:s', strtotime($cleanRow[28])) : null,
-                'restdt' => (float)$cleanRow[29],
-                'restdt_dt' => !empty($cleanRow[30]) && $cleanRow[30] != '1900-01-01' ? date('Y-m-d H:i:s', strtotime($cleanRow[30])) : null,
-                'prov' => (float)$cleanRow[31],
-                'trxcost' => (float)$cleanRow[32],
-                'gol' => (int)$cleanRow[33]
+                'bond_type' => (string)$cleanRow[0],
+                'gl_group' => (string)$cleanRow[1],
+                'interface' => (string)$cleanRow[2],
+                'group' => (float)$cleanRow[3],
+                'coa' => (string)$cleanRow[4],
+                'deskripsi' => (string)$cleanRow[5],
+                'pc' => (int)$cleanRow[6],
+                'ccy' => (string)$cleanRow[7],
+                'post' => (string)$cleanRow[8],
+                'event' => (string)$cleanRow[9],
+                'bond_description' => (string)$cleanRow[10],
             ];
         } catch (\Exception $e) {
             Log::error('Data formatting error: ' . $e->getMessage());
@@ -220,40 +193,17 @@ class uploadCoaSecuritiesController extends Controller
 
 
                     $data = [
-                        'no_acc' => trim((int)$row[0]),
-                        'no_branch' => trim((string)$row[1]),
-                        'bond_id' => trim((string)$row[2]),
-                        'issuer_name' => trim((string)$row[3]),
-                        'status' => trim((string)$row[4]),
-                        'bond_type' => trim((string)$row[5]),
-                        'org_date' => (int)$row[6],
-                        'org_date_dt' => $row[7],
-                        'tenor' => (float)$row[8],
-                        'mtr_date' => (int)$row[9],
-                        'mtr_date_dt' => $row[10],
-                        'org_bal' => (float)str_replace(['$', ','], '', $row[11]),
-                        'coupon_rate' => (float)str_replace(['$', ','], '', $row[12]),
-                        'price' => (float)str_replace(['$', ','], '', $row[13]),
-                        'face_value' => (float)str_replace(['$', ','], '', $row[14]),
-                        'prebal' => (float)str_replace(['$', ','], '', $row[15]),
-                        'lrebd' => (int)$row[16],
-                        'lrebd_dt' => $row[17],
-                        'nrebd' => (int)$row[18],
-                        'nrebd_dt' => $row[19],
-                        'pmtamt' => (float)str_replace(['$', ','], '', $row[20]),
-                        'bond_grp' => (int)$row[21],
-                        'gl_group' => trim((string)$row[22]),
-                        'tradedt' => (int)$row[23],
-                        'trade_dt' => $row[24],
-                        'settledt' => (int)$row[25],
-                        'settle_dt' => $row[26],
-                        'evaldt' => (int)$row[27],
-                        'eval_dt' => $row[28],
-                        'brokerage' => (float)str_replace(['$', ','], '', $row[29]),
-                        'atdiscount' => (float)str_replace(['$', ','], '', $row[30]),
-                        'atpremium' => (float)str_replace(['$', ','], '', $row[31]),
-                        'clasification' => (int)$row[32],
-                        'id_pt' => $id_pt,
+                        'bond_type' => trim((string)$row[0]),
+                        'gl_group' => trim((string)$row[1]),
+                        'interface' => trim((string)$row[2]),
+                        'group' => trim((string)$row[3]),
+                        'coa' => trim((string)$row[4]),
+                        'deskripsi' => trim((string)$row[5]),
+                        'pc' => (int)$row[6],
+                        'ccy' => trim((string)$row[7]),
+                        'post' => trim((string)$row[8]),
+                        'event' => trim((string)$row[9]),
+                        'bond_description' => trim((string)$row[10]),
                     ];
 
                     // Hapus karakter $ dan konversi nilai kosong menjadi 0 untuk field numerik

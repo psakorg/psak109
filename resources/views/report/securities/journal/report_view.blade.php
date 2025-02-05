@@ -1,138 +1,183 @@
-<html>
 <head>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </head>
 
-<body>
 <div class="content-wrapper" style="font-size: 12px;">
     <div class="main-content" style="padding-top: 20px;">
         <div class="container mt-5">
             <section class="section">
+                
+
                 <!-- Loan Details Form -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="card-title"style="font-size: 16px;">REPORT JOURNAL - SIMPLE INTEREST</h5>
+                        <h5 class="card-title"style="font-size: 16px;">REPORT JOURNAL - SECURITIES</h5>
                     </div>
-                </div>
-                 <div class="d-flex justify-content-start mb-3 align-items-center">
-                     <div class="dropdown me-1">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-file-import"></i> Bulan/Tahun
-                        </button>
-                     </div> 
-
-                    <div class="d-flex align-items-center ">
-                        <select class="form-select me-2" style="width: 120px;" id="monthSelect">
-                            <option value="1">January</option>
-                            <option value="2">February</option>
-                            <option value="3">March</option>
-                            <option value="4">April</option>
-                            <option value="5">May</option>
-                            <option value="6">June</option>
-                            <option value="7">July</option>
-                            <option value="8">August</option>
-                            <option value="9">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-                        </select>
-
-                        <input type="number" class="form-select me-2" id="yearInput" 
-                               style="width: 100px;" 
-                               value="{{ date('Y') }}" 
-                               min="2000" 
-                               max="2099">
-
-                        <!-- <select class="form-select me-2" style="width: 200px;" id="jenisSelect">
-                            <option value="Initial Recognition">Initial Recognition</option>
-                            <option value="Amortised Up Front Fee">Amortised Up Front Fee</option>
-                            <option value="Amortised Transaction Cost">Amortised Transaction Cost</option>
-                        </select> -->
-                    </div>
-
-                    <!-- Tombol Export -->
-                    <div class="d-flex gap-2">
-                        <form action="{{ route('report-journal-si.execute-procedure') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="tahun" value="{{ request()->query('tahun', date('Y')) }}">
-                            <input type="hidden" name="bulan" value="{{ request()->query('bulan', date('n')) }}">
-                            <button type="submit" class="btn btn-warning btn-icon-split">
-                                <span class="icon ">
-                                    <i class="fas fa-play"></i>
-                                </span>
-                                <span class="text">Execute</span>
-                            </button>
+                    <div class="card-body">
+                        <form>
+                            <!-- Row 1 -->
+                            <div class="form-row">
+                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-3 col-form-label">Entity Number</label>
+                                    <div class="col-sm-6">
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ $loan->no_branch }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Row 2 -->
+                            <div class="form-row">
+                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-3 col-form-label">Entity Name</label>
+                                    <div class="col-sm-6">
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ '' }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Row 3 -->
+                            <div class="form-row">
+                                <div class="form-group col-md-6 row d-flex align-items-center mb-1">
+                                    <label class="col-sm-3 col-form-label">Date Of Report</label>
+                                    <div class="col-sm-6">
+                                        <input type="text font-size 12px" class="form-control" style="font-size: 12px;" value="{{ 'null' }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
-                        <a href="#" class="btn btn-danger" id="exportPdf">
-                            <i class="fas fa-file-pdf"></i> Export to PDF
-                        </a>
-                        <a href="#" id="exportExcel" class="btn btn-success">
-                            <i class="fas fa-file-excel"></i> Export to Excel
-                        </a>
-                        <a href="#" id="exportCsv" class="btn btn-primary">
-                            <i class="fas fa-file-csv"></i> Download File CSV
-                        </a>
                     </div>
                 </div>
+
+                <div class="d-flex justify-content-start mb-3 align-items-center gap-2">
+                    <div class="dropdown me-1">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-file-import"></i> Report
+                        </button>
+                        
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Accrual Interest <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('accrual_interest_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('accrual_interest_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Amortised Cost <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_cost_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_cost_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Amortised Initial Cost <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_cost_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_cost_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Amortised Initial Fee <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_fee_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('amortised_initial_fee_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Expected Cash Flow <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('expected_cashflow_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('expected_cashflow_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Outstanding <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('outstanding_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('outstanding_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="dropdown">
+                                    Journal <i class="fas fa-chevron-right float-end"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('journal_effective')">Effective</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showModal('journal_simple')">Simple Interest</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                     
+                    <a href="{{ route('report-acc-eff.exportPdf', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])}}" class="btn btn-danger">Export to PDF</a>
+                    <a href="{{ route('report-acc-eff.exportExcel', ['no_acc' => $loan->no_acc, 'id_pt' => $loan->id_pt])}}" class="btn btn-success">Export to Excel</a>
+                </div>
+
                 <!-- Report Table -->
+                <h2 style="font-size: 16px;">Report Details</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover" style="font-size: 12px;">
                         <thead class="thead-dark">
                             <tr>
-                                <th style="white-space: nowrap;" class="text-center">No.</th>
-                                <th style="white-space: nowrap;" class="text-center">Entity Number</th>
-                                <th style="white-space: nowrap;" class="text-center">GL Account</th>
-                                <th style="white-space: nowrap;" class="text-center">Description</th>
-                                <!-- <th style="white-space: nowrap;" class="text-center">Post</th> -->
-                                <th style="white-space: nowrap;" class="text-center">Debit</th>
-                                <th style="white-space: nowrap;" class="text-center">Credit</th>
-                                <th style="white-space: nowrap;" class="text-center">Posting Date</th>
+                                <th>Entity Number</th>
+                                <th>GL Account</th>
+                                <th>Description of Transaction</th>
+                                <th>Valuta</th>
+                                <th>Post</th>
+                                <th>Amount</th>
+                                <th>Posting Date</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if ($master->isEmpty())
+                            @if ($reports->isEmpty())
                                 <tr>
-                                    <td colspan="22" class="text-left">Data tidak ditemukan atau belum di-generate</td>
+                                    <td colspan="7" class="text-center">Data tidak ditemukan atau belum di-generate</td>
                                 </tr>
                             @else
                                 @php
-                                $totalDebit = 0;
-                                $totalCredit = 0;
+                                    $totalValuta = 0;
+                                    $totalPost = 0;
+                                    $totalAmount = 0;
+                                    $totalPostingDate = 0;
                                 @endphp
-                                
-                                @foreach ($master as $index => $loan)
+                                @foreach ($reports as $report)
                                     @php
-                                    // Hitung total debit dan credit
-                                    if ($loan->post == 'D') {
-                                        $totalDebit += $loan->amount;
-                                    } else if ($loan->post == 'C') {
-                                        $totalCredit += $loan->amount;
-                                    }
+                                        $totalValuta += $report->pmtamt ?? 0;
+                                        $totalPost += $report->post ?? 0;
+                                        $totalAmount += $report->amount ?? 0;
+                                        $totalPostingDate += $report->balance ?? 0;
                                     @endphp
                                     <tr>
-                                        <td class="text-center">{{ $index + 1 }}</td>
-                                        <td class="text-center">{{ $loan->branch_no ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->id_coa ?? 'Data tidak ditemukan' }}</td>
-                                        <td class="text-center">{{ $loan->deskripsi ?? 'Data tidak ditemukan' }}</td>
-                                        <!-- <td class="text-center">{{ $loan->post ?? 'Data tidak ditemukan' }}</td> -->
-                                        <td class="text-end">{{ $loan->post == 'D' ? number_format($loan->amount, 2) : '' }}</td>
-                                        <td class="text-end">{{ $loan->post == 'C' ? number_format($loan->amount, 2) : '' }}</td>
-                                        <td class="text-center">{{ date('d/m/Y', strtotime($loan->post_date))  }}</td>
+                                        <td>{{ $report->bulanke ?? 'Data tidak ditemukan' }}</td>
+                                        <td class="text-center">{{ isset($report->tglangsuran) ? date('d/m/Y', strtotime($report->tglangsuran)) : 'Belum di-generate' }}</td>
+                                        <td>{{ $report->days_interest ?? 0 }}</td>
+                                        <td>{{ number_format($report->pmtamt ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->withdrawal ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->reimbursement ?? 0, 2) }}</td>
+                                        <td>{{ number_format($report->balance ?? 0, 2) }}</td>
                                     </tr>
                                 @endforeach
-
                                 <!-- Row Total -->
-                                <tr class="table-secondary font-weight-normal">
-                                    <td colspan="4" class="text-center">TOTAL:</td>
-                                    <td class="text-end">{{ number_format($totalDebit, 2) }}</td>
-                                    <td class="text-end">{{ number_format($totalCredit, 2) }}</td>
-                                    <td></td>
+                                <tr class="font-weight-normal">
+                                    <td class="text-center" colspan="3">TOTAL</td>
+                                    <td>{{ number_format($totalValuta, 2) }}</td>
+                                    <td>{{ number_format($totalPost / $reports->count(), 2) }}</td>
+                                    <td>{{ number_format($totalAmount / $reports->count(), 2) }}</td>
+                                    <td>{{ number_format($totalPostingDate, 2) }}</td>
                                 </tr>
                             @endif
                         </tbody>
@@ -190,36 +235,8 @@
     </div>
 </div>
 
-<!-- Error Modal -->
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="errorModalLabel">Error</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                {{ session('error') }}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
-//Pagination
-    function changePerPage() {
-        const perPage = document.getElementById('per_page').value;
-        const url = new URL(window.location.href);
-        url.searchParams.set('per_page', perPage);
-        url.searchParams.delete('page'); // Hapus parameter page saat mengganti per_page
-        window.location.href = url;
-    }
-
 function showModal(type) {
     const reportTypeSelect = document.getElementById('reportType');
     const accountNumberInput = document.getElementById('accountNumber');
@@ -442,11 +459,11 @@ function viewReport() {
     // Jika tipe laporan adalah "Outstanding", langsung anggap data.success = true
     if (reportType.includes('outstanding')) {
         closeModal();
-        redirectToReport(reportType, null, entityNumber);
+        redirectToReport(reportType, accountNumber, entityNumber);
         return;
     }
 
-    // Tentukan URL pengecekan berdasarkan jenis reportt
+    // Tentukan URL pengecekan berdasarkan jenis report
     let checkUrl;
     switch(reportType) {
         case 'accrual_interest_effective':
@@ -782,80 +799,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set nilai default untuk bulan dan tahun dari parameter URL atau data yang dikirim dari controller
     const selectedMonth = "{{ $bulan ?? date('n') }}";
     const selectedYear = "{{ $tahun ?? date('Y') }}";
-//    const selectedJenis = "{{ $jenis ?? 'Initial Recognition' }}";
     
     // Set nilai default untuk select bulan dan input tahun
     document.getElementById('monthSelect').value = selectedMonth;
     document.getElementById('yearInput').value = selectedYear;
- //   document.getElementById('jenisSelect').value = selectedJenis;
 });
 
 // Event listener untuk perubahan bulan atau tahun
 document.getElementById('monthSelect').addEventListener('change', updateReport);
 document.getElementById('yearInput').addEventListener('change', updateReport);
-//document.getElementById('jenisSelect').addEventListener('change', updateReport);
 
 function updateReport() {
     const month = document.getElementById('monthSelect').value;
     const year = document.getElementById('yearInput').value;
-//    const jenis = document.getElementById('jenisSelect').value;
     const id_pt = "{{ Auth::user()->id_pt ?? '' }}";
     
-    // Sesuaikan dengan route yang benarr
-    //window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}&jenis=${jenis}`;
-    window.location.href = `/report-journal-simple-interest?bulan=${month}&tahun=${year}`;
+    // Sesuaikan dengan route yang benar
+    window.location.href = `/report-outstanding-effective/view/${id_pt}?bulan=${month}&tahun=${year}`;
 }
-    document.getElementById('exportExcel').addEventListener('click', function (e) {
-        e.preventDefault();
-        const month = document.getElementById('monthSelect').value;
-        const year = document.getElementById('yearInput').value;
-
-        // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-journal-si.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
-    });
-    document.getElementById('exportPdf').addEventListener('click', function (e) {
-        e.preventDefault();
-        const month = document.getElementById('monthSelect').value;
-        const year = document.getElementById('yearInput').value;
-
-        // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-journal-si.exportPdf', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
-    });
-    document.getElementById('exportCsv').addEventListener('click', function (e) {
-        e.preventDefault();
-        const month = document.getElementById('monthSelect').value;
-        const year = document.getElementById('yearInput').value;
-
-        // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-journal-si.exportCsv', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}`;
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Check if there's an error message in the session
-        @if(Session::has('error'))
-            Swal.fire({
-                title: 'Error',
-                text: "{{ Session::get('error') }}",
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        @endif
-    });
-</script>
-
-<!-- Add this before closing </body> tag -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        @if(session('swal'))
-            Swal.fire({
-                title: "{{ session('swal.title') }}",
-                text: "{{ session('swal.text') }}",
-                icon: "{{ session('swal.icon') }}",
-                confirmButtonText: 'OK'
-            });
-        @endif
-    });
 </script>
 
 <style>
@@ -1123,5 +1084,3 @@ function updateReport() {
         color: #212529;
     }
 </style>
-</body>
-</html>

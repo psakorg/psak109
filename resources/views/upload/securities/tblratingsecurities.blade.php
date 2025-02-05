@@ -125,9 +125,9 @@
             <!-- Button Section -->
             <div class="d-flex justify-content-between mb-3">
                 <div>
-                    <!-- <button type="button" class="btn btn-success btn-icon-split" data-bs-toggle="modal" data-bs-target="#importModal">
+                    <button type="button" class="btn btn-success btn-icon-split" data-bs-toggle="modal" data-bs-target="#importModal">
                         <i class="fas fa-file-import"></i> Upload
-                    </button> -->
+                    </button>
 
                     <!-- <button type="button" class="btn btn-warning btn-icon-split" data-bs-toggle="modal" data-bs-target="#executeModal">
                         <i class="fas fa-play"></i> Execute
@@ -163,7 +163,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @if (isset($messages) && count($messages) > 0)
                             @foreach($securities as $item)
                             <tr>
                                 <td>{{ $item->no_branch }}</td>
@@ -171,11 +170,11 @@
                                 <td>{{ $item->bond_id}}</td>
                                 <td>{{ $item->appraisal_name }}</td>
                                 <td>{{ $item->rating }}</td>
+                                <td>{{ date('d/m/Y', strtotime($item->rating_date)) }}</td>
                                 <td>{{ $item->economi_sector }}</td>
                                 <td>{{ $item->sources_rating }}</td>
                             </tr>
                             @endforeach
-                        @endif
                         </tbody>
                     </table>
                 </div>

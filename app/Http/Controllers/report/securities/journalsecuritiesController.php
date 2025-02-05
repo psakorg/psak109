@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\report\Report_Journal;
+namespace App\Http\Controllers\report\securities;
 
 use App\Models\report_effective;
 use App\Http\Controllers\Controller;
@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-class effectiveController extends Controller
+class journalsecuritiesController extends Controller
 {
     // Method untuk menampilkan semua data pinjaman korporat
     public function index(Request $request)
@@ -35,17 +35,15 @@ class effectiveController extends Controller
            $isSuperAdmin = $user->role === 'superadmin';
            
            // Ambil data dengan pagination
-           $master = DB::table('tbljournal_effective_total')
-           ->where('branch_no', $id_pt)
+           $master = DB::table('securities.tbljournal_securities_total')
+           ->where('no_branch', $id_pt)
            ->where('tahun', $tahun)
            ->where('bulan', $bulan)
            ->paginate($perPage); 
 
-        //    dd($master);
 
-           return view('report.journal.effective.master', compact('master', 'bulan', 'tahun', 'isSuperAdmin', 'user'));
+           return view('report.securities.journal.master', compact('master', 'bulan', 'tahun', 'isSuperAdmin', 'user'));
     }
-
 
     public function executeStoredProcedure(Request $request)
     {
@@ -59,12 +57,14 @@ class effectiveController extends Controller
             $user = Auth::user();
             $id_pt = $user->id_pt;
 
+            $tanggal = date('t'); // Mengambil tanggal terakhir dari bulan sekarang
 
-            DB::transaction(function () use ($request, $id_pt) {
-                DB::select("CALL public.spcreatejournaleffectivefinal(?, ?, ?)", [
+            DB::transaction(function () use ($request, $id_pt, $tanggal) {
+                DB::select("CALL securities.spcreatejournalsecurities(?, ?, ?, ?)", [
                     $id_pt,
+                    $request->tahun,
                     $request->bulan,
-                    $request->tahun
+                    $tanggal
                 ]);
             });
 
@@ -102,7 +102,7 @@ class effectiveController extends Controller
         }
 
         $isSuperAdmin = $user->role === 'superadmin';
-        return view('report.journal.effective.view', compact('loan', 'reports', 'isSuperAdmin', 'user'));
+        return view('report.securities.journal.view', compact('loan', 'reports', 'isSuperAdmin', 'user'));
     }
 
     public function exportExcel(Request $request, $id_pt)
@@ -127,11 +127,12 @@ class effectiveController extends Controller
     $bulan = $request->input('bulan', date('n')); // This will be 1-12
     $tahun = $request->input('tahun', date('Y'));
 
-    $master = DB::table('public.tbljournal_effective_total')
+    $master = DB::table('securities.tbljournal_securities_total')
         ->where('bulan', $bulan)
         ->where('tahun', $tahun)
-        ->orderBy('tbljournal_effective_total.id_jrnl', 'asc')
-        ->orderBy('tbljournal_effective_total.post', 'asc')
+        ->where('no_branch', $id_pt)
+        ->orderBy('interface', 'asc')
+        ->orderBy('post', 'asc')
         ->get();
     
         $bulan = $namaBulan[$bulan];
@@ -160,7 +161,7 @@ class effectiveController extends Controller
     // // Set informasi pinjaman
      $sheet->setCellValue('A2', 'Branch Number');
      $sheet->getStyle('A2')->getFont()->setBold(true);
-     $sheet->setCellValue('B2', $loanFirst->branch_no);
+     $sheet->setCellValue('B2', $loanFirst->no_branch);
      $sheet->setCellValue('A3', 'Branch Name');
      $sheet->getStyle('A3')->getFont()->setBold(true);
      $sheet->setCellValue('B3', $loanFirst->branch_name);
@@ -207,9 +208,9 @@ class effectiveController extends Controller
         $sheet->getStyle('A' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->setCellValue('A' . $row, $nourut);
         $sheet->getStyle('B' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->setCellValue('B' . $row, $loan->branch_no);
+        $sheet->setCellValue('B' . $row, $loan->no_branch);
         $sheet->getStyle('C' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->setCellValue('C' . $row, $loan->id_coa);
+        $sheet->setCellValue('C' . $row, $loan->coa);
         $sheet->getStyle('D' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->setCellValue('D' . $row, $loan->deskripsi);
         // $sheet->getStyle('E' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -308,11 +309,12 @@ class effectiveController extends Controller
         $bulan = $request->input('bulan', date('n')); // This will be 1-12
         $tahun = $request->input('tahun', date('Y'));
         
-        $master = DB::table('public.tbljournal_effective_total')
+        $master = DB::table('securities.tbljournal_securities_total')
+        ->where('no_branch', $id_pt)
         ->where('bulan', $bulan)
         ->where('tahun', $tahun)
-        ->orderBy('tbljournal_effective_total.id_jrnl', 'asc')
-        ->orderBy('tbljournal_effective_total.post', 'asc')
+        ->orderBy('interface', 'asc')
+        ->orderBy('post', 'asc')
         ->get();
         
         $bulan = $namaBulan[$bulan];
@@ -334,7 +336,7 @@ class effectiveController extends Controller
         // Set informasi pinjaman
         $sheet->setCellValue('A2', 'Entity Number');
         $sheet->getStyle('A2')->getFont()->setBold(true); 
-        $sheet->setCellValue('B2', $loanFirst->branch_no);
+        $sheet->setCellValue('B2', $loanFirst->no_branch);
         $sheet->setCellValue('A3', 'Entitiy Name');
         $sheet->getStyle('A3')->getFont()->setBold(true);
         $sheet->setCellValue('B3', $loanFirst->branch_name);
@@ -378,9 +380,9 @@ class effectiveController extends Controller
             $sheet->getStyle('A' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('A' . $row, $nourut);
             $sheet->getStyle('B' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('B' . $row, $loan->branch_no ?? 0);
+            $sheet->setCellValue('B' . $row, $loan->no_branch ?? 0);
             $sheet->getStyle('C' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('C' . $row, " ".$loan->id_coa ?? 0);
+            $sheet->setCellValue('C' . $row, " ".$loan->coa ?? 0);
             $sheet->getStyle('D' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('D' . $row, $loan->deskripsi ?? 0);
             $sheet->getStyle('E' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -483,11 +485,12 @@ class effectiveController extends Controller
     $bulan = $request->input('bulan', date('n')); // This will be 1-12
     $tahun = $request->input('tahun', date('Y'));
 
-    $master = DB::table('public.tbljournal_effective_total')
+    $master = DB::table('securities.tbljournal_securities_total')
+        ->where('no_branch', $id_pt)
         ->where('bulan', $bulan)
         ->where('tahun', $tahun)
-        ->orderBy('tbljournal_effective_total.id_jrnl', 'asc')
-        ->orderBy('tbljournal_effective_total.post', 'asc')
+        ->orderBy('interface', 'asc')
+        ->orderBy('post', 'asc')
         ->get();
     
         $bulan = $namaBulan[$bulan];
@@ -514,7 +517,7 @@ class effectiveController extends Controller
          // // Set informasi pinjaman
         $sheet->setCellValue('A2', 'Branch Number');
         $sheet->getStyle('A2')->getFont()->setBold(true);
-        $sheet->setCellValue('B2', $loanFirst->branch_no);
+        $sheet->setCellValue('B2', $loanFirst->no_branch);
         $sheet->setCellValue('A3', 'Branch Name');
         $sheet->getStyle('A3')->getFont()->setBold(true);
         $sheet->setCellValue('B3', $loanFirst->branch_name);
@@ -563,9 +566,9 @@ class effectiveController extends Controller
         $sheet->getStyle('A' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->setCellValue('A' . $row, $nourut);
         $sheet->getStyle('B' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->setCellValue('B' . $row, $loan->branch_no);
+        $sheet->setCellValue('B' . $row, $loan->no_branch);
         $sheet->getStyle('C' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->setCellValue('C' . $row, $loan->id_coa);
+        $sheet->setCellValue('C' . $row, $loan->coa);
         $sheet->getStyle('D' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->setCellValue('D' . $row, $loan->deskripsi);
         // $sheet->getStyle('E' . $row, $nourut)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -667,13 +670,14 @@ public function exportCsv(Request $request, $id_pt)
     $tahun = $request->input('tahun', date('Y'));
 
 
-    $master = DB::table('public.tbljournal_effective')
-        ->where('tbljournal_effective.branch_no', $id_pt)
+    $master = DB::table('securities.tbljournal_securities')
+        ->where('tbljournal_securities.no_branch', $id_pt)
         ->where('bulan', $bulan)
         ->where('tahun', $tahun)
-        ->orderBy('tbljournal_effective.id_jrnl', 'asc')
-        ->orderBy('tbljournal_effective.acct_no', 'asc')
-        ->orderBy('tbljournal_effective.post', 'asc')
+        ->where("no_branch", $id_pt)
+        ->orderBy('interface', 'asc')
+        ->orderBy('no_acc', 'asc')
+        ->orderBy('post', 'asc')
         ->get();
 
     $bulan = $namaBulan[$bulan];
@@ -704,9 +708,9 @@ public function exportCsv(Request $request, $id_pt)
         $nourut += 1;
         $row++;
         $csvData[] = [
-            $loan->branch_no,
-            $loan->id_coa,
-            $loan->acct_no,
+            $loan->no_branch,
+            $loan->coa,
+            $loan->no_acc,
             $loan->deskripsi,
             ($loan->post == 'D') ? number_format($loan->amount, 2) : '0',
             ($loan->post == 'C') ? number_format($loan->amount, 2) : '0',

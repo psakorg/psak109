@@ -281,11 +281,21 @@
                                     <a href="{{route('securities.initial-recognition-treasury.index')}}" class="nav-link">
                                         <p class="text-start" style="font-size: 14px;">Report Initial Recognition</p>
                                     </a>
-                                    <a href="{{route('securities.outstanding-balance-treasury.index')}}" class="nav-link">
-                                        <p class="text-start" style="font-size: 14px;">Report Outstanding Balance Treasury Bond</p>
-                                    </a>
+                                    <div class="sidebar-dropdown">
+                                        <a href="#" class="nav-link d-flex  sidebar-dropdown-toggle">
+                                            <p class=" mb-0" style="font-size: 14px;">Report Outstanding</p>
+                                            <i class="bi bi-chevron-right ms-auto"></i>
+                                        </a>
+                                        <div class="sidebar-dropdown-menu">
+                                            <a href="{{ route('securities.outstanding-balance-treasury.index') }}" class="dropdown-link">Outstanding FVTOCI</a>
+                                            <a href="{{ route('securities.outstanding-balance-amortized-cost.index') }}" class="dropdown-link">Outstanding Amortized Cost</a>
+                                        </div>
+                                    </div>
                                     <a href="{{route('securities.evaluation-treasury-bond.index')}}" class="nav-link">
                                         <p class="text-start" style="font-size: 14px;">Report Evaluation Treasury Bond</p>
+                                    </a>
+                                    <a href="{{route('report-journal-securities.index')}}" class="nav-link">
+                                        <p class="text-start" style="font-size: 14px;">Report Journal Securities</p>
                                     </a>
                                     <!-- <a href="{{route('report-calculated-accrual-coupon.index')}}" class="nav-link">
                                         <p class="text-start" style="font-size: 14px;">Report Calculated Accrual Coupon</p>

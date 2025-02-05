@@ -22,6 +22,7 @@ use App\Http\Controllers\upload\securities\uploadDataSecuritiesController;
 use App\Http\Controllers\upload\securities\uploadPriceSecuritiesController;
 use App\Http\Controllers\upload\securities\uploadCoaSecuritiesController;
 use App\Http\Controllers\upload\securities\uploadRatingSecuritiesController;
+use App\Http\Controllers\report\securities\journalsecuritiesController;
 
 use App\Http\Controllers\MappingAdminController;
 
@@ -58,6 +59,7 @@ use App\Http\Controllers\report\securities\expectedcashflowController;
 use App\Http\Controllers\report\securities\initialRecognitionTreasuryController;
 use App\Http\Controllers\report\securities\amortisedinitialbrokeragefeeController;
 use App\Http\Controllers\report\securities\outstandingBalanceTreasuryController;
+use App\Http\Controllers\report\securities\outstandingBalanceAmortizedCostController;
 use App\Http\Controllers\report\securities\evaluationTreasuryController;
 
 use App\Http\Controllers\report\Report_Initial_Recognition\effectiveController as initialRecognitionEffectiveController;
@@ -299,6 +301,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-journal-simple-interest/export-excel/{id_pt}', [journalsiControler::class, 'exportExcel'])->name('report-journal-si.exportExcel');
     Route::get('/report-journal-simple-interest/export-report-excel', [journalsiControler::class, 'exportReportExcel'])->name('report-journal-si.exportReportExcel');
     Route::get('/report-journal-simple-interest/export-csv/{id_pt}', [journalsiControler::class, 'exportCsv'])->name('report-journal-si.exportCsv');
+    Route::post('/report-journal-simple-interest/execute-procedure', [journalsiControler::class, 'executeStoredProcedure'])
+        ->name('report-journal-si.execute-procedure');
 
     Route::get('/check-report-journal-simple/{no_acc}/{id_pt}', 
         [journalsiControler::class, 'checkData'])
@@ -312,7 +316,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-journal-effective/export-excel/{id_pt}', [journaleffControler::class, 'exportExcel'])->name('report-journal-eff.exportExcel');
     Route::get('/report-journal-effective/export-csv/{id_pt}', [journaleffControler::class, 'exportCsv'])->name('report-journal-eff.exportCsv');
     Route::get('/report-journal-effective/export-report-excel', [journaleffControler::class, 'exportReportExcel'])->name('report-journal-eff.exportReportExcel');
-    
+    Route::post('/report-journal-effective/execute-procedure', [journaleffControler::class, 'executeStoredProcedure'])
+        ->name('report-journal-eff.execute-procedure');
 
     Route::get('/check-report-journal-effective/{no_acc}/{id_pt}', 
         [journaleffControler::class, 'checkData'])
@@ -401,6 +406,14 @@ Route::middleware(['auth'])->group(function () {
         ->name('securities.outstanding-balance-treasury.execute-procedure');
         Route::get('/outstanding-balance-treasury-bond/export-excel/{id_pt}', [outstandingBalanceTreasuryController::class, 'exportExcel'])->name('report-outstanding-securities.exportExcel');
         Route::get('/outstanding-balance-treasury-bond/export-pdf/{id_pt}', [outstandingBalanceTreasuryController::class, 'exportPdf'])->name('report-outstanding-securities.exportPDF');
+
+
+        Route::get('/outstanding-balance-amortized-cost', [outstandingBalanceAmortizedCostController::class, 'index'])
+        ->name('securities.outstanding-balance-amortized-cost.index');
+        Route::post('/outstanding-balance-amortized-cost/execute-procedure', [outstandingBalanceAmortizedCostController::class, 'executeStoredProcedure'])
+        ->name('securities.outstanding-balance-amortized-cost.execute-procedure');
+        Route::get('/outstanding-balance-amortized-cost/export-excel/{id_pt}', [outstandingBalanceAmortizedCostController::class, 'exportExcel'])->name('report-outstanding-amortized-cost.exportExcel');
+        Route::get('/outstanding-balance-amortized-cost/export-pdf/{id_pt}', [outstandingBalanceAmortizedCostController::class, 'exportPdf'])->name('report-outstanding-amortized-cost.exportPDF');
     
 
         Route::get('/evaluation-treasury-bond', [evaluationTreasuryController::class, 'index'])
@@ -433,6 +446,8 @@ Route::middleware(['auth'])->group(function () {
         // Route upload untuk price securities
         Route::get('/upload/data/price', [uploadPriceSecuritiesController::class, 'index'])
             ->name('upload.price.securities.index');
+        Route::post('/upload/price/import', [uploadPriceSecuritiesController::class, 'importExcel'])
+            ->name('upload.securities.price.import');
 
         // Route upload untuk CoA securities
         Route::get('/upload/data/coa', [uploadCoaSecuritiesController::class, 'index'])
@@ -467,6 +482,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/securities/amortisedinitialbrokeragefeeController/view/{no_acc}/{id_pt}', [amortisedinitialbrokeragefeeController::class, 'view'])->name('amortisedinitialbrokeragefee.view');
         Route::get('/securities/amortisedinitialbrokeragefeeController/export-pdf/{no_acc}/{id_pt}', [amortisedinitialbrokeragefeeController::class, 'exportPdf'])->name('amortisedinitialbrokeragefee.exportPdf');
         Route::get('/securities/amortisedinitialbrokeragefeeController/export-excel/{no_acc}/{id_pt}', [amortisedinitialbrokeragefeeController::class, 'exportExcel'])->name('amortisedinitialbrokeragefee.exportExcel');
+
+
+        Route::get('/report-journal-securities', [journalsecuritiesController::class, 'index'])->name('report-journal-securities.index');
+        Route::get('/report-journal-securities/view/{no_acc}/{id_pt}', [journalsecuritiesController::class, 'view'])->name('report-journal-securities.view');
+        Route::get('/report-journal-securities/export-pdf/{id_pt}', [journalsecuritiesController::class, 'exportPdf'])->name('report-journal-securities.exportPdf');
+        Route::get('/report-journal-securities/export-excel/{id_pt}', [journalsecuritiesController::class, 'exportExcel'])->name('report-journal-securities.exportExcel');
+        Route::get('/report-journal-securities/export-report-excel', [journalsecuritiesController::class, 'exportReportExcel'])->name('report-journal-securities.exportReportExcel');
+        Route::get('/report-journal-securities/export-csv/{id_pt}', [journalsecuritiesController::class, 'exportCsv'])->name('report-journal-securities.exportCsv');
+        Route::post('/report-journal-securities/execute-procedure', [journalsecuritiesController::class, 'executeStoredProcedure'])
+        ->name('securities.report-journal-securities.execute-procedure');
     });
 });
 

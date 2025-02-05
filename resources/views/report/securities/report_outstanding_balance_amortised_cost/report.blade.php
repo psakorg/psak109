@@ -11,7 +11,7 @@
         <div class="container mt-5" style="padding-right: 50px;">
             <section class="section">
                 <div class="section-header">
-                    <h4>REPORT OUTSTANDING BALANCE - FVTOCI</h4>
+                    <h4>REPORT OUTSTANDING BALANCE - AMORTIZED COST</h4>
                 </div>
                 @if(session('pesan'))
                     <div class="alert alert-success">{{ session('pesan') }}</div>
@@ -50,7 +50,7 @@
 
                     <!-- Tombol Export -->
                     <div class="d-flex gap-2">
-                        <form action="{{ route('securities.outstanding-balance-treasury.execute-procedure') }}" method="POST">
+                        <form action="{{ route('securities.outstanding-balance-amortized-cost.execute-procedure') }}" method="POST">
                             @csrf
                             <input type="hidden" name="tahun" value="{{ request()->query('tahun', date('Y')) }}">
                             <input type="hidden" name="bulan" value="{{ request()->query('bulan', date('n')) }}">
@@ -253,7 +253,7 @@
         window.location.href = url;
     }
 
-    const reportUrl = "{{ route('securities.outstanding-balance-treasury.index') }}";
+    const reportUrl = "{{ route('securities.outstanding-balance-amortized-cost.index') }}";
 
     document.addEventListener('DOMContentLoaded', function() {
         const selectedMonth = "{{ $bulan }}";
@@ -297,7 +297,7 @@
         
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-outstanding-securities.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
+        window.location.href = `{{ route('report-outstanding-amortized-cost.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
     });
     document.getElementById('exportPdf').addEventListener('click', function (e) {
         e.preventDefault();
@@ -307,7 +307,7 @@
 
 
         // Redirect to the export route with query parameters
-        window.location.href = `{{ route('report-outstanding-securities.exportPDF', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
+        window.location.href = `{{ route('report-outstanding-amortized-cost.exportPDF', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
     });
 
     function updateDays() {

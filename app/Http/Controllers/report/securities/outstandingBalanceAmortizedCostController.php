@@ -22,7 +22,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-class outstandingBalanceTreasuryController extends Controller
+class outstandingBalanceAmortizedCostController extends Controller
 {
     // Method untuk menampilkan semua data pinjaman korporat
     public function index(Request $request)
@@ -40,7 +40,7 @@ class outstandingBalanceTreasuryController extends Controller
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);
     
-        $securities = report_securities::getOutstandingFVTOCISecurities( 
+        $securities = report_securities::getOutstandingAmortizedCostSecurities( 
         intval($user->id_pt),
         intval($tahun),
         intval($bulan),
@@ -72,7 +72,7 @@ class outstandingBalanceTreasuryController extends Controller
             $page,
         ['path' => $request->url(), 'query' => $request->query()]
     );
-        return view('report.securities.report_outstanding_balance_treasury_bond.master', 
+        return view('report.securities.report_outstanding_balance_amortised_cost.master', 
             compact('securities', 'tahun', 'bulan', 'tanggal', 'user', 'page', 'perPage', 'count')
         );
     }
@@ -163,7 +163,7 @@ class outstandingBalanceTreasuryController extends Controller
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);
     
-        $securities = report_securities::getOutstandingFVTOCISecurities( 
+        $securities = report_securities::getOutstandingAmortizedCostSecurities( 
         intval($user->id_pt),
         intval($tahun),
         intval($bulan),
@@ -587,7 +587,7 @@ class outstandingBalanceTreasuryController extends Controller
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);
     
-        $securities = report_securities::getOutstandingFVTOCISecurities( 
+        $securities = report_securities::getOutstandingAmortizedCostSecurities( 
         intval($user->id_pt),
         intval($tahun),
         intval($bulan),

@@ -48,6 +48,44 @@ class simpleinterestController extends Controller
             return view('report.journal.simple_interest.master', compact('master', 'bulan', 'tahun', 'isSuperAdmin', 'user'));
     }
 
+
+    public function executeStoredProcedure(Request $request)
+    {
+        try {
+            // Validate the hidden inputs just to be safe
+            $request->validate([
+                'tahun' => 'required|integer',
+                'bulan' => 'required|integer|min:1|max:12',
+            ]);
+
+            $user = Auth::user();
+            $id_pt = $user->id_pt;
+
+
+            DB::transaction(function () use ($request, $id_pt) {
+                DB::select("CALL public.spcreatejournalcorporatefinal(?, ?, ?)", [
+                    $id_pt,
+                    $request->bulan,
+                    $request->tahun
+                ]);
+            });
+
+            return redirect()->back()->with('swal', [
+                'title' => 'Berhasil!',
+                'text' => 'Stored procedures berhasil dijalankan',
+                'icon' => 'success'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error executing stored procedures: ' . $e->getMessage());
+            return redirect()->back()->with('swal', [
+                'title' => 'Error!',
+                'text' => 'Gagal menjalankan stored procedures: ' . $e->getMessage(),
+                'icon' => 'error'
+            ]);
+        }
+    }
+
     // Method untuk menampilkan detail pinjaman berdasarkan nomor akun
     public function view($no_acc,$id_pt)
     {
