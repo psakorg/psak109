@@ -68,6 +68,9 @@
                         <a href="#" id="exportExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Export to Excel
                         </a>
+                        <!-- <a href="#" id="exportcsv" class="btn btn-primary">
+                            <i class="fas fa-file-csv"></i> Download CSV
+                        </a> -->
                     </div>
                     </div>
                     <table class="table table-striped table-bordered custom-table" style="width: 100%;">

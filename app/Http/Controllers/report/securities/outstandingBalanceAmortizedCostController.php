@@ -1027,4 +1027,121 @@ public function checkData($no_acc, $id_pt)
         ]);
     }
 }
+
+public function exportCSV(Request $request, $id_pt)
+{
+    $user = Auth::user();
+    
+    // Get parameters from request with defaults
+    $id_pt = $user->id_pt;
+    $tahun = $request->input('tahun') ?? date('Y');
+    $bulan = $request->input('bulan') ?? date('n');
+    $tanggal = $request->input('tanggal') ?? date('d');
+    $no_acc = $request->input('no_acc');
+    $status = $request->input('status', '2');
+
+    $perPage = $request->input('per_page', 10);
+    $page = $request->input('page', 1);
+
+    $securities = report_securities::getOutstandingAmortizedCostSecurities( 
+    intval($user->id_pt),
+    intval($tahun),
+    intval($bulan),
+    intval($tanggal),
+    );
+
+    // Convert to Collection
+    $securities = collect($securities);
+
+    $selectedDate = "$tahun-$bulan-$tanggal";
+    $securities = $securities->filter(function ($loan) use ($selectedDate) {
+        // Format kedua tanggal ke 'Y-m-d' untuk membandingkan hanya tanggal saja
+        $loanDate = date('Y-m-d', strtotime(explode(' ', $loan->transac_dt)[0]));
+        return $loanDate == $selectedDate;
+    });
+
+    $securities = $securities->sortBy('no_acc');
+
+    $count = $securities->count();
+
+    $namaBulan = [
+        1 => 'January',
+        2 => 'February',
+        3 => 'March',
+        4 => 'April',
+        5 => 'May',
+        6 => 'June',
+        7 => 'July',
+        8 => 'August',
+        9 => 'September',
+        10 => 'October',
+        11 => 'November',
+        12 => 'December'
+    ];
+
+    $entityName = DB::table('securities.tblpsaklbutreasury')
+    ->join('public.tbl_pt', 'securities.tblpsaklbutreasury.id_pt', '=', 'tbl_pt.id_pt')
+    ->join('securities.tblmaster_tmpbid', 'securities.tblpsaklbutreasury.no_acc', '=', 'securities.tblmaster_tmpbid.no_acc')
+    ->join('securities.tblratingsecurities', 'securities.tblpsaklbutreasury.no_acc', '=', 'securities.tblratingsecurities.no_acc')
+    ->where('securities.tblpsaklbutreasury.id_pt', $id_pt)
+    ->where('securities.tblpsaklbutreasury.bulan', $bulan)
+    ->where('securities.tblpsaklbutreasury.tahun', $tahun)
+    ->select('tbl_pt.nama_pt')
+    ->select('securities.tblmaster_tmpbid.issuer_name')
+    ->select('securities.tblmaster_tmpbid.mtr_date_dt')
+    ->select('securities.tblmaster_tmpbid.rating')
+    ->orderBy('no_acc', 'asc')
+    ->get();
+
+    $loanFirst = $master->first();
+    $bulanAngka =  $request->input('bulan', date('n'));
+
+    if ($securities->isEmpty()) {
+        // Return a more detailed error message
+        return response()->json([
+            'message' => 'Tidak ada data yang sesuai dengan kriteria yang dipilih',
+            'details' => [
+                'branch' => $id_pt,
+                'bulan' => $bulan,
+                'tahun' => $tahun,
+                'tanggal' => $tanggal
+            ]
+        ], 404);
+    }
+
+    // Siapkan data CSV
+    //$csvData[] = ['Outstanding Effective Report - Report Details'];
+    $csvData[] = ['Entity Number','Account Number','Bond ID', 'Issuer Name','Rating','Maturity Date','Coupon Rate','Face Value','Carrying Amount'];
+
+    $row = 1; // Mulai dari baris 13 untuk data laporan
+    $nourut = 0;
+    // Mengisi data laporan ke dalam CSV
+    foreach ($master as $loan) {
+        $nourut += 1;
+        $row++;
+        $csvData[] = [
+            $loan->no_branch,
+            $loan->no_acc,
+            $loan->bond_id,
+            $loan->issuer_name,
+            $loan->rating,
+            $loan->mtr_date_dt,
+            $loan->coupon_rate,
+            $loan->face_value,
+            $loan->carrying_amount
+        ];
+    }
+
+   // Siapkan nama file
+    $filename = "ReportOutstandingBalanceAmortisedCost_{$id_pt}_{$tanggal}_{$bulan}_{$tahun}.csv";
+
+    // Buat writer dan simpan file Excel
+    $writer = new Xlsx($spreadsheet);
+    $temp_file = tempnam(sys_get_temp_dir(), 'phpspreadsheet');
+    $writer->save($temp_file);
+
+    // Kembalikan response Excel
+    return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
+}
+
 }
