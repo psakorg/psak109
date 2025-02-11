@@ -68,9 +68,9 @@
                         <a href="#" id="exportExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Export to Excel
                         </a>
-                        <!-- <a href="#" id="exportcsv" class="btn btn-primary">
+                        <a href="#" id="exportcsv" class="btn btn-primary">
                             <i class="fas fa-file-csv"></i> Download CSV
-                        </a> -->
+                        </a>
                     </div>
                     </div>
                     <table class="table table-striped table-bordered custom-table" style="width: 100%;">
@@ -311,6 +311,16 @@
 
         // Redirect to the export route with query parameters
         window.location.href = `{{ route('report-outstanding-amortized-cost.exportPDF', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
+    });
+    document.getElementById('exportcsv').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+        const date = document.getElementById('dateInput').value;
+
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-outstanding-amortized-cost.exportcsv', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
     });
 
     function updateDays() {

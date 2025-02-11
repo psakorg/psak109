@@ -145,7 +145,7 @@ class outstandingBalanceAmortizedCostController extends Controller
 
         // dd($loan, $master, $reports);
 
-        return view('report.securities.report_outstanding_balance_treasury_bond.view', compact('loan', 'reports','master'));
+        return view('report.securities.report_outstanding_balance_amortised_cost.view', compact('loan', 'reports','master'));
     }
 
     public function exportExcel(Request $request, $id_pt)
@@ -273,7 +273,7 @@ class outstandingBalanceAmortizedCostController extends Controller
 
 
         // Set judul tabel laporan
-    $sheet->setCellValue('A7', 'Report Outstanding - Treasury Bonds');
+    $sheet->setCellValue('A7', 'Report Outstanding Balance - Amortised Cost');
     $sheet->mergeCells('A7:X7'); // Menggabungkan sel untuk judul tabel
     $sheet->getStyle('A7')->getFont()->setBold(true)->setSize(14);
     $sheet->getStyle('A7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
@@ -558,7 +558,7 @@ class outstandingBalanceAmortizedCostController extends Controller
 
 
         // Siapkan nama file
-        $filename = "ReportOutstandingBalanceTreasuryBond_{$id_pt}_{$tanggal}_{$bulan}_{$tahun}.xlsx";
+        $filename = "ReportOutstandingBalanceAmortisedCost_{$id_pt}_{$tanggal}_{$bulan}_{$tahun}.xlsx";
 
         // Buat writer dan simpan file Excel
         $writer = new Xlsx($spreadsheet);
@@ -700,7 +700,7 @@ class outstandingBalanceAmortizedCostController extends Controller
 
 
     // Set judul tabel laporan
-    $sheet->setCellValue('A7', 'Report Outstanding - Treasury Bonds');
+    $sheet->setCellValue('A7', 'Report Outstanding Balance - Amortised Cost');
     $sheet->mergeCells('A7:X7'); // Menggabungkan sel untuk judul tabel
     $sheet->getStyle('A7')->getFont()->setBold(true)->setSize(14);
     $sheet->getStyle('A7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
@@ -984,7 +984,7 @@ class outstandingBalanceAmortizedCostController extends Controller
     // $sheet->getColumnDimension('L')->setWidth(30);
 
     // Siapkan nama file
-    $filename = "ReportOutstandingBalanceTreasuryBond_{$id_pt}_{$tanggal}_{$bulan}_{$tahun}.pdf";
+    $filename = "ReportOutstandingBalanceAmortisedCost_{$id_pt}_{$tanggal}_{$bulan}_{$tahun}.pdf";
 
     // Set pengaturan untuk PDF
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
@@ -1081,19 +1081,14 @@ public function exportCSV(Request $request, $id_pt)
 
     $entityName = DB::table('securities.tblpsaklbutreasury')
     ->join('public.tbl_pt', 'securities.tblpsaklbutreasury.id_pt', '=', 'tbl_pt.id_pt')
-    ->join('securities.tblmaster_tmpbid', 'securities.tblpsaklbutreasury.no_acc', '=', 'securities.tblmaster_tmpbid.no_acc')
-    ->join('securities.tblratingsecurities', 'securities.tblpsaklbutreasury.no_acc', '=', 'securities.tblratingsecurities.no_acc')
     ->where('securities.tblpsaklbutreasury.id_pt', $id_pt)
     ->where('securities.tblpsaklbutreasury.bulan', $bulan)
     ->where('securities.tblpsaklbutreasury.tahun', $tahun)
     ->select('tbl_pt.nama_pt')
-    ->select('securities.tblmaster_tmpbid.issuer_name')
-    ->select('securities.tblmaster_tmpbid.mtr_date_dt')
-    ->select('securities.tblmaster_tmpbid.rating')
-    ->orderBy('no_acc', 'asc')
+    ->orderBy('securities.tblpsaklbutreasury.no_acc', 'asc')
     ->get();
 
-    $loanFirst = $master->first();
+    $loanFirst = $securities->first();
     $bulanAngka =  $request->input('bulan', date('n'));
 
     if ($securities->isEmpty()) {
@@ -1116,7 +1111,7 @@ public function exportCSV(Request $request, $id_pt)
     $row = 1; // Mulai dari baris 13 untuk data laporan
     $nourut = 0;
     // Mengisi data laporan ke dalam CSV
-    foreach ($master as $loan) {
+    foreach ($securities as $loan) {
         $nourut += 1;
         $row++;
         $csvData[] = [

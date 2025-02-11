@@ -23,6 +23,7 @@ use App\Http\Controllers\upload\securities\uploadPriceSecuritiesController;
 use App\Http\Controllers\upload\securities\uploadCoaSecuritiesController;
 use App\Http\Controllers\upload\securities\uploadRatingSecuritiesController;
 use App\Http\Controllers\report\securities\journalsecuritiesController;
+use App\Http\Controllers\report\securities\journalsecuritiesControllerDaily;
 
 use App\Http\Controllers\MappingAdminController;
 
@@ -414,6 +415,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('securities.outstanding-balance-amortized-cost.execute-procedure');
         Route::get('/outstanding-balance-amortized-cost/export-excel/{id_pt}', [outstandingBalanceAmortizedCostController::class, 'exportExcel'])->name('report-outstanding-amortized-cost.exportExcel');
         Route::get('/outstanding-balance-amortized-cost/export-pdf/{id_pt}', [outstandingBalanceAmortizedCostController::class, 'exportPdf'])->name('report-outstanding-amortized-cost.exportPDF');
+        Route::get('/outstanding-balance-amortized-cost/export-csv/{id_pt}', [outstandingBalanceAmortizedCostController::class, 'exportCSV'])->name('report-outstanding-amortized-cost.exportcsv');
     
 
         Route::get('/evaluation-treasury-bond', [evaluationTreasuryController::class, 'index'])
@@ -492,6 +494,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/report-journal-securities/export-csv/{id_pt}', [journalsecuritiesController::class, 'exportCsv'])->name('report-journal-securities.exportCsv');
         Route::post('/report-journal-securities/execute-procedure', [journalsecuritiesController::class, 'executeStoredProcedure'])
         ->name('securities.report-journal-securities.execute-procedure');
+
+        Route::get('/report-journal-securities-daily', [journalsecuritiesControllerDaily::class, 'index'])->name('report-journal-securities-daily.index');
+        Route::get('/report-journal-securities-daily/view/{no_acc}/{id_pt}', [journalsecuritiesControllerDaily::class, 'view'])->name('report-journal-securities-daily.view');
+        Route::get('/report-journal-securities-daily/export-pdf/{id_pt}', [journalsecuritiesControllerDaily::class, 'exportPdf'])->name('report-journal-securities-daily.exportPdf');
+        Route::get('/report-journal-securities-daily/export-excel/{id_pt}', [journalsecuritiesControllerDaily::class, 'exportExcel'])->name('report-journal-securities-daily.exportExcel');
+        Route::get('/report-journal-securities-daily/export-report-excel', [journalsecuritiesControllerDaily::class, 'exportReportExcel'])->name('report-journal-securities-daily.exportReportExcel');
+        Route::get('/report-journal-securities-daily/export-csv/{id_pt}', [journalsecuritiesControllerDaily::class, 'exportCsv'])->name('report-journal-securities-daily.exportCsv');
+        Route::post('/report-journal-securities-daily/execute-procedure', [journalsecuritiesControllerDaily::class, 'executeStoredProcedure'])
+        ->name('securities.report-journal-securities-daily.execute-procedure');
     });
 });
 

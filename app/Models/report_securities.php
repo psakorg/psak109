@@ -352,12 +352,13 @@ public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
                     a.gain_losses, a.cum_gain_losses,
                     b.issuer_name, b.no_branch, b.status, b.bond_type, 
                     b.org_date_dt, b.tenor, b.pmtamt, b.mtr_date_dt, 
-                    b.gl_group, b.coupon_rate, m.jdname, c.coa
+                    b.gl_group, b.coupon_rate, m.jdname, c.coa, d.issuer_name, d.mtr_date, t.rating
                 FROM securities.tblpsaklbutreasury a 
                 INNER JOIN securities.tblMASTER_SECURITIES b ON a.no_acc = b.no_acc
-                LEFT OUTER JOIN public.\"CABANG-\" m ON (b.no_branch = m.jdbr)
-                LEFT OUTER JOIN securities.tblglgroupsecurities c ON b.gl_group = c.gl_group
-                LEFT OUTER JOIN securities.tblOBALSecurities d ON a.no_acc = d.no_acc
+                INNER JOIN public.\"CABANG-\" m ON (b.no_branch = m.jdbr)
+                INNER JOIN securities.tblglgroupsecurities c ON b.gl_group = c.gl_group
+                INNER JOIN securities.tblOBALSecurities d ON a.no_acc = d.no_acc
+                INNER JOIN securities.tblratingsecurities t ON a.no_acc = t.no_acc
                 WHERE b.no_branch = :branch 
                 AND a.transac_dt = :date
                 AND b.eval_dt = :eval_date
