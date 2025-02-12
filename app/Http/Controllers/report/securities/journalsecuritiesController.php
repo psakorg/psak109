@@ -33,13 +33,13 @@ class journalsecuritiesController extends Controller
            $tahun = $request->input('tahun', date('Y'));
 
            $isSuperAdmin = $user->role === 'superadmin';
-           
+
            // Ambil data dengan pagination
            $master = DB::table('securities.tbljournal_securities_total')
            ->where('no_branch', $id_pt)
            ->where('tahun', $tahun)
            ->where('bulan', $bulan)
-           ->paginate($perPage); 
+           ->paginate($perPage);
 
 
            return view('report.securities.journal.master', compact('master', 'bulan', 'tahun', 'isSuperAdmin', 'user'));
@@ -108,7 +108,7 @@ class journalsecuritiesController extends Controller
     public function exportExcel(Request $request, $id_pt)
     {
     $user_id_pt = Auth::user()->id_pt;
-    
+
     $namaBulan = [
         1 => 'January',
         2 => 'February',
@@ -134,9 +134,9 @@ class journalsecuritiesController extends Controller
         ->orderBy('interface', 'asc')
         ->orderBy('post', 'asc')
         ->get();
-    
+
         $bulan = $namaBulan[$bulan];
-    
+
         if ($master->isEmpty()) {
             // Return a more detailed error message
             return response()->json([
@@ -250,7 +250,7 @@ class journalsecuritiesController extends Controller
     $sheet->getStyle('A' . $row . ':G' . $row)->getFill()->setFillType(Fill::FILL_SOLID);
     $sheet->getStyle('A' . $row . ':G' . $row)->getFill()->getStartColor()->setARGB('FF4F81BD'); // Warna latar belakang untuk baris genap
     $sheet->getStyle('A' . $row . ':G' . $row)->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
-           
+
     // Mengatur border untuk tabel
     $styleArray = [
         'borders' => [
@@ -287,10 +287,10 @@ class journalsecuritiesController extends Controller
 
     public function exportReportExcel(Request $request)
     {
-        
+
         $id_pt = Auth::user()->id_pt;
         $user_id_pt = Auth::user()->id_pt;
-        
+
         $namaBulan = [
             1 => 'January',
             2 => 'February',
@@ -305,10 +305,10 @@ class journalsecuritiesController extends Controller
             11 => 'November',
             12 => 'December'
         ];
-        
+
         $bulan = $request->input('bulan', date('n')); // This will be 1-12
         $tahun = $request->input('tahun', date('Y'));
-        
+
         $master = DB::table('securities.tbljournal_securities_total')
         ->where('no_branch', $id_pt)
         ->where('bulan', $bulan)
@@ -316,16 +316,16 @@ class journalsecuritiesController extends Controller
         ->orderBy('interface', 'asc')
         ->orderBy('post', 'asc')
         ->get();
-        
+
         $bulan = $namaBulan[$bulan];
-        
+
         if ($master->isEmpty()) {
             return back()->with('error', 'Tidak ada data yang sesuai dengan kriteria yang dipilih untuk:
                 Branch: ' . $id_pt . ',
                 Bulan: ' . $bulan . ',
                 Tahun: ' . $tahun);
         }
-        
+
         $loanFirst = $master->first();
         $bulanAngka =  $request->input('bulan', date('n'));
 
@@ -335,7 +335,7 @@ class journalsecuritiesController extends Controller
 
         // Set informasi pinjaman
         $sheet->setCellValue('A2', 'Entity Number');
-        $sheet->getStyle('A2')->getFont()->setBold(true); 
+        $sheet->getStyle('A2')->getFont()->setBold(true);
         $sheet->setCellValue('B2', $loanFirst->no_branch);
         $sheet->setCellValue('A3', 'Entitiy Name');
         $sheet->getStyle('A3')->getFont()->setBold(true);
@@ -392,7 +392,7 @@ class journalsecuritiesController extends Controller
                 $sheet->setCellValue('E' . $row, number_format($loan->amount, 0));
                 $totalDebit += $loan->amount;
             }
-            else {     
+            else {
                 $sheet->setCellValue('F' . $row, number_format($loan->amount, 0));
                 $totalCredit += $loan->amount;
             }
@@ -411,7 +411,7 @@ class journalsecuritiesController extends Controller
             }
             $row++;
         }
-        
+
         //TOTAL EXCEL
         $sheet->setCellValue('A' . $row, "TOTAL:");
         $sheet->mergeCells('A' . $row . ':D' . $row); // Merge cells A to J for the Total row
@@ -425,7 +425,7 @@ class journalsecuritiesController extends Controller
 
         // Menambahkan warna latar belakang alternatif pada baris data
         $sheet->getStyle('A' . $row . ':G' . $row)->getFill()->setFillType(Fill::FILL_SOLID);
-        $sheet->getStyle('A' . $row . ':G' . $row)->getFill()->getStartColor()->setARGB('FFEFEFEF'); // Warna latar belakang untuk baris 
+        $sheet->getStyle('A' . $row . ':G' . $row)->getFill()->getStartColor()->setARGB('FFEFEFEF'); // Warna latar belakang untuk baris
 
         // Mengatur border untuk tabel
         $styleArray = [
@@ -466,7 +466,7 @@ class journalsecuritiesController extends Controller
     public function exportPdf(Request $request, $id_pt)
 {
     $user_id_pt = Auth::user()->id_pt;
-    
+
     $namaBulan = [
         1 => 'January',
         2 => 'February',
@@ -492,9 +492,9 @@ class journalsecuritiesController extends Controller
         ->orderBy('interface', 'asc')
         ->orderBy('post', 'asc')
         ->get();
-    
+
         $bulan = $namaBulan[$bulan];
-    
+
         if ($master->isEmpty()) {
             // Return a more detailed error message
             return response()->json([
@@ -608,7 +608,7 @@ class journalsecuritiesController extends Controller
     $sheet->getStyle('A' . $row . ':G' . $row)->getFill()->setFillType(Fill::FILL_SOLID);
     $sheet->getStyle('A' . $row . ':G' . $row)->getFill()->getStartColor()->setARGB('FF4F81BD'); // Warna latar belakang untuk baris genap
     $sheet->getStyle('A' . $row . ':G' . $row)->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
-           
+
     // Mengatur border untuk tabel
     $styleArray = [
         'borders' => [
@@ -650,7 +650,7 @@ public function exportCsv(Request $request, $id_pt)
 {
     // Ambil data loan dan reports
     $user_id_pt = Auth::user()->id_pt;
-    
+
     $namaBulan = [
         1 => 'January',
         2 => 'February',
@@ -699,7 +699,7 @@ public function exportCsv(Request $request, $id_pt)
 
     // Siapkan data CSV
     //$csvData[] = ['Outstanding Effective Report - Report Details'];
-    $csvData[] = ['Entity Number','GL Account','Account Number','Description','Debit', 'Credit','Posting Date'];
+    $csvData[] = ['ENTITY NUMBER','GL ACCOUNT','ACCOUNT NUMBER','DESCRIPTION','DEBIT', 'CREDIT','POSTING DATE'];
 
     $row = 1; // Mulai dari baris 13 untuk data laporan
     $nourut = 0;

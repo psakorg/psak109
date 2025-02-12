@@ -28,7 +28,7 @@ class outstandingBalanceAmortizedCostController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        
+
         // Get parameters from request with defaults
         $id_pt = $user->id_pt;
         $tahun = $request->input('tahun') ?? date('Y');
@@ -36,11 +36,11 @@ class outstandingBalanceAmortizedCostController extends Controller
         $tanggal = $request->input('tanggal') ?? date('d');
         $no_acc = $request->input('no_acc');
         $status = $request->input('status', '2');
-    
+
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);
-    
-        $securities = report_securities::getOutstandingAmortizedCostSecurities( 
+
+        $securities = report_securities::getOutstandingAmortizedCostSecurities(
         intval($user->id_pt),
         intval($tahun),
         intval($bulan),
@@ -72,7 +72,7 @@ class outstandingBalanceAmortizedCostController extends Controller
             $page,
         ['path' => $request->url(), 'query' => $request->query()]
     );
-        return view('report.securities.report_outstanding_balance_amortised_cost.master', 
+        return view('report.securities.report_outstanding_balance_amortised_cost.master',
             compact('securities', 'tahun', 'bulan', 'tanggal', 'user', 'page', 'perPage', 'count')
         );
     }
@@ -97,7 +97,7 @@ class outstandingBalanceAmortizedCostController extends Controller
                     $request->tanggal,
                     $id_pt
                 ]);
-                
+
                 // Execute first stored procedure
                 DB::select("CALL securities.spevaluationtreasury_bonds(?, ?, ?, ?)", [
                     $request->tahun,
@@ -105,7 +105,7 @@ class outstandingBalanceAmortizedCostController extends Controller
                     $request->tanggal,
                     $id_pt
                 ]);
-                
+
                 // Execute second stored procedure
                 DB::select("CALL securities.spoutbaltreasury_daily_bonds(?, ?, ?, ?)", [
                     $id_pt,
@@ -151,7 +151,7 @@ class outstandingBalanceAmortizedCostController extends Controller
     public function exportExcel(Request $request, $id_pt)
     {
         $user = Auth::user();
-        
+
         // Get parameters from request with defaults
         $id_pt = $user->id_pt;
         $tahun = $request->input('tahun') ?? date('Y');
@@ -159,11 +159,11 @@ class outstandingBalanceAmortizedCostController extends Controller
         $tanggal = $request->input('tanggal') ?? date('d');
         $no_acc = $request->input('no_acc');
         $status = $request->input('status', '2');
-    
+
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);
-    
-        $securities = report_securities::getOutstandingAmortizedCostSecurities( 
+
+        $securities = report_securities::getOutstandingAmortizedCostSecurities(
         intval($user->id_pt),
         intval($tahun),
         intval($bulan),
@@ -389,7 +389,7 @@ class outstandingBalanceAmortizedCostController extends Controller
 
       //TOTAL OUTSTANDING SECURITIES
       $sheet->setCellValue('A' . $row, "TOTAL");
-      $sheet->mergeCells('A' . $row . ':K' . $row); 
+      $sheet->mergeCells('A' . $row . ':K' . $row);
       $sheet->getStyle('A' . $row . ':K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
       $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
       $sheet->setCellValue('L' . $row, number_format($securities->avg('coupon_rate')*100,5).'%');
@@ -447,7 +447,7 @@ class outstandingBalanceAmortizedCostController extends Controller
     //     $sheet->getStyle($columnIndex . '13')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
     //     $columnIndex++;
     // }
-    
+
     // $row = 14; // Mulai dari baris 18 untuk data laporan
     // foreach ($securities as $report) {
 
@@ -575,7 +575,7 @@ class outstandingBalanceAmortizedCostController extends Controller
     public function exportPdf(Request $request, $id_pt)
 {
     $user = Auth::user();
-        
+
         // Get parameters from request with defaults
         $id_pt = $user->id_pt;
         $tahun = $request->input('tahun') ?? date('Y');
@@ -583,11 +583,11 @@ class outstandingBalanceAmortizedCostController extends Controller
         $tanggal = $request->input('tanggal') ?? date('d');
         $no_acc = $request->input('no_acc');
         $status = $request->input('status', '2');
-    
+
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);
-    
-        $securities = report_securities::getOutstandingAmortizedCostSecurities( 
+
+        $securities = report_securities::getOutstandingAmortizedCostSecurities(
         intval($user->id_pt),
         intval($tahun),
         intval($bulan),
@@ -816,7 +816,7 @@ class outstandingBalanceAmortizedCostController extends Controller
 
       //TOTAL OUTSTANDING SECURITIES
       $sheet->setCellValue('A' . $row, "TOTAL");
-      $sheet->mergeCells('A' . $row . ':K' . $row); 
+      $sheet->mergeCells('A' . $row . ':K' . $row);
       $sheet->getStyle('A' . $row . ':K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
       $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
       $sheet->setCellValue('L' . $row, number_format($securities->avg('coupon_rate')*100,5).'%');
@@ -874,7 +874,7 @@ class outstandingBalanceAmortizedCostController extends Controller
     //     $sheet->getStyle($columnIndex . '13')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
     //     $columnIndex++;
     // }
-    
+
     // $row = 14; // Mulai dari baris 18 untuk data laporan
     // foreach ($securities as $report) {
 
@@ -1003,7 +1003,7 @@ public function checkData($no_acc, $id_pt)
 {
     try {
         $no_acc = trim($no_acc);
-        
+
         $loan = report_effective::getLoanDetails($no_acc, $id_pt);
         $master = report_effective::getMasterDataByNoAcc($no_acc, $id_pt);
         $reports = report_effective::getReportsByNoAcc($no_acc, $id_pt);
@@ -1019,10 +1019,10 @@ public function checkData($no_acc, $id_pt)
         }
 
         return response()->json(['success' => true]);
-        
+
     } catch (\Exception $e) {
         return response()->json([
-            'success' => false, 
+            'success' => false,
             'message' => 'Terjadi kesalahan: ' . $e->getMessage()
         ]);
     }
@@ -1031,112 +1031,73 @@ public function checkData($no_acc, $id_pt)
 public function exportCSV(Request $request, $id_pt)
 {
     $user = Auth::user();
-    
+
     // Get parameters from request with defaults
     $id_pt = $user->id_pt;
     $tahun = $request->input('tahun') ?? date('Y');
     $bulan = $request->input('bulan') ?? date('n');
     $tanggal = $request->input('tanggal') ?? date('d');
-    $no_acc = $request->input('no_acc');
-    $status = $request->input('status', '2');
 
-    $perPage = $request->input('per_page', 10);
-    $page = $request->input('page', 1);
-
-    $securities = report_securities::getOutstandingAmortizedCostSecurities( 
-    intval($user->id_pt),
-    intval($tahun),
-    intval($bulan),
-    intval($tanggal),
+    // Ambil data securities
+    $securities = report_securities::getOutstandingAmortizedCostSecurities(
+        intval($user->id_pt),
+        intval($tahun),
+        intval($bulan),
+        intval($tanggal)
     );
 
-    // Convert to Collection
-    $securities = collect($securities);
+    // Buat spreadsheet baru
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
 
-    $selectedDate = "$tahun-$bulan-$tanggal";
-    $securities = $securities->filter(function ($loan) use ($selectedDate) {
-        // Format kedua tanggal ke 'Y-m-d' untuk membandingkan hanya tanggal saja
-        $loanDate = date('Y-m-d', strtotime(explode(' ', $loan->transac_dt)[0]));
-        return $loanDate == $selectedDate;
-    });
-
-    $securities = $securities->sortBy('no_acc');
-
-    $count = $securities->count();
-
-    $namaBulan = [
-        1 => 'January',
-        2 => 'February',
-        3 => 'March',
-        4 => 'April',
-        5 => 'May',
-        6 => 'June',
-        7 => 'July',
-        8 => 'August',
-        9 => 'September',
-        10 => 'October',
-        11 => 'November',
-        12 => 'December'
-    ];
-
-    $entityName = DB::table('securities.tblpsaklbutreasury')
-    ->join('public.tbl_pt', 'securities.tblpsaklbutreasury.id_pt', '=', 'tbl_pt.id_pt')
-    ->where('securities.tblpsaklbutreasury.id_pt', $id_pt)
-    ->where('securities.tblpsaklbutreasury.bulan', $bulan)
-    ->where('securities.tblpsaklbutreasury.tahun', $tahun)
-    ->select('tbl_pt.nama_pt')
-    ->orderBy('securities.tblpsaklbutreasury.no_acc', 'asc')
-    ->get();
-
-    $loanFirst = $securities->first();
-    $bulanAngka =  $request->input('bulan', date('n'));
-
-    if ($securities->isEmpty()) {
-        // Return a more detailed error message
-        return response()->json([
-            'message' => 'Tidak ada data yang sesuai dengan kriteria yang dipilih',
-            'details' => [
-                'branch' => $id_pt,
-                'bulan' => $bulan,
-                'tahun' => $tahun,
-                'tanggal' => $tanggal
-            ]
-        ], 404);
+    // Set headers
+    $headers = ['NO', 'NO_ACC', 'NO_BRANCH', 'BOND_ID', 'ISSUER_NAME', 'RATING', 'MTR_DATE_DT', 'COUPON_RATE', 'FACE_VALUE', 'CARRYING_AMOUNT'];
+    $col = 'A';
+    foreach ($headers as $header) {
+        $sheet->setCellValue($col . '1', $header);
+        $col++;
     }
 
-    // Siapkan data CSV
-    //$csvData[] = ['Outstanding Effective Report - Report Details'];
-    $csvData[] = ['Entity Number','Account Number','Bond ID', 'Issuer Name','Rating','Maturity Date','Coupon Rate','Face Value','Carrying Amount'];
-
-    $row = 1; // Mulai dari baris 13 untuk data laporan
-    $nourut = 0;
-    // Mengisi data laporan ke dalam CSV
-    foreach ($securities as $loan) {
-        $nourut += 1;
+    // Isi data
+    $row = 2;
+    $no = 1;
+    foreach ($securities as $security) {
+        $sheet->setCellValue('A' . $row, $no++);
+        $sheet->setCellValue('B' . $row, $security->no_acc);
+        $sheet->setCellValue('C' . $row, $security->no_branch);
+        $sheet->setCellValue('D' . $row, $security->bond_id);
+        $sheet->setCellValue('E' . $row, $security->issuer_name);
+        $sheet->setCellValue('F' . $row, $security->rating);
+        $sheet->setCellValue('G' . $row, $security->mtr_date_dt);
+        $sheet->setCellValue('H' . $row, $security->coupon_rate);
+        $sheet->setCellValue('I' . $row, $security->face_value);
+        $sheet->setCellValue('J' . $row, $security->carrying_amount);
         $row++;
-        $csvData[] = [
-            $loan->no_branch,
-            $loan->no_acc,
-            $loan->bond_id,
-            $loan->issuer_name,
-            $loan->rating,
-            $loan->mtr_date_dt,
-            $loan->coupon_rate,
-            $loan->face_value,
-            $loan->carrying_amount
-        ];
     }
 
-   // Siapkan nama file
+    // Auto-size columns
+    foreach (range('A', 'J') as $col) {
+        $sheet->getColumnDimension($col)->setAutoSize(true);
+    }
+
+    // Siapkan nama file
     $filename = "ReportOutstandingBalanceAmortisedCost_{$id_pt}_{$tanggal}_{$bulan}_{$tahun}.csv";
 
-    // Buat writer dan simpan file Excel
-    $writer = new Xlsx($spreadsheet);
+    // Buat writer CSV dan set konfigurasi
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
+    $writer->setDelimiter(',');
+    $writer->setEnclosure('"');
+    $writer->setLineEnding("\r\n");
+    $writer->setSheetIndex(0);
+
+    // Simpan ke temporary file
     $temp_file = tempnam(sys_get_temp_dir(), 'phpspreadsheet');
     $writer->save($temp_file);
 
-    // Kembalikan response Excel
-    return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
+    // Kembalikan response dengan header untuk CSV
+    return response()->download($temp_file, $filename, [
+        'Content-Type' => 'text/csv',
+    ])->deleteFileAfterSend(true);
 }
 
 }

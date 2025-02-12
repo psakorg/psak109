@@ -21,8 +21,8 @@
                         <button type="button" class="btn btn-primary dropdown-toggle me-2" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-file-import"></i> Tanggal
                         </button>
-                            <select class="form-select me-2" name="date" id="dateInput" 
-                                style="width: 80px; height: 40px; font-size: 14px" 
+                            <select class="form-select me-2" name="date" id="dateInput"
+                                style="width: 80px; height: 40px; font-size: 14px"
                                 onchange="updateReport()">
                                 <!-- Will be populated by JavaScript -->
                             </select>
@@ -42,10 +42,10 @@
                             <option value="12">December</option>
                         </select>
 
-                        <input type="number" class="form-select me-2" name="year" id="yearInput" 
-                               style="width: 100px; font-size: 14px" 
-                               value="{{ date('Y') }}" 
-                               min="2000" 
+                        <input type="number" class="form-select me-2" name="year" id="yearInput"
+                               style="width: 100px; font-size: 14px"
+                               value="{{ date('Y') }}"
+                               min="2000"
                                max="2099">
 
                     <!-- Tombol Export -->
@@ -67,6 +67,9 @@
                         </a>
                         <a href="#" id="exportExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Export to Excel
+                        </a>
+                        <a href="#" id="exportcsv" class="btn btn-primary">
+                            <i class="fas fa-file-csv"></i> Download CSV
                         </a>
                     </div>
                     </div>
@@ -112,7 +115,7 @@
                                 $sumGainLoss = 0;
                             @endphp
                             @foreach ($securities as $security)
-                                @php 
+                                @php
                                     $nourut = $nourut + 1;
                                     $sumFaceValue = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->face_value));
                                     $sumMtmPrice = $securities->sum(fn($item) => (float) str_replace(['$', ','], '', $item->mtm_price));
@@ -182,7 +185,7 @@
                                     <td>{{ number_format($security->coupon_rate*100,5) }}%</td>
                                     <td>{{ number_format($security->yield*100,5) }}%</td>
                                     <td>{{ number_format($security->eirex*100,14)}}%</td>
-                                    <td>{{ number_format($security->eircalc*100,14)}}%</td>                                    
+                                    <td>{{ number_format($security->eircalc*100,14)}}%</td>
                                     <td class="text-right">{{number_format((float) str_replace(['$', ','], '',$security->face_value))}}</td>
                                     <td class="text-right">{{ number_format($security->price,5)}}</td>
                                     <td class="text-right">{{ number_format((float) str_replace(['$', ','], '', $security->mtm_price)) }}</td>
@@ -259,13 +262,13 @@
         const selectedMonth = "{{ $bulan }}";
         const selectedYear = "{{ $tahun }}";
         const selectedDate = "{{ $tanggal }}";
-        
+
         document.getElementById('monthSelect').value = parseInt(selectedMonth);
         document.getElementById('yearInput').value = selectedYear;
-        
+
         // Initialize days first
         updateDays();
-        
+
         // Then set the selected date
         document.getElementById('dateInput').value = parseInt(selectedDate);
     });
@@ -285,7 +288,7 @@
         const year = document.getElementById('yearInput').value;
         const date = document.getElementById('dateInput').value.padStart(2, '0');
         const branch = '{{ $user->id_pt }}';
-        
+
         window.location.href = `${reportUrl}?bulan=${month}&tahun=${year}&tanggal=${date}&branch=${branch}`;
     }
     // Update export URL dynamically based on selected month and year
@@ -294,7 +297,7 @@
         const month = document.getElementById('monthSelect').value;
         const year = document.getElementById('yearInput').value;
         const date = document.getElementById('dateInput').value;
-        
+
 
         // Redirect to the export route with query parameters
         window.location.href = `{{ route('report-outstanding-securities.exportExcel', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
@@ -310,18 +313,30 @@
         window.location.href = `{{ route('report-outstanding-securities.exportPDF', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
     });
 
+    document.getElementById('exportcsv').addEventListener('click', function (e) {
+        e.preventDefault();
+        const month = document.getElementById('monthSelect').value;
+        const year = document.getElementById('yearInput').value;
+        const date = document.getElementById('dateInput').value;
+
+
+        // Redirect to the export route with query parameters
+        window.location.href = `{{ route('report-outstanding-securities.exportcsv', ['id_pt' => Auth::user()->id_pt]) }}?bulan=${month}&tahun=${year}&tanggal=${date}`;
+    });
+
+
     function updateDays() {
         const month = parseInt(document.getElementById('monthSelect').value);
         const year = parseInt(document.getElementById('yearInput').value);
         const dateSelect = document.getElementById('dateInput');
         const currentSelectedDate = dateSelect.value; // Simpan tanggal yang dipilih saat ini
-        
+
         // Clear existing options
         dateSelect.innerHTML = '';
-        
+
         // Get number of days in the selected month
         const daysInMonth = new Date(year, month, 0).getDate();
-        
+
         // Populate days
         for(let i = 1; i <= daysInMonth; i++) {
             const option = document.createElement('option');
@@ -329,7 +344,7 @@
             option.textContent = i;
             dateSelect.appendChild(option);
         }
-        
+
         // Restore selected date if it exists and is valid for the current month
         if (currentSelectedDate && currentSelectedDate <= daysInMonth) {
             dateSelect.value = currentSelectedDate;
@@ -463,23 +478,23 @@
         font-weight: 600;
         margin-bottom: 10px;
     }
-    
+
     .no-data-message p {
         color: #888;
         margin-bottom: 0;
     }
-    
+
     .dropdown-menu li {
         position: relative;
     }
-    
+
     .dropdown-submenu {
         display: none;
         position: absolute;
         left: 100%;
         top: 0;
     }
-    
+
     .dropdown-menu > li:hover > .dropdown-submenu {
         display: block;
     }
@@ -490,7 +505,7 @@
         align-items: center;
         justify-content: space-between;
     }
-    
+
     .dropdown-item i {
         margin-right: 8px;
         width: 20px;
@@ -697,8 +712,8 @@ function showModal(type) {
     const accountNumberLabel = document.getElementById('accountNumberLabel');
     const accountLabel = document.getElementById('accountLabel');
     const outstandingDateInputs = document.getElementById('outstandingDateInputs');
-    reportTypeSelect.innerHTML = ''; 
-    
+    reportTypeSelect.innerHTML = '';
+
     // Show/hide input fields based on report type
     if (type.includes('outstanding')) {
         // Hide account number input and all related elements
@@ -707,11 +722,11 @@ function showModal(type) {
         accountLabel.style.display = 'none';
         accountNumberInput.removeAttribute('required');
         outstandingDateInputs.style.display = 'block';
-        
+
         // Clear any existing account number value
         accountNumberInput.value = '';
         accountLabel.textContent = '';
-        
+
         // Set default values for month and year
         document.getElementById('modalMonth').value = document.getElementById('monthSelect').value;
         document.getElementById('modalYear').value = document.getElementById('yearInput').value;
@@ -723,7 +738,7 @@ function showModal(type) {
         accountNumberInput.setAttribute('required', 'required');
         outstandingDateInputs.style.display = 'none';
     }
-    
+
     let options;
     switch(type) {
         case 'report_expected_cashflow':
@@ -731,7 +746,7 @@ function showModal(type) {
                 <option value="report_expected_cashflow">Effective</option>
             `;
             break;
-            
+
         case 'amortised_cost_effective':
         case 'amortised_cost_simple':
             options = `
@@ -739,7 +754,7 @@ function showModal(type) {
                 <option value="amortised_cost_simple">Simple Interest</option>
             `;
             break;
-            
+
         case 'amortised_initial_cost_effective':
         case 'amortised_initial_cost_simple':
             options = `
@@ -747,7 +762,7 @@ function showModal(type) {
                 <option value="amortised_initial_cost_simple">Simple Interest</option>
             `;
             break;
-            
+
         case 'amortised_initial_fee_effective':
         case 'amortised_initial_fee_simple':
             options = `
@@ -755,7 +770,7 @@ function showModal(type) {
                 <option value="amortised_initial_fee_simple">Simple Interest</option>
             `;
             break;
-            
+
         case 'expected_cashflow_effective':
         case 'expected_cashflow_simple':
             options = `
@@ -763,7 +778,7 @@ function showModal(type) {
                 <option value="expected_cashflow_simple">Simple Interest</option>
             `;
             break;
-            
+
         // case 'initial_recognition_effective':
         // case 'initial_recognition_simple':
         //     options = `
@@ -771,7 +786,7 @@ function showModal(type) {
         //         <option value="initial_recognition_simple">Simple Interest</option>
         //     `;
         //     break;
-            
+
         case 'outstanding_effective':
         case 'outstanding_simple':
             options = `
@@ -779,7 +794,7 @@ function showModal(type) {
                 <option value="outstanding_simple">Simple Interest</option>
             `;
             break;
-            
+
         case 'journal_effective':
         case 'journal_simple':
             options = `
@@ -787,16 +802,16 @@ function showModal(type) {
                 <option value="journal_simple">Simple Interest</option>
             `;
             break;
-            
+
         default:
             console.error('Tipe report tidak valid:', type);
             options = '<option value="">Pilih tipe report</option>';
             break;
     }
-    
+
     reportTypeSelect.innerHTML = options;
     reportTypeSelect.value = type; // Set nilai sesuai tipe yang dipilih
-    
+
     $('#reportModal').modal('show');
 }
 </script>
@@ -805,7 +820,7 @@ function showModal(type) {
 function showModalWithAccount(accountNumber, reportType) {
     const branch = '{{ $user->id_pt }}';
     let url;
-    
+
     switch(reportType) {
         case 'expected_cashflow':
             url = `/securities/expected-cashflow/view/${accountNumber}/${branch}`;
@@ -826,7 +841,7 @@ function showModalWithAccount(accountNumber, reportType) {
             url = `/securities/amortised-initial-brok/view/${accountNumber}/${branch}`;
             break;
     }
-    
+
     if (url) {
         window.location.href = url;
     }

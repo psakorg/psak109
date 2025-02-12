@@ -146,7 +146,7 @@ public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
             DB::raw("TO_CHAR(tbo.org_date, 'DD/MM/YYYY') as org_date"),
             'm.tenor',
             DB::raw("TO_CHAR(tbo.mtr_date, 'DD/MM/YYYY') as mtr_date"),
-            'm.bond_id', 'm.coupon_rate', 'a.pmtamt', 'm.atdiscount', 'm.atpremium', 
+            'm.bond_id', 'm.coupon_rate', 'a.pmtamt', 'm.atdiscount', 'm.atpremium',
             'm.brokerage', 'a.face_value', 'a.interest_eir', 'a.fair_value',
             'a.price', 'a.amortized', 'a.accr_conv', 'a.outsamt_conv', 'a.timegap',
             'a.accr_disc', 'a.outsamt_disc', 'a.amortise_disc', 'a.accr_prem',
@@ -154,12 +154,12 @@ public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
             'a.amortise_brok', 'a.principal', 'a.principal_in','a.principal_out', 'a.interest', 'a.haribunga', 'tbo.yield', 'tbo.eirex',
             'tbo.eircalc', 'tbo.eircalc_conv', 'tbo.eircalc_disc', 'tbo.eircalc_prem',
             'tbo.eircalc_brok', 'tbo.ibase',
-            DB::raw('CASE WHEN (m.bond_grp = 4) OR (m.bond_grp = 2) THEN 
+            DB::raw('CASE WHEN (m.bond_grp = 4) OR (m.bond_grp = 2) THEN
                 m.face_value
             ELSE
-                (m.face_value - coalesce(m.atdiscount,0) + coalesce(m.atpremium,0) + coalesce(m.brokerage,0) 
-                + coalesce((SELECT SUM(amortise_disc) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to),0) 
-                + coalesce((SELECT SUM(amortise_prem) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to),0) 
+                (m.face_value - coalesce(m.atdiscount,0) + coalesce(m.atpremium,0) + coalesce(m.brokerage,0)
+                + coalesce((SELECT SUM(amortise_disc) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to),0)
+                + coalesce((SELECT SUM(amortise_prem) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to),0)
                 + coalesce((SELECT SUM(amortise_brok) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to),0))
             END as CARRYING_AMOUNT'),
             DB::raw('(SELECT SUM(amortized) FROM securities.tblcfobalsecurities where no_acc = a.no_acc and month_to <= a.month_to) as cum_amortitized'),
@@ -293,35 +293,36 @@ public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
         try {
             // Format tanggal untuk query
             $query = "
-                SELECT DISTINCT 
-                    a.id, a.no_acc, a.bond_id, d.yield, a.eirex, a.eircalc, 
-                    a.face_value, a.mtm_price, a.price, a.carrying_amount, 
+                SELECT DISTINCT
+                    a.id, a.no_acc, a.bond_id, d.yield, a.eirex, a.eircalc,
+                    a.face_value, a.mtm_price, a.price, a.carrying_amount,
                     a.transac_dt,
-                    a.cum_amortized, a.cum_timegap, a.cum_amortise_disc, 
-                    a.cum_amortise_prem, a.cum_amortise_brok, a.atdiscount, 
-                    a.atpremium, a.brokerage, 
+                    a.cum_amortized, a.cum_timegap, a.cum_amortise_disc,
+                    a.cum_amortise_prem, a.cum_amortise_brok, a.atdiscount,
+                    a.atpremium, a.brokerage,
                     a.atpremium+a.cum_amortise_prem as unamortized_atpremium,
                     -a.atdiscount+a.cum_amortise_disc as unamortized_atdiscount,
-                    a.brokerage+a.cum_amortise_brok as unamortized_brokerage,
+                    a.brokerage+a.cum_amortise_brok as unamortized_brokerage, t.rating,
                     a.gain_losses, a.cum_gain_losses,
-                    b.issuer_name, b.no_branch, b.status, b.bond_type, 
-                    b.org_date_dt, b.tenor, b.pmtamt, b.mtr_date_dt, 
+                    b.issuer_name, b.no_branch, b.status, b.bond_type,
+                    b.org_date_dt, b.tenor, b.pmtamt, b.mtr_date_dt,
                     b.gl_group, b.coupon_rate, m.jdname, c.coa
-                FROM securities.tblpsaklbutreasury a 
+                FROM securities.tblpsaklbutreasury a
                 INNER JOIN securities.tblMASTER_SECURITIES b ON a.no_acc = b.no_acc
                 LEFT OUTER JOIN public.\"CABANG-\" m ON (b.no_branch = m.jdbr)
                 LEFT OUTER JOIN securities.tblglgroupsecurities c ON b.gl_group = c.gl_group
                 LEFT OUTER JOIN securities.tblOBALSecurities d ON a.no_acc = d.no_acc
-                WHERE b.no_branch = :branch 
+                INNER JOIN securities.tblratingsecurities t ON a.no_acc = t.no_acc
+                WHERE b.no_branch = :branch
                 AND a.transac_dt = :date
                 AND b.eval_dt = :eval_date
-                AND a.face_value > 0 
+                AND a.face_value > 0
                 AND (b.status)<>'2'
                 AND b.clasification IN (12,22)
                 ORDER BY a.no_acc";
 
             $date = "{$tahun}-{$bulan}-{$tanggal}";
-            
+
             return DB::select($query, [
                 'branch' => $id_pt,
                 'date' => $date,
@@ -339,36 +340,36 @@ public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
         try {
             // Format tanggal untuk query
             $query = "
-                SELECT DISTINCT 
-                    a.id, a.no_acc, a.bond_id, d.yield, a.eirex, a.eircalc, 
-                    a.face_value, a.mtm_price, a.price, a.carrying_amount, 
+                SELECT DISTINCT
+                    a.id, a.no_acc, a.bond_id, d.yield, a.eirex, a.eircalc,
+                    a.face_value, a.mtm_price, a.price, a.carrying_amount,
                     a.transac_dt,
-                    a.cum_amortized, a.cum_timegap, a.cum_amortise_disc, 
-                    a.cum_amortise_prem, a.cum_amortise_brok, a.atdiscount, 
-                    a.atpremium, a.brokerage, 
+                    a.cum_amortized, a.cum_timegap, a.cum_amortise_disc,
+                    a.cum_amortise_prem, a.cum_amortise_brok, a.atdiscount,
+                    a.atpremium, a.brokerage,
                     a.atpremium+a.cum_amortise_prem as unamortized_atpremium,
                     -a.atdiscount+a.cum_amortise_disc as unamortized_atdiscount,
                     a.brokerage+a.cum_amortise_brok as unamortized_brokerage,
                     a.gain_losses, a.cum_gain_losses,
-                    b.issuer_name, b.no_branch, b.status, b.bond_type, 
-                    b.org_date_dt, b.tenor, b.pmtamt, b.mtr_date_dt, 
+                    b.issuer_name, b.no_branch, b.status, b.bond_type,
+                    b.org_date_dt, b.tenor, b.pmtamt, b.mtr_date_dt,
                     b.gl_group, b.coupon_rate, m.jdname, c.coa, d.issuer_name, d.mtr_date, t.rating
-                FROM securities.tblpsaklbutreasury a 
+                FROM securities.tblpsaklbutreasury a
                 INNER JOIN securities.tblMASTER_SECURITIES b ON a.no_acc = b.no_acc
                 INNER JOIN public.\"CABANG-\" m ON (b.no_branch = m.jdbr)
                 INNER JOIN securities.tblglgroupsecurities c ON b.gl_group = c.gl_group
                 INNER JOIN securities.tblOBALSecurities d ON a.no_acc = d.no_acc
                 INNER JOIN securities.tblratingsecurities t ON a.no_acc = t.no_acc
-                WHERE b.no_branch = :branch 
+                WHERE b.no_branch = :branch
                 AND a.transac_dt = :date
                 AND b.eval_dt = :eval_date
-                AND a.face_value > 0 
+                AND a.face_value > 0
                 AND (b.status)<>'2'
                 AND b.clasification IN (13,14)
                 ORDER BY a.no_acc";
 
             $date = "{$tahun}-{$bulan}-{$tanggal}";
-            
+
             return DB::select($query, [
                 'branch' => $id_pt,
                 'date' => $date,
@@ -389,7 +390,7 @@ public static function spcashflowtreasurybond($id_pt, $perPage = 1000, $no_acc)
                     ->where('no_branch', $id_pt)
                     ->where('transac_dt', $year . "-" . $month . "-" . $day)
                     ->get();
-                
+
             } catch (\Exception $e) {
                 \Log::error('Error in callEvaluationTreasuryBonds: ' . $e->getMessage());
                 throw $e;

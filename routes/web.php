@@ -219,7 +219,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-amortised-initial-cost-simple-interest/export-pdf/{no_acc}/{id_pt}', [amorinitcostsiControler::class, 'exportPdf'])->name('report-amorinitcost-si.exportPdf');
     Route::get('/report-amortised-initial-cost-simple-interest/export-excel/{no_acc}/{id_pt}', [amorinitcostsiControler::class, 'exportExcel'])->name('report-amorinitcost-si.exportExcel');
 
-    Route::get('/check-report-amortised-initial-cost-simple/{no_acc}/{id_pt}', 
+    Route::get('/check-report-amortised-initial-cost-simple/{no_acc}/{id_pt}',
         [amorinitcostsiControler::class, 'checkData'])
         ->name('check-report-amortised-initial-cost-simple');
 });
@@ -230,7 +230,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-amortised-initial-cost-effective/export-pdf/{no_acc}/{id_pt}', [amorinitcosteffControler::class, 'exportPdf'])->name('report-amorinitcost-eff.exportPdf');
     Route::get('/report-amortised-initial-cost-effective/export-excel/{no_acc}/{id_pt}', [amorinitcosteffControler::class, 'exportExcel'])->name('report-amorinitcost-eff.exportExcel');
 
-    Route::get('/check-report-amortised-initial-cost-effective/{no_acc}/{id_pt}', 
+    Route::get('/check-report-amortised-initial-cost-effective/{no_acc}/{id_pt}',
         [amorinitcosteffControler::class, 'checkData'])
         ->name('check-report-amortised-initial-cost-effective');
 });
@@ -263,7 +263,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-expective-cash-flow-simple-interest/export-pdf/{no_acc}/{id_pt}', [expectcfsiControler::class, 'exportPdf'])->name('report-expectcf-si.exportPdf');
     Route::get('/report-expective-cash-flow-simple-interest/export-excel/{no_acc}/{id_pt}', [expectcfsiControler::class, 'exportExcel'])->name('report-expectcf-si.exportExcel');
 
-    Route::get('/check-report-expected-cashflow-simple/{no_acc}/{id_pt}', 
+    Route::get('/check-report-expected-cashflow-simple/{no_acc}/{id_pt}',
         [expectcfsiControler::class, 'checkData'])
         ->name('check-report-expected-cashflow-simple');
 });
@@ -274,7 +274,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-expective-cash-flow-effective/export-pdf/{no_acc}/{id_pt}', [expectcfeffControler::class, 'exportPdf'])->name('report-expectcfeff-eff.exportPdf');
     Route::get('/report-expective-cash-flow-effective/export-excel/{no_acc}/{id_pt}', [expectcfeffControler::class, 'exportExcel'])->name('report-expectcfeff-eff.exportExcel');
 
-    Route::get('/check-report-expected-cashflow-effective/{no_acc}/{id_pt}', 
+    Route::get('/check-report-expected-cashflow-effective/{no_acc}/{id_pt}',
         [expectcfeffControler::class, 'checkData'])
         ->name('check-report-expected-cashflow-effective');
 });
@@ -305,7 +305,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/report-journal-simple-interest/execute-procedure', [journalsiControler::class, 'executeStoredProcedure'])
         ->name('report-journal-si.execute-procedure');
 
-    Route::get('/check-report-journal-simple/{no_acc}/{id_pt}', 
+    Route::get('/check-report-journal-simple/{no_acc}/{id_pt}',
         [journalsiControler::class, 'checkData'])
         ->name('check-report-journal-simple');
 });
@@ -320,7 +320,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/report-journal-effective/execute-procedure', [journaleffControler::class, 'executeStoredProcedure'])
         ->name('report-journal-eff.execute-procedure');
 
-    Route::get('/check-report-journal-effective/{no_acc}/{id_pt}', 
+    Route::get('/check-report-journal-effective/{no_acc}/{id_pt}',
         [journaleffControler::class, 'checkData'])
         ->name('check-report-journal-effective');
 });
@@ -333,7 +333,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-outstanding-simple-interest/export-excel/{id_pt}', [outstandsiControler::class, 'exportExcel'])->name('report-outstanding-si.exportExcel');
     Route::get('/report-outstanding-simple-interest/export-csv/{id_pt}', [outstandsiControler::class, 'exportCsv'])->name('report-outstanding-si.exportCsv');
     Route::get('report-acc-si/exportCsv/{no_acc}/{id_pt}', [outstandsiControler::class, 'exportCsv'])->name('report-acc-si.exportCsv');
-    Route::get('/check-report-outstanding-simple/{no_acc}/{id_pt}', 
+    Route::get('/check-report-outstanding-simple/{no_acc}/{id_pt}',
         [outstandsiControler::class, 'checkData'])
         ->name('check-report-outstanding-simple');
 });
@@ -346,10 +346,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-outstanding-effective/export-excel/{id_pt}', [outstandeffControler::class, 'exportExcel'])->name('report-outstanding-eff.exportExcel');
 
     Route::get('/report-outstanding-effective/export-csv/{id_pt}', [outstandeffControler::class, 'exportCsv'])->name('report-outstanding-eff.exportCsv');
-    
-    Route::get('/check-report-outstanding-effective/{no_acc}/{id_pt}', 
+
+    Route::get('/check-report-outstanding-effective/{no_acc}/{id_pt}',
         [outstandeffControler::class, 'checkData'])
-        ->name('check-report-outstanding-effective');    
+        ->name('check-report-outstanding-effective');
 });
 
                                                         // SECURITIES
@@ -397,7 +397,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report-amortised-initial-brokerage-fee/export-excel/{no_acc}/{id_pt}', [amortisedinitialbrokeragefeeController::class, 'exportExcel'])->name('report-amortised-initial-brokerage-fee.exportExcel');
 });
 Route::middleware(['auth'])->group(function () {
-    Route::prefix('securities')->group(function () {      
+    Route::prefix('securities')->group(function () {
         Route::get('/initial-recognition-treasury', [initialRecognitionTreasuryController::class, 'index'])
             ->name('securities.initial-recognition-treasury.index');
 
@@ -407,6 +407,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('securities.outstanding-balance-treasury.execute-procedure');
         Route::get('/outstanding-balance-treasury-bond/export-excel/{id_pt}', [outstandingBalanceTreasuryController::class, 'exportExcel'])->name('report-outstanding-securities.exportExcel');
         Route::get('/outstanding-balance-treasury-bond/export-pdf/{id_pt}', [outstandingBalanceTreasuryController::class, 'exportPdf'])->name('report-outstanding-securities.exportPDF');
+        Route::get('/outstanding-balance-treasury-bond/export-csv/{id_pt}', [outstandingBalanceTreasuryController::class, 'exportCSV'])->name('report-outstanding-securities.exportcsv');
 
 
         Route::get('/outstanding-balance-amortized-cost', [outstandingBalanceAmortizedCostController::class, 'index'])
@@ -416,7 +417,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/outstanding-balance-amortized-cost/export-excel/{id_pt}', [outstandingBalanceAmortizedCostController::class, 'exportExcel'])->name('report-outstanding-amortized-cost.exportExcel');
         Route::get('/outstanding-balance-amortized-cost/export-pdf/{id_pt}', [outstandingBalanceAmortizedCostController::class, 'exportPdf'])->name('report-outstanding-amortized-cost.exportPDF');
         Route::get('/outstanding-balance-amortized-cost/export-csv/{id_pt}', [outstandingBalanceAmortizedCostController::class, 'exportCSV'])->name('report-outstanding-amortized-cost.exportcsv');
-    
+
 
         Route::get('/evaluation-treasury-bond', [evaluationTreasuryController::class, 'index'])
         ->name('securities.evaluation-treasury-bond.index');
@@ -424,7 +425,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('securities.evaluation-treasury-bond.execute-procedure');
         Route::get('/evaluation-treasury-bond/export-excel/{id_pt}', [evaluationTreasuryController::class, 'exportExcel'])->name('report-evaluation-treasury-bond.exportExcel');
         Route::get('/evaluation-treasury-bond/export-pdf/{id_pt}', [evaluationTreasuryController::class, 'exportPdf'])->name('report-evaluation-treasury-bond.exportPdf');
-        
+
         // Route upload untuk tblmaster_tmpbid
         Route::get('/upload/tblmaster', [uploadTblMasterTmpBidController::class, 'index'])
             ->name('upload.securities.tblmaster_tmpbid.index');
@@ -434,7 +435,7 @@ Route::middleware(['auth'])->group(function () {
             ->name('upload.securities.tblmaster_tmpbid.execute-procedure');
         Route::post('/upload/tblmaster/clear', [uploadTblMasterTmpBidController::class, 'clear'])
             ->name('upload.securities.tblmaster_tmpbid.clear');
-        
+
         // Route upload untuk data securities
         Route::get('/upload/data', [uploadDataSecuritiesController::class, 'index'])
             ->name('upload.securities.data.index');
@@ -571,7 +572,7 @@ Route::prefix('report-initial-recognition')->group(function () {
     Route::get('/effective', [initialRecognitionEffectiveController::class, 'index'])->name('report-initial-recognition.index');
     Route::get('/export-excel/effective/{id_pt}', [initialRecognitionEffectiveController::class, 'exportExcel'])->name('report.initial.recognition.effective.export.excel');
     Route::get('/export-pdf/effective/{id_pt}', [
-       initialRecognitionEffectiveController::class, 
+       initialRecognitionEffectiveController::class,
         'exportPdf'
     ])->name('report.initial.recognition.effective.export.pdf');
 

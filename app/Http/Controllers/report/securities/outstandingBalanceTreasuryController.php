@@ -28,7 +28,7 @@ class outstandingBalanceTreasuryController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        
+
         // Get parameters from request with defaults
         $id_pt = $user->id_pt;
         $tahun = $request->input('tahun') ?? date('Y');
@@ -36,11 +36,11 @@ class outstandingBalanceTreasuryController extends Controller
         $tanggal = $request->input('tanggal') ?? date('d');
         $no_acc = $request->input('no_acc');
         $status = $request->input('status', '2');
-    
+
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);
-    
-        $securities = report_securities::getOutstandingFVTOCISecurities( 
+
+        $securities = report_securities::getOutstandingFVTOCISecurities(
         intval($user->id_pt),
         intval($tahun),
         intval($bulan),
@@ -72,7 +72,7 @@ class outstandingBalanceTreasuryController extends Controller
             $page,
         ['path' => $request->url(), 'query' => $request->query()]
     );
-        return view('report.securities.report_outstanding_balance_treasury_bond.master', 
+        return view('report.securities.report_outstanding_balance_treasury_bond.master',
             compact('securities', 'tahun', 'bulan', 'tanggal', 'user', 'page', 'perPage', 'count')
         );
     }
@@ -97,7 +97,7 @@ class outstandingBalanceTreasuryController extends Controller
                     $request->tanggal,
                     $id_pt
                 ]);
-                
+
                 // Execute first stored procedure
                 DB::select("CALL securities.spevaluationtreasury_bonds(?, ?, ?, ?)", [
                     $request->tahun,
@@ -105,7 +105,7 @@ class outstandingBalanceTreasuryController extends Controller
                     $request->tanggal,
                     $id_pt
                 ]);
-                
+
                 // Execute second stored procedure
                 DB::select("CALL securities.spoutbaltreasury_daily_bonds(?, ?, ?, ?)", [
                     $id_pt,
@@ -151,7 +151,7 @@ class outstandingBalanceTreasuryController extends Controller
     public function exportExcel(Request $request, $id_pt)
     {
         $user = Auth::user();
-        
+
         // Get parameters from request with defaults
         $id_pt = $user->id_pt;
         $tahun = $request->input('tahun') ?? date('Y');
@@ -159,11 +159,11 @@ class outstandingBalanceTreasuryController extends Controller
         $tanggal = $request->input('tanggal') ?? date('d');
         $no_acc = $request->input('no_acc');
         $status = $request->input('status', '2');
-    
+
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);
-    
-        $securities = report_securities::getOutstandingFVTOCISecurities( 
+
+        $securities = report_securities::getOutstandingFVTOCISecurities(
         intval($user->id_pt),
         intval($tahun),
         intval($bulan),
@@ -389,7 +389,7 @@ class outstandingBalanceTreasuryController extends Controller
 
       //TOTAL OUTSTANDING SECURITIES
       $sheet->setCellValue('A' . $row, "TOTAL");
-      $sheet->mergeCells('A' . $row . ':K' . $row); 
+      $sheet->mergeCells('A' . $row . ':K' . $row);
       $sheet->getStyle('A' . $row . ':K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
       $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
       $sheet->setCellValue('L' . $row, number_format($securities->avg('coupon_rate')*100,5).'%');
@@ -447,7 +447,7 @@ class outstandingBalanceTreasuryController extends Controller
     //     $sheet->getStyle($columnIndex . '13')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
     //     $columnIndex++;
     // }
-    
+
     // $row = 14; // Mulai dari baris 18 untuk data laporan
     // foreach ($securities as $report) {
 
@@ -575,7 +575,7 @@ class outstandingBalanceTreasuryController extends Controller
     public function exportPdf(Request $request, $id_pt)
 {
     $user = Auth::user();
-        
+
         // Get parameters from request with defaults
         $id_pt = $user->id_pt;
         $tahun = $request->input('tahun') ?? date('Y');
@@ -583,11 +583,11 @@ class outstandingBalanceTreasuryController extends Controller
         $tanggal = $request->input('tanggal') ?? date('d');
         $no_acc = $request->input('no_acc');
         $status = $request->input('status', '2');
-    
+
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);
-    
-        $securities = report_securities::getOutstandingFVTOCISecurities( 
+
+        $securities = report_securities::getOutstandingFVTOCISecurities(
         intval($user->id_pt),
         intval($tahun),
         intval($bulan),
@@ -816,7 +816,7 @@ class outstandingBalanceTreasuryController extends Controller
 
       //TOTAL OUTSTANDING SECURITIES
       $sheet->setCellValue('A' . $row, "TOTAL");
-      $sheet->mergeCells('A' . $row . ':K' . $row); 
+      $sheet->mergeCells('A' . $row . ':K' . $row);
       $sheet->getStyle('A' . $row . ':K' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
       $sheet->getStyle('L' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
       $sheet->setCellValue('L' . $row, number_format($securities->avg('coupon_rate')*100,5).'%');
@@ -874,7 +874,7 @@ class outstandingBalanceTreasuryController extends Controller
     //     $sheet->getStyle($columnIndex . '13')->getFont()->getColor()->setARGB(Color::COLOR_WHITE);
     //     $columnIndex++;
     // }
-    
+
     // $row = 14; // Mulai dari baris 18 untuk data laporan
     // foreach ($securities as $report) {
 
@@ -1003,7 +1003,7 @@ public function checkData($no_acc, $id_pt)
 {
     try {
         $no_acc = trim($no_acc);
-        
+
         $loan = report_effective::getLoanDetails($no_acc, $id_pt);
         $master = report_effective::getMasterDataByNoAcc($no_acc, $id_pt);
         $reports = report_effective::getReportsByNoAcc($no_acc, $id_pt);
@@ -1019,12 +1019,97 @@ public function checkData($no_acc, $id_pt)
         }
 
         return response()->json(['success' => true]);
-        
+
     } catch (\Exception $e) {
         return response()->json([
-            'success' => false, 
+            'success' => false,
             'message' => 'Terjadi kesalahan: ' . $e->getMessage()
         ]);
     }
+}
+
+public function exportCSV(Request $request, $id_pt)
+{
+    $user = Auth::user();
+
+    // Get parameters from request with defaults
+    $id_pt = $user->id_pt;
+    $tahun = $request->input('tahun') ?? date('Y');
+    $bulan = $request->input('bulan') ?? date('n');
+    $tanggal = $request->input('tanggal') ?? date('d');
+
+    // Ambil data securities
+    $securities = report_securities::getOutstandingFVTOCISecurities(
+        intval($user->id_pt),
+        intval($tahun),
+        intval($bulan),
+        intval($tanggal)
+    );
+
+    // Buat spreadsheet baru
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+    // Set headers sesuai dengan yang diminta
+    $headers = [
+        'ID',
+        'NO_ACC',
+        'NO_BRANCH',
+        'BOND_ID',
+        'ISSUER_NAME',
+        'RATING',
+        'MTR_DATE_DT',
+        'COUPON_RATE',
+        'FACE_VALUE',
+        'CARRYING AMOUNT',
+        'UNRELEAZED GAIN / (LOSSES)'
+    ];
+
+    $col = 'A';
+    foreach ($headers as $header) {
+        $sheet->setCellValue($col . '1', $header);
+        $col++;
+    }
+
+    // Isi data
+    $row = 2;
+    foreach ($securities as $index => $security) {
+        $sheet->setCellValue('A' . $row, $index + 1);
+        $sheet->setCellValue('B' . $row, $security->no_acc);
+        $sheet->setCellValue('C' . $row, $security->no_branch);
+        $sheet->setCellValue('D' . $row, $security->bond_id);
+        $sheet->setCellValue('E' . $row, $security->issuer_name);
+        $sheet->setCellValue('F' . $row, $security->rating);
+        $sheet->setCellValue('G' . $row, $security->mtr_date_dt);
+        $sheet->setCellValue('H' . $row, $security->coupon_rate);
+        $sheet->setCellValue('I' . $row, $security->face_value);
+        $sheet->setCellValue('J' . $row, $security->carrying_amount);
+        $sheet->setCellValue('K' . $row, $security->gain_losses);
+        $row++;
+    }
+
+    // Auto-size columns
+    foreach (range('A', 'K') as $col) {
+        $sheet->getColumnDimension($col)->setAutoSize(true);
+    }
+
+    // Siapkan nama file
+    $filename = "ReportOutstandingBalanceFVTOCI_{$id_pt}_{$tanggal}_{$bulan}_{$tahun}.csv";
+
+    // Buat writer CSV dan set konfigurasi
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
+    $writer->setDelimiter(',');
+    $writer->setEnclosure('"');
+    $writer->setLineEnding("\r\n");
+    $writer->setSheetIndex(0);
+
+    // Simpan ke temporary file
+    $temp_file = tempnam(sys_get_temp_dir(), 'phpspreadsheet');
+    $writer->save($temp_file);
+
+    // Kembalikan response dengan header untuk CSV
+    return response()->download($temp_file, $filename, [
+        'Content-Type' => 'text/csv',
+    ])->deleteFileAfterSend(true);
 }
 }

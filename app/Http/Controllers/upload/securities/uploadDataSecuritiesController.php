@@ -29,14 +29,14 @@ class uploadDataSecuritiesController extends Controller
 
         return view('upload.securities.layouts.tbldatasecurities', [
             'title' => 'Laravel - PHPSpreadsheet',
-            'securities' => $securities 
+            'securities' => $securities
         ]);
     }
 
     protected function validateData($data)
     {
         Log::info('Memulai validasi data:', ['data' => $data]);
-        
+
         // Validasi field wajib
         $required_fields = [
             'no_acc', 'no_branch', 'deb_name', 'status', 'ln_type',
@@ -51,7 +51,7 @@ class uploadDataSecuritiesController extends Controller
                 Log::warning("Field '$field' tidak ditemukan", $data);
                 return false;
             }
-            
+
             // Izinkan nilai 0 atau "0"
             if ($data[$field] === null || $data[$field] === '') {
                 Log::warning("Field '$field' kosong", ['value' => $data[$field]]);
@@ -82,13 +82,13 @@ class uploadDataSecuritiesController extends Controller
                 if (empty($date) || $date == "''" || $date == "''") {
                     return '1900-01-01';
                 }
-                
+
                 try {
                     // Coba parse format dd/mm/yyyy atau dd-mm-yyyy
                     if (preg_match('/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})$/', $date, $matches)) {
                         return sprintf('%s-%s-%s 00:00:00', $matches[3], $matches[2], $matches[1]);
                     }
-                    
+
                     // Coba parse format yyyy-mm-dd
                     if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
                         return $date . ' 00:00:00';
@@ -174,7 +174,7 @@ class uploadDataSecuritiesController extends Controller
 
             // Deteksi format file berdasarkan ekstensi
             $extension = strtolower($file->getClientOriginalExtension());
-            
+
             // Konfigurasi khusus untuk CSV
             if ($extension === 'csv') {
                 $reader = new Csv();
@@ -283,10 +283,10 @@ class uploadDataSecuritiesController extends Controller
                 return redirect()->back()->with('warning', implode(". ", $message));
             }
 
-            throw new \Exception('Tidak ada data yang berhasil diimport. ' . 
+            throw new \Exception('Tidak ada data yang berhasil diimport. ' .
                 (!empty($duplicates) ? "Data duplikat: " . implode("; ", $duplicates) : "") .
                 (!empty($errors) ? "Error: " . implode("; ", $errors) : ""));
-            
+
         } catch (\Exception $e) {
             Log::error('Import gagal: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Import gagal: ' . $e->getMessage());
@@ -328,7 +328,7 @@ class uploadDataSecuritiesController extends Controller
             ]);
 
             DB::beginTransaction();
-            
+
             $user = Auth::user();
             $id_pt = $user->id_pt;
 
@@ -395,7 +395,7 @@ class uploadDataSecuritiesController extends Controller
                 'tahun' => $request->tahun,
                 'id_pt' => $id_pt ?? null
             ]);
-            
+
             return redirect()->back()->with('swal', [
                 'title' => 'Error!',
                 'text' => 'Terjadi kesalahan: ' . $e->getMessage(),
@@ -411,14 +411,14 @@ class uploadDataSecuritiesController extends Controller
 
             $user = Auth::user();
             $id_pt = $user->id_pt;
-            
+
             if (!$id_pt) {
                 Log::warning('ID PT tidak ditemukan untuk user:', ['user_id' => $user->id]);
                 return redirect()->back()->with('error', 'ID PT tidak ditemukan');
             }
 
             Log::info('Attempting to clear data for PT ID: ' . $id_pt);
-            
+
             // Riyadi remark - Tidak boleh hapus data tblmaster_tmpcorporate
             //$deleted = DB::table('tblmaster_tmp')
             //->where('id_pt', $id_pt)
@@ -433,7 +433,7 @@ class uploadDataSecuritiesController extends Controller
             //DB::rollBack();
             //Log::warning('No data found to delete for PT ID: ' . $id_pt);
             //return redirect()->back()->with('error', 'Tidak ada data yang dapat dihapus untuk PT ini');
-            
+
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Clear data error: ' . $e->getMessage(), [
@@ -527,13 +527,13 @@ class uploadDataSecuritiesController extends Controller
             // Jika format tanggal adalah string (yyyy-mm-dd atau dd/mm/yyyy)
             if (is_string($dateValue)) {
                 $dateValue = trim($dateValue);
-                
+
                 // Coba parse format dd/mm/yyyy
                 if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $dateValue)) {
                     $parts = explode('/', $dateValue);
                     return new DateTime("{$parts[2]}-{$parts[1]}-{$parts[0]}");
                 }
-                
+
                 // Coba parse format yyyy-mm-dd
                 if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateValue)) {
                     return new DateTime($dateValue);
@@ -565,14 +565,14 @@ class uploadDataSecuritiesController extends Controller
         if ($value === null || $value === '' || $value === "''" || $value === '""') {
             return null;
         }
-        
+
         // Hapus karakter khusus dan spasi
         $value = trim($value);
         $value = str_replace([',', ' '], ['', ''], $value);
-        
+
         // Pastikan hanya angka, titik desimal dan minus yang tersisa
         $value = preg_replace('/[^0-9.\-]/', '', $value);
-        
+
         return is_numeric($value) ? floatval($value) : null;
     }
 }

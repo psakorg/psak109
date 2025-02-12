@@ -237,7 +237,7 @@ class initialRecognitionTreasuryController extends Controller
         }
           //TOTAL AMORTISED COST
           $sheet->setCellValue('A' . $row, "TOTAL");
-          $sheet->mergeCells('A' . $row . ':B' . $row); 
+          $sheet->mergeCells('A' . $row . ':B' . $row);
           $sheet->getStyle('A' . $row . ':B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
           $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
           $sheet->setCellValue('C' . $row, number_format($reports->sum('pmtamt')));
@@ -253,7 +253,7 @@ class initialRecognitionTreasuryController extends Controller
           $sheet->setCellValue('H' . $row, null);
           $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
           $sheet->setCellValue('I' . $row, null);
-  
+
         //   foreach (range('A', 'I') as $columnID) {
         //       $sheet->getColumnDimension($columnID)->setAutoSize(true);
         //   }
@@ -483,7 +483,7 @@ class initialRecognitionTreasuryController extends Controller
         }
           //TOTAL AMORTISED COST
           $sheet->setCellValue('A' . $row, "TOTAL");
-          $sheet->mergeCells('A' . $row . ':B' . $row); 
+          $sheet->mergeCells('A' . $row . ':B' . $row);
           $sheet->getStyle('A' . $row . ':B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
           $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
           $sheet->setCellValue('C' . $row, number_format($reports->sum('pmtamt')));
@@ -499,7 +499,7 @@ class initialRecognitionTreasuryController extends Controller
           $sheet->setCellValue('H' . $row, null);
           $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
           $sheet->setCellValue('I' . $row, null);
-  
+
         //   foreach (range('A', 'I') as $columnID) {
         //       $sheet->getColumnDimension($columnID)->setAutoSize(true);
         //   }
@@ -555,7 +555,7 @@ public function checkData($no_acc, $id_pt)
 {
     try {
         $no_acc = trim($no_acc);
-        
+
         $loan = report_effective::getLoanDetails($no_acc, $id_pt);
         $master = report_effective::getMasterDataByNoAcc($no_acc, $id_pt);
         $reports = report_effective::getReportsByNoAcc($no_acc, $id_pt);
@@ -571,10 +571,10 @@ public function checkData($no_acc, $id_pt)
         }
 
         return response()->json(['success' => true]);
-        
+
     } catch (\Exception $e) {
         return response()->json([
-            'success' => false, 
+            'success' => false,
             'message' => 'Terjadi kesalahan: ' . $e->getMessage()
         ]);
     }
